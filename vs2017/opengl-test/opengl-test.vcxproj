@@ -50,8 +50,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)\Release\</OutDir>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)\include\;C:\Users\Zeimd\Documents\Projektit\freeimage\include\</IncludePath>
-    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(SolutionDir)\lib\release;C:\Users\Zeimd\Documents\Projektit\freeimage\lib\win32\release\</LibraryPath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)\..\..\ceng-core\inc;$(SolutionDir)\..\..\ceng-core\deps\inc\;$(SolutionDir)\..\deps\inc\</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(SolutionDir)\..\..\ceng-core\lib\win32\Release\;$(SolutionDir)\..\deps\lib\win32\Release\</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -90,7 +90,8 @@ copy "$(SolutionDir)\..\..\ceng-core\lib\win32\Debug\*.dll" "$(SolutionDir)\..\b
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies);ceng-platform.lib;liblog.lib;timerlib.lib;libupng.lib;freeimage.lib</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(SolutionDir)\lib\Release\*.dll" "$(SolutionDir)\Release\"</Command>
+      <Command>copy "$(SolutionDir)\..\deps\lib\win32\Release\*.dll" "$(SolutionDir)\..\bin\"
+copy "$(SolutionDir)\..\..\ceng-core\lib\win32\Release\*.dll" "$(SolutionDir)\..\bin\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
