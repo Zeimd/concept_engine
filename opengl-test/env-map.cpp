@@ -6,7 +6,7 @@
 *
 *****************************************************************************/
 
-#include <timerlib.h>
+#include <ceng/lib/timerlib.h>
 
 #include "env-map.h"
 
@@ -78,7 +78,7 @@ const EngineResult::value CEngine::CreateIrradianceMap(Ceng::Cubemap *envMap, Ce
 
 	Ceng::FLOAT64 start, end;
 
-	start = Timer();
+	start = Ceng_HighPrecisionTimer();
 
 	// Precalculate solid angles per texel
 	std::vector<Ceng::FLOAT32> solidAngleRayDir(4 * sourceWidthInt*sourceWidthInt);
@@ -117,7 +117,7 @@ const EngineResult::value CEngine::CreateIrradianceMap(Ceng::Cubemap *envMap, Ce
 		}
 	}
 
-	end = Timer();
+	end = Ceng_HighPrecisionTimer();
 
 	text = "solid angle precalc, t = ";
 	text += end - start;
@@ -187,7 +187,7 @@ const EngineResult::value CEngine::CreateIrradianceMap(Ceng::Cubemap *envMap, Ce
 
 	Ceng::CRESULT cresult;
 
-	start = Timer();
+	start = Ceng_HighPrecisionTimer();
 
 	for (Ceng::UINT32 sourceFace = 0; sourceFace < 6; ++sourceFace)
 	{
@@ -198,7 +198,7 @@ const EngineResult::value CEngine::CreateIrradianceMap(Ceng::Cubemap *envMap, Ce
 		}
 	}
 
-	end = Timer();
+	end = Ceng_HighPrecisionTimer();
 
 	text = "source copy. t = ";
 	text += end - start;
@@ -210,7 +210,7 @@ const EngineResult::value CEngine::CreateIrradianceMap(Ceng::Cubemap *envMap, Ce
 
 	for (Ceng::UINT32 destFace = 0; destFace < 6; ++destFace)
 	{
-		start = Timer();
+		start = Ceng_HighPrecisionTimer();
 
 		for (Ceng::UINT32 destV = 0; destV < destWidthInt; ++destV)
 		{
@@ -274,7 +274,7 @@ const EngineResult::value CEngine::CreateIrradianceMap(Ceng::Cubemap *envMap, Ce
 			return EngineResult::fail;
 		}
 
-		end = Timer();
+		end = Ceng_HighPrecisionTimer();
 
 		text = "finished dest face ";
 		text += destFace;

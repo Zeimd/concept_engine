@@ -10,7 +10,7 @@
 
 #include <ceng/lib/liblog.h>
 
-#include <timerlib.h>
+#include <ceng/lib/timerlib.h>
 
 #include "engine-v2.h"
 
@@ -1607,7 +1607,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	int frameCount = 0;
 	int fps = 0;
 
-	startTime = Timer();
+	startTime = Ceng_HighPrecisionTimer();
 
 	window->Show();
 
@@ -1619,7 +1619,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	Ceng::FLOAT64 physTime, physCurrentTime;
 	Ceng::FLOAT32 physDeltaTime;
 
-	physTime = Timer();
+	physTime = Ceng_HighPrecisionTimer();
 
 	Ceng_ShowSystemCursor(false);
 	mouse->RelativeMode(true);
@@ -1629,7 +1629,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	do
 	{
-		physCurrentTime = Timer();
+		physCurrentTime = Ceng_HighPrecisionTimer();
 
 		physDeltaTime = Ceng::FLOAT32(physCurrentTime - physTime);
 
@@ -1645,7 +1645,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		}
 		*/
 
-		physTime = Timer();
+		physTime = Ceng_HighPrecisionTimer();
 
 		messageResult = window->ProcessMessages();
 
@@ -1843,13 +1843,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			if (window->IsVisible())
 			{
 				// Calculate FPS
-				endTime = Timer();
+				endTime = Ceng_HighPrecisionTimer();
 				if (endTime - startTime >= 1.0)
 				{
 					fps = frameCount;
 					frameCount = 0;
 
-					startTime = Timer();
+					startTime = Ceng_HighPrecisionTimer();
 
 					captionInfo = " | ";
 					captionInfo += (int)displayWidth;
@@ -1870,7 +1870,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 				// Draw scene if application is visible
 
-				frameStart = Timer();
+				frameStart = Ceng_HighPrecisionTimer();
 
 				//////////////////////////////////////////////////////////////
 				// Enable depth tests and write
@@ -2190,7 +2190,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 				swapChain->Present();
 
-				frameEnd = Timer();
+				frameEnd = Ceng_HighPrecisionTimer();
 				frameTime += frameEnd - frameStart;
 
 				frameCount++;

@@ -12,7 +12,7 @@
 
 #include <fstream>
 
-#include <timerlib.h>
+#include <ceng/lib/timerlib.h>
 
 #include "mesh.h"
 #include "material-manager.h"
@@ -219,7 +219,7 @@ const ObjectError::value MeshManager::LoadMesh_OBJ
 
 	ProtoMesh mesh;
 
-	Ceng::FLOAT64 start = Timer();
+	Ceng::FLOAT64 start = Ceng_HighPrecisionTimer();
 
 	Ceng::UINT32 faceCount = 0;
 
@@ -422,7 +422,7 @@ const ObjectError::value MeshManager::LoadMesh_OBJ
 		}
 	};
 
-	Ceng::FLOAT64 end = Timer();
+	Ceng::FLOAT64 end = Ceng_HighPrecisionTimer();
 
 	text = "parsing time = ";
 	text += end - start;
@@ -435,7 +435,7 @@ const ObjectError::value MeshManager::LoadMesh_OBJ
 
 	// Calculate tangent basis
 
-	start = Timer();
+	start = Ceng_HighPrecisionTimer();
 
 	if (texCoord)
 	{
@@ -502,7 +502,7 @@ const ObjectError::value MeshManager::LoadMesh_OBJ
 		}
 	}
 
-	end = Timer();
+	end = Ceng_HighPrecisionTimer();
 
 	text = "tangent basis generation : ";
 	text += end - start;
@@ -516,7 +516,7 @@ const ObjectError::value MeshManager::LoadMesh_OBJ
 
 	Unpack unpack;
 
-	start = Timer();
+	start = Ceng_HighPrecisionTimer();
 
 	for (auto &group : mesh.materialGroups)
 	{
@@ -560,7 +560,7 @@ const ObjectError::value MeshManager::LoadMesh_OBJ
 		}
 	}
 
-	end = Timer();
+	end = Ceng_HighPrecisionTimer();
 
 	text = "unpack time : ";
 	text += end - start;
@@ -568,7 +568,7 @@ const ObjectError::value MeshManager::LoadMesh_OBJ
 
 	Ceng::Log::Print(text);
 
-	start = Timer();
+	start = Ceng_HighPrecisionTimer();
 
 	for (Ceng::UINT32 k = 0; k < unpack.tangent.size(); ++k)
 	{
@@ -588,7 +588,7 @@ const ObjectError::value MeshManager::LoadMesh_OBJ
 		unpack.tangent[k].z = unpack.tangent[k].z - dot * normal.z;
 	}
 
-	end = Timer();
+	end = Ceng_HighPrecisionTimer();
 
 	text = "tangent space normalize : ";
 	text += end - start;
@@ -632,7 +632,7 @@ const ObjectError::value MeshManager::LoadMesh_OBJ
 
 	std::unordered_map<Ceng::UINT32, Ceng::UINT32> vertexCache;
 
-	start = Timer();
+	start = Ceng_HighPrecisionTimer();
 
 	for (auto &group : mesh.materialGroups)
 	{
@@ -699,7 +699,7 @@ const ObjectError::value MeshManager::LoadMesh_OBJ
 		currentCall.indexCount = 0;
 	}
 
-	end = Timer();
+	end = Ceng_HighPrecisionTimer();
 
 	text = "buffer allocation : ";
 	text += end - start;
@@ -713,7 +713,7 @@ const ObjectError::value MeshManager::LoadMesh_OBJ
 
 	Ceng::CRESULT cresult;
 
-	start = Timer();
+	start = Ceng_HighPrecisionTimer();
 
 	for (auto &data : indexData)
 	{
@@ -754,7 +754,7 @@ const ObjectError::value MeshManager::LoadMesh_OBJ
 		finalMesh->indexBuffers.push_back(indexBuffer);
 	}
 
-	end = Timer();
+	end = Ceng_HighPrecisionTimer();
 
 	text = "index buffer generation : ";
 	text += end - start;
@@ -766,7 +766,7 @@ const ObjectError::value MeshManager::LoadMesh_OBJ
 
 	std::vector<Ceng::VertexBuffer*> vertexBuffers;
 
-	start = Timer();
+	start = Ceng_HighPrecisionTimer();
 
 	for (auto &data : vertexData)
 	{
@@ -823,7 +823,7 @@ const ObjectError::value MeshManager::LoadMesh_OBJ
 		finalMesh->vertexBuffers.push_back(vertexBuffer);
 	}
 
-	end = Timer();
+	end = Ceng_HighPrecisionTimer();
 
 	text = "vertex buffer generation : ";
 	text += end - start;
@@ -853,7 +853,7 @@ const ObjectError::value MeshManager::LoadMesh_OBJ
 
 	// Generate draw commands
 
-	start = Timer();
+	start = Ceng_HighPrecisionTimer();
 
 	finalMesh->commands.push_back(std::make_unique<VertexFormatChange>(vertexFormat));
 	finalMesh->shadowCommands.push_back(std::make_unique<VertexFormatChange>(vertexFormat));
@@ -899,7 +899,7 @@ const ObjectError::value MeshManager::LoadMesh_OBJ
 		}
 	}
 
-	end = Timer();
+	end = Ceng_HighPrecisionTimer();
 
 	text = "draw command generation : ";
 	text += end - start;

@@ -11,7 +11,7 @@
 
 #include <ceng.h>
 
-#include <liblog.h>
+#include <ceng/lib/liblog.h>
 
 #include "material.h"
 
