@@ -73,7 +73,7 @@ const EngineResult::value TextureManager::LoadBitmap_EXR(const Ceng::StringUtf8 
 	Ceng::INT32 redChannel = -1, greenChannel = -1, blueChannel = -1, alphaChannel = -1;
 	Ceng::INT32 redBytes, greenBytes, blueBytes, alphaBytes;
 
-	for (Ceng::UINT32 k = 0; k < image.num_channels; ++k)
+	for (int k = 0; k < image.num_channels; ++k)
 	{
 		Ceng::StringUtf8 name = image.channel_names[k];
 
@@ -208,9 +208,9 @@ const EngineResult::value TextureManager::LoadBitmap_EXR(const Ceng::StringUtf8 
 	Ceng::UINT8 *green = image.images[greenChannel];
 	Ceng::UINT8 *blue = image.images[blueChannel];
 
-	for (Ceng::UINT32 y = 0; y < image.height; ++y)
+	for (int y = 0; y < image.height; ++y)
 	{
-		for (Ceng::UINT32 x = 0; x < image.width; ++x)
+		for (int x = 0; x < image.width; ++x)
 		{
 			Ceng::UINT32 destOffset = y*pitch + x*bytesPerPixel;
 
@@ -228,9 +228,9 @@ const EngineResult::value TextureManager::LoadBitmap_EXR(const Ceng::StringUtf8 
 	{
 		Ceng::UINT8 *alpha = image.images[alphaChannel];
 
-		for (Ceng::UINT32 y = 0; y < image.height; ++y)
+		for (int y = 0; y < image.height; ++y)
 		{
-			for (Ceng::UINT32 x = 0; x < image.width; ++x)
+			for (int x = 0; x < image.width; ++x)
 			{
 				Ceng::UINT32 destOffset = y*pitch + x*bytesPerPixel;
 
@@ -244,9 +244,9 @@ const EngineResult::value TextureManager::LoadBitmap_EXR(const Ceng::StringUtf8 
 	{
 		Ceng::UINT16 alphaValue = 0;
 
-		for (Ceng::UINT32 y = 0; y < image.height; ++y)
+		for (int y = 0; y < image.height; ++y)
 		{
-			for (Ceng::UINT32 x = 0; x < image.width; ++x)
+			for (int x = 0; x < image.width; ++x)
 			{
 				Ceng::UINT32 destOffset = y*pitch + x*bytesPerPixel;
 

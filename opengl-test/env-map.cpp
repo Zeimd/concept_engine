@@ -102,7 +102,7 @@ const EngineResult::value CEngine::CreateIrradianceMap(Ceng::Cubemap *envMap, Ce
 			target[2] = lightDir[2];
 
 			// Solid angle is same for all faces
-			target[3] = TexelCoordSolidAngle(0, sourceU, sourceV, sourceWidthInt);
+			target[3] = TexelCoordSolidAngle(0, Ceng::FLOAT32(sourceU), Ceng::FLOAT32(sourceV), sourceWidthInt);
 
 			/*
 			if (dot > 0.0f)

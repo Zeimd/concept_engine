@@ -639,8 +639,6 @@ const EngineResult::value MaterialManager::SelectTexture(json &type,json::iterat
 	Ceng::Log::Print(text);
 	*/
 
-	Ceng::IMAGE_FORMAT::value format;
-
 	/*
 	json validFile;
 

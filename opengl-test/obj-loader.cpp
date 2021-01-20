@@ -8,6 +8,8 @@
 *
 *****************************************************************************/
 
+#define _CRT_SECURE_NO_DEPRECATE
+
 #include <fstream>
 
 #include <timerlib.h>
@@ -54,7 +56,12 @@ struct std::hash<Vertex>
 
 		std::size_t result;
 
-		Ceng::UINT32 temp[] = { param.position,param.uvw,param.normal };
+		Ceng::UINT32 temp[] = 
+		{ 
+			Ceng::UINT32(param.position),
+			Ceng::UINT32(param.uvw),
+			Ceng::UINT32(param.normal) 
+		};
 
 		MurmurHash3_x86_32(temp, 3*sizeof(Ceng::UINT32), seed, &result);
 
@@ -352,13 +359,13 @@ const ObjectError::value MeshManager::LoadMesh_OBJ
 				face.vertex[vertexIndex].uvw = texUV[vertexIndex] - 1;
 				face.vertex[vertexIndex].lmapUV = lmapUV[vertexIndex] - 1;
 
-				if (face.vertex[vertexIndex].position >= mesh.position.size())
+				if (size_t(face.vertex[vertexIndex].position) >= mesh.position.size())
 				{
 					invalid = true;
 					break;
 				}
 
-				if (face.vertex[vertexIndex].normal >= mesh.normal.size())
+				if (size_t(face.vertex[vertexIndex].normal) >= mesh.normal.size())
 				{
 					invalid = true;
 					break;
@@ -366,14 +373,14 @@ const ObjectError::value MeshManager::LoadMesh_OBJ
 
 				if (texCoord)
 				{
-					if (face.vertex[vertexIndex].uvw >= mesh.uvw.size())
+					if (size_t(face.vertex[vertexIndex].uvw) >= mesh.uvw.size())
 					{
 						invalid = true;
 						break;
 					}
 
 					if (face.vertex[vertexIndex].lmapUV >= 0 &&
-					    face.vertex[vertexIndex].lmapUV >= mesh.uvw.size())
+					    size_t(face.vertex[vertexIndex].lmapUV) >= mesh.uvw.size())
 					{
 						invalid = true;
 						break;
@@ -469,7 +476,7 @@ const ObjectError::value MeshManager::LoadMesh_OBJ
 				deltaUV2.u = u2 - u0;
 				deltaUV2.v = v2 - v0;
 
-				Vec3 tangent, binormal;
+				Vec3 tangent;
 
 				Ceng::FLOAT32 r = 1.0f / (deltaUV1.u * deltaUV2.v - deltaUV1.v * deltaUV2.u);
 

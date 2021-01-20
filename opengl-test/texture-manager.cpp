@@ -272,7 +272,7 @@ const EngineResult::value TextureManager::LoadTexture2D(const Ceng::StringUtf8 &
 	{
 		texHandle = new Texture2D();
 	}
-	catch (std::bad_alloc &ba)
+	catch (std::bad_alloc&)
 	{
 		texture->Release();
 		return EngineResult::out_of_memory;
@@ -289,7 +289,7 @@ const EngineResult::value TextureManager::LoadTexture2D(const Ceng::StringUtf8 &
 	{
 		texPtr = std::shared_ptr<Texture>(texHandle);
 	}
-	catch (std::bad_alloc &ba)
+	catch (std::bad_alloc&)
 	{
 		texture->Release();
 		return EngineResult::out_of_memory;
@@ -299,7 +299,7 @@ const EngineResult::value TextureManager::LoadTexture2D(const Ceng::StringUtf8 &
 	{
 		textureList.push_back(texPtr);
 	}
-	catch (std::bad_alloc &ba)
+	catch (std::bad_alloc&)
 	{
 		return EngineResult::out_of_memory;
 	}
@@ -358,7 +358,7 @@ const EngineResult::value TextureManager::LoadCubemap(const Ceng::StringUtf8 &fi
 	{
 		texHandle = new TextureCube();
 	}
-	catch (std::bad_alloc &ba)
+	catch (std::bad_alloc&)
 	{
 		texture->Release();
 		return EngineResult::out_of_memory;
@@ -375,7 +375,7 @@ const EngineResult::value TextureManager::LoadCubemap(const Ceng::StringUtf8 &fi
 	{
 		texPtr = std::shared_ptr<Texture>(texHandle);
 	}
-	catch (std::bad_alloc &ba)
+	catch (std::bad_alloc&)
 	{
 		texture->Release();
 		return EngineResult::out_of_memory;
@@ -385,7 +385,7 @@ const EngineResult::value TextureManager::LoadCubemap(const Ceng::StringUtf8 &fi
 	{
 		textureList.push_back(texPtr);
 	}
-	catch (std::bad_alloc &ba)
+	catch (std::bad_alloc&)
 	{
 		return EngineResult::out_of_memory;
 	}
