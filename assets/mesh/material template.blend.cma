@@ -1,0 +1,1140 @@
+material : Template
+nodes class : <class 'bpy_prop_collection'>
+node :
+{
+	__doc__ : None
+	__module__ : bpy.types
+	__slots__ : ()
+	bl_description : 
+	bl_height_default : 100.0
+	bl_height_max : 30.0
+	bl_height_min : 30.0
+	bl_icon : NONE
+	bl_idname : ShaderNodeTexImage
+	bl_label : Image Texture
+	bl_rna : <bpy_struct, Struct("ShaderNodeTexImage")>
+	bl_static_type : TEX_IMAGE
+	bl_width_default : 140.0
+	bl_width_max : 320.0
+	bl_width_min : 100.0
+	color : <Color (r=0.6080, g=0.6080, b=0.6080)>
+	color_mapping : <bpy_struct, ColorMapping at 0x000000FF21FCD168>
+	color_space : COLOR
+	dimensions : <Vector (140.0000, 247.6020)>
+	draw_buttons : <bpy_func ShaderNodeTexImage.draw_buttons()>
+	draw_buttons_ext : <bpy_func ShaderNodeTexImage.draw_buttons_ext()>
+	extension : REPEAT
+	height : 100.0
+	hide : False
+	image : <bpy_struct, Image("door.bmp")>
+	image_user : <bpy_struct, ImageUser at 0x000000FF21FCD4A0>
+	input_template : <bpy_func ShaderNodeTexImage.input_template()>
+	inputs : <bpy_collection[1], NodeInputs>
+	internal_links : <bpy_collection[0], ShaderNodeTexImage.internal_links>
+	interpolation : Linear
+	is_registered_node_type : <bpy_func ShaderNodeTexImage.is_registered_node_type()>
+	label : 
+	location : <Vector (-1125.6923, 820.6020)>
+	mute : False
+	name : Image Texture
+	output_template : <bpy_func ShaderNodeTexImage.output_template()>
+	outputs : <bpy_collection[2], NodeOutputs>
+	parent : None
+	poll : <bpy_func ShaderNodeTexImage.poll()>
+	poll_instance : <bpy_func ShaderNodeTexImage.poll_instance()>
+	projection : FLAT
+	projection_blend : 0.0
+	rna_type : <bpy_struct, Struct("ShaderNodeTexImage")>
+	select : False
+	shading_compatibility : {'NEW_SHADING'}
+	show_options : True
+	show_preview : False
+	show_texture : False
+	socket_value_update : <bpy_func ShaderNodeTexImage.socket_value_update()>
+	texture_mapping : <bpy_struct, TexMapping at 0x000000FF21FCD0D8>
+	type : TEX_IMAGE
+	update : <bpy_func ShaderNodeTexImage.update()>
+	use_custom_color : False
+	width : 140.0
+	width_hidden : 42.0
+}
+node :
+{
+	__doc__ : None
+	__module__ : bpy.types
+	__slots__ : ()
+	bl_description : 
+	bl_height_default : 100.0
+	bl_height_max : 30.0
+	bl_height_min : 30.0
+	bl_icon : NONE
+	bl_idname : ShaderNodeTexImage
+	bl_label : Image Texture
+	bl_rna : <bpy_struct, Struct("ShaderNodeTexImage")>
+	bl_static_type : TEX_IMAGE
+	bl_width_default : 140.0
+	bl_width_max : 320.0
+	bl_width_min : 100.0
+	color : <Color (r=0.6080, g=0.6080, b=0.6080)>
+	color_mapping : <bpy_struct, ColorMapping at 0x000000FF21FCC478>
+	color_space : NONE
+	dimensions : <Vector (140.0000, 247.7995)>
+	draw_buttons : <bpy_func ShaderNodeTexImage.draw_buttons()>
+	draw_buttons_ext : <bpy_func ShaderNodeTexImage.draw_buttons_ext()>
+	extension : REPEAT
+	height : 100.0
+	hide : False
+	image : <bpy_struct, Image("door-normal.bmp")>
+	image_user : <bpy_struct, ImageUser at 0x000000FF21FCC7B0>
+	input_template : <bpy_func ShaderNodeTexImage.input_template()>
+	inputs : <bpy_collection[1], NodeInputs>
+	internal_links : <bpy_collection[0], ShaderNodeTexImage.internal_links>
+	interpolation : Linear
+	is_registered_node_type : <bpy_func ShaderNodeTexImage.is_registered_node_type()>
+	label : 
+	location : <Vector (-1085.7710, 546.7995)>
+	mute : False
+	name : Image Texture.002
+	output_template : <bpy_func ShaderNodeTexImage.output_template()>
+	outputs : <bpy_collection[2], NodeOutputs>
+	parent : None
+	poll : <bpy_func ShaderNodeTexImage.poll()>
+	poll_instance : <bpy_func ShaderNodeTexImage.poll_instance()>
+	projection : FLAT
+	projection_blend : 0.0
+	rna_type : <bpy_struct, Struct("ShaderNodeTexImage")>
+	select : False
+	shading_compatibility : {'NEW_SHADING'}
+	show_options : True
+	show_preview : False
+	show_texture : False
+	socket_value_update : <bpy_func ShaderNodeTexImage.socket_value_update()>
+	texture_mapping : <bpy_struct, TexMapping at 0x000000FF21FCC3E8>
+	type : TEX_IMAGE
+	update : <bpy_func ShaderNodeTexImage.update()>
+	use_custom_color : False
+	width : 140.0
+	width_hidden : 42.0
+}
+node :
+{
+	__doc__ : None
+	__module__ : bpy.types
+	__slots__ : ()
+	bl_description : 
+	bl_height_default : 100.0
+	bl_height_max : 30.0
+	bl_height_min : 30.0
+	bl_icon : NONE
+	bl_idname : ShaderNodeGroup
+	bl_label : Group
+	bl_rna : <bpy_struct, Struct("ShaderNodeGroup")>
+	bl_static_type : GROUP
+	bl_width_default : 140.0
+	bl_width_max : 400.0
+	bl_width_min : 60.0
+	color : <Color (r=0.6080, g=0.6080, b=0.6080)>
+	dimensions : <Vector (140.0000, 141.4545)>
+	draw_buttons : <bpy_func ShaderNodeGroup.draw_buttons()>
+	draw_buttons_ext : <bpy_func ShaderNodeGroup.draw_buttons_ext()>
+	height : 100.0
+	hide : False
+	input_template : <bpy_func ShaderNodeGroup.input_template()>
+	inputs : <bpy_collection[4], NodeInputs>
+	interface : <bpy_struct, NodeTreeInterface_Standard_shader("")>
+	internal_links : <bpy_collection[0], ShaderNodeGroup.internal_links>
+	is_registered_node_type : <bpy_func ShaderNodeGroup.is_registered_node_type()>
+	label : 
+	location : <Vector (-508.5894, 561.4545)>
+	mute : False
+	name : Group.003
+	node_tree : <bpy_struct, ShaderNodeTree("Standard shader")>
+	output_template : <bpy_func ShaderNodeGroup.output_template()>
+	outputs : <bpy_collection[0], NodeOutputs>
+	parent : None
+	poll : <bpy_func ShaderNodeGroup.poll()>
+	poll_instance : <bpy_func ShaderNodeGroup.poll_instance()>
+	rna_type : <bpy_struct, Struct("ShaderNodeGroup")>
+	select : False
+	shading_compatibility : {'OLD_SHADING', 'NEW_SHADING'}
+	show_options : True
+	show_preview : False
+	show_texture : False
+	socket_value_update : <bpy_func ShaderNodeGroup.socket_value_update()>
+	type : GROUP
+	update : <bpy_func ShaderNodeGroup.update()>
+	use_custom_color : False
+	width : 140.0
+	width_hidden : 42.0
+}
+node :
+{
+	__doc__ : None
+	__module__ : bpy.types
+	__slots__ : ()
+	bl_description : 
+	bl_height_default : 100.0
+	bl_height_max : 30.0
+	bl_height_min : 30.0
+	bl_icon : NONE
+	bl_idname : ShaderNodeTexImage
+	bl_label : Image Texture
+	bl_rna : <bpy_struct, Struct("ShaderNodeTexImage")>
+	bl_static_type : TEX_IMAGE
+	bl_width_default : 140.0
+	bl_width_max : 320.0
+	bl_width_min : 100.0
+	color : <Color (r=0.6080, g=0.6080, b=0.6080)>
+	color_mapping : <bpy_struct, ColorMapping at 0x000000FF21FC9508>
+	color_space : COLOR
+	dimensions : <Vector (140.0000, 247.9232)>
+	draw_buttons : <bpy_func ShaderNodeTexImage.draw_buttons()>
+	draw_buttons_ext : <bpy_func ShaderNodeTexImage.draw_buttons_ext()>
+	extension : REPEAT
+	height : 100.0
+	hide : False
+	image : <bpy_struct, Image("door-material.bmp")>
+	image_user : <bpy_struct, ImageUser at 0x000000FF21FC9840>
+	input_template : <bpy_func ShaderNodeTexImage.input_template()>
+	inputs : <bpy_collection[1], NodeInputs>
+	internal_links : <bpy_collection[0], ShaderNodeTexImage.internal_links>
+	interpolation : Linear
+	is_registered_node_type : <bpy_func ShaderNodeTexImage.is_registered_node_type()>
+	label : 
+	location : <Vector (-901.3699, 342.9232)>
+	mute : False
+	name : Image Texture.001
+	output_template : <bpy_func ShaderNodeTexImage.output_template()>
+	outputs : <bpy_collection[2], NodeOutputs>
+	parent : None
+	poll : <bpy_func ShaderNodeTexImage.poll()>
+	poll_instance : <bpy_func ShaderNodeTexImage.poll_instance()>
+	projection : FLAT
+	projection_blend : 0.0
+	rna_type : <bpy_struct, Struct("ShaderNodeTexImage")>
+	select : False
+	shading_compatibility : {'NEW_SHADING'}
+	show_options : True
+	show_preview : False
+	show_texture : True
+	socket_value_update : <bpy_func ShaderNodeTexImage.socket_value_update()>
+	texture_mapping : <bpy_struct, TexMapping at 0x000000FF21FC9478>
+	type : TEX_IMAGE
+	update : <bpy_func ShaderNodeTexImage.update()>
+	use_custom_color : False
+	width : 140.0
+	width_hidden : 42.0
+}
+node :
+{
+	__doc__ : None
+	__module__ : bpy.types
+	__slots__ : ()
+	bl_description : 
+	bl_height_default : 100.0
+	bl_height_max : 30.0
+	bl_height_min : 30.0
+	bl_icon : NONE
+	bl_idname : ShaderNodeTexImage
+	bl_label : Image Texture
+	bl_rna : <bpy_struct, Struct("ShaderNodeTexImage")>
+	bl_static_type : TEX_IMAGE
+	bl_width_default : 140.0
+	bl_width_max : 320.0
+	bl_width_min : 100.0
+	color : <Color (r=0.6080, g=0.6080, b=0.6080)>
+	color_mapping : <bpy_struct, ColorMapping at 0x000000FF21FCD5B8>
+	color_space : COLOR
+	dimensions : <Vector (140.0000, 247.4037)>
+	draw_buttons : <bpy_func ShaderNodeTexImage.draw_buttons()>
+	draw_buttons_ext : <bpy_func ShaderNodeTexImage.draw_buttons_ext()>
+	extension : REPEAT
+	height : 100.0
+	hide : False
+	image : <bpy_struct, Image("door-material.bmp")>
+	image_user : <bpy_struct, ImageUser at 0x000000FF21FCD8F0>
+	input_template : <bpy_func ShaderNodeTexImage.input_template()>
+	inputs : <bpy_collection[1], NodeInputs>
+	internal_links : <bpy_collection[0], ShaderNodeTexImage.internal_links>
+	interpolation : Linear
+	is_registered_node_type : <bpy_func ShaderNodeTexImage.is_registered_node_type()>
+	label : 
+	location : <Vector (-721.1406, 291.4037)>
+	mute : False
+	name : Image Texture.003
+	output_template : <bpy_func ShaderNodeTexImage.output_template()>
+	outputs : <bpy_collection[2], NodeOutputs>
+	parent : None
+	poll : <bpy_func ShaderNodeTexImage.poll()>
+	poll_instance : <bpy_func ShaderNodeTexImage.poll_instance()>
+	projection : FLAT
+	projection_blend : 0.0
+	rna_type : <bpy_struct, Struct("ShaderNodeTexImage")>
+	select : True
+	shading_compatibility : {'NEW_SHADING'}
+	show_options : True
+	show_preview : False
+	show_texture : True
+	socket_value_update : <bpy_func ShaderNodeTexImage.socket_value_update()>
+	texture_mapping : <bpy_struct, TexMapping at 0x000000FF21FCD528>
+	type : TEX_IMAGE
+	update : <bpy_func ShaderNodeTexImage.update()>
+	use_custom_color : False
+	width : 140.0
+	width_hidden : 42.0
+}
+input : Color / Specular
+from_node : <bpy_struct, ShaderNodeTexImage("Image Texture")>
+from_socket : <bpy_struct, NodeSocketColor("Color")>
+input : Normalmap
+from_node : <bpy_struct, ShaderNodeTexImage("Image Texture.002")>
+from_socket : <bpy_struct, NodeSocketColor("Color")>
+input : Metallic
+from_node : <bpy_struct, ShaderNodeTexImage("Image Texture.001")>
+from_socket : <bpy_struct, NodeSocketColor("Color")>
+input : Roughness
+from_node : <bpy_struct, ShaderNodeTexImage("Image Texture.003")>
+from_socket : <bpy_struct, NodeSocketColor("Color")>
+<Template>
+  <inputs>
+  </inputs>
+  <links>
+    <NodeLink is_valid="TRUE"
+              from_node="ShaderNodeTexImage::Image Texture.002"
+              to_node="ShaderNodeGroup::Group.003"
+              is_hidden="FALSE">
+      <from_socket>
+        <NodeSocketColor name="Color"
+                         identifier="Color"
+                         is_output="TRUE"
+                         hide="FALSE"
+                         enabled="TRUE"
+                         link_limit="4095"
+                         is_linked="TRUE"
+                         show_expanded="FALSE"
+                         hide_value="FALSE"
+                         node="ShaderNodeTexImage::Image Texture.002"
+                         type="RGBA"
+                         bl_idname="NodeSocketColor"
+                         default_value="0 0 0 0">
+        </NodeSocketColor>
+      </from_socket>
+      <to_socket>
+        <NodeSocketColor name="Normalmap"
+                         identifier="Input_5"
+                         is_output="FALSE"
+                         hide="FALSE"
+                         enabled="TRUE"
+                         link_limit="1"
+                         is_linked="TRUE"
+                         show_expanded="FALSE"
+                         hide_value="FALSE"
+                         node="ShaderNodeGroup::Group.003"
+                         type="RGBA"
+                         bl_idname="NodeSocketColor"
+                         default_value="0.5 0.5 1 1">
+        </NodeSocketColor>
+      </to_socket>
+    </NodeLink>
+    <NodeLink is_valid="TRUE"
+              from_node="ShaderNodeTexImage::Image Texture"
+              to_node="ShaderNodeGroup::Group.003"
+              is_hidden="FALSE">
+      <from_socket>
+        <NodeSocketColor name="Color"
+                         identifier="Color"
+                         is_output="TRUE"
+                         hide="FALSE"
+                         enabled="TRUE"
+                         link_limit="4095"
+                         is_linked="TRUE"
+                         show_expanded="FALSE"
+                         hide_value="FALSE"
+                         node="ShaderNodeTexImage::Image Texture"
+                         type="RGBA"
+                         bl_idname="NodeSocketColor"
+                         default_value="0 0 0 0">
+        </NodeSocketColor>
+      </from_socket>
+      <to_socket>
+        <NodeSocketColor name="Color / Specular"
+                         identifier="Input_3"
+                         is_output="FALSE"
+                         hide="FALSE"
+                         enabled="TRUE"
+                         link_limit="1"
+                         is_linked="TRUE"
+                         show_expanded="FALSE"
+                         hide_value="FALSE"
+                         node="ShaderNodeGroup::Group.003"
+                         type="RGBA"
+                         bl_idname="NodeSocketColor"
+                         default_value="1 1 1 1">
+        </NodeSocketColor>
+      </to_socket>
+    </NodeLink>
+    <NodeLink is_valid="TRUE"
+              from_node="ShaderNodeTexImage::Image Texture.001"
+              to_node="ShaderNodeGroup::Group.003"
+              is_hidden="FALSE">
+      <from_socket>
+        <NodeSocketColor name="Color"
+                         identifier="Color"
+                         is_output="TRUE"
+                         hide="FALSE"
+                         enabled="TRUE"
+                         link_limit="4095"
+                         is_linked="TRUE"
+                         show_expanded="FALSE"
+                         hide_value="FALSE"
+                         node="ShaderNodeTexImage::Image Texture.001"
+                         type="RGBA"
+                         bl_idname="NodeSocketColor"
+                         default_value="0 0 0 0">
+        </NodeSocketColor>
+      </from_socket>
+      <to_socket>
+        <NodeSocketFloat name="Metallic"
+                         identifier="Input_11"
+                         is_output="FALSE"
+                         hide="FALSE"
+                         enabled="TRUE"
+                         link_limit="1"
+                         is_linked="TRUE"
+                         show_expanded="FALSE"
+                         hide_value="FALSE"
+                         node="ShaderNodeGroup::Group.003"
+                         type="VALUE"
+                         bl_idname="NodeSocketFloat"
+                         default_value="0">
+        </NodeSocketFloat>
+      </to_socket>
+    </NodeLink>
+    <NodeLink is_valid="TRUE"
+              from_node="ShaderNodeTexImage::Image Texture.003"
+              to_node="ShaderNodeGroup::Group.003"
+              is_hidden="FALSE">
+      <from_socket>
+        <NodeSocketColor name="Color"
+                         identifier="Color"
+                         is_output="TRUE"
+                         hide="FALSE"
+                         enabled="TRUE"
+                         link_limit="4095"
+                         is_linked="TRUE"
+                         show_expanded="FALSE"
+                         hide_value="FALSE"
+                         node="ShaderNodeTexImage::Image Texture.003"
+                         type="RGBA"
+                         bl_idname="NodeSocketColor"
+                         default_value="0 0 0 0">
+        </NodeSocketColor>
+      </from_socket>
+      <to_socket>
+        <NodeSocketFloat name="Roughness"
+                         identifier="Input_13"
+                         is_output="FALSE"
+                         hide="FALSE"
+                         enabled="TRUE"
+                         link_limit="1"
+                         is_linked="TRUE"
+                         show_expanded="FALSE"
+                         hide_value="FALSE"
+                         node="ShaderNodeGroup::Group.003"
+                         type="VALUE"
+                         bl_idname="NodeSocketFloat"
+                         default_value="0">
+        </NodeSocketFloat>
+      </to_socket>
+    </NodeLink>
+  </links>
+  <nodes>
+    <ShaderNodeTexImage type="TEX_IMAGE"
+                        location="-1125.69 820.602"
+                        width="140"
+                        width_hidden="42"
+                        height="100"
+                        dimensions="140 247.602"
+                        name="Image Texture"
+                        label=""
+                        parent="NONE"
+                        use_custom_color="FALSE"
+                        color="0.608 0.608 0.608"
+                        select="FALSE"
+                        show_options="TRUE"
+                        show_preview="FALSE"
+                        hide="FALSE"
+                        mute="FALSE"
+                        show_texture="FALSE"
+                        shading_compatibility="{NEW_SHADING}"
+                        bl_idname="ShaderNodeTexImage"
+                        bl_label="Image Texture"
+                        bl_description=""
+                        bl_icon="NONE"
+                        bl_static_type="TEX_IMAGE"
+                        bl_width_default="140"
+                        bl_width_min="100"
+                        bl_width_max="320"
+                        bl_height_default="100"
+                        bl_height_min="30"
+                        bl_height_max="30"
+                        image="Image::door.bmp"
+                        color_space="COLOR"
+                        projection="FLAT"
+                        interpolation="Linear"
+                        projection_blend="0"
+                        extension="REPEAT">
+      <texture_mapping>
+        <TexMapping vector_type="POINT"
+                    translation="0 0 0"
+                    rotation="0 0 0"
+                    scale="1 1 1"
+                    min="0 0 0"
+                    max="1 1 1"
+                    use_min="FALSE"
+                    use_max="FALSE"
+                    mapping_x="X"
+                    mapping_y="Y"
+                    mapping_z="Z"
+                    mapping="FLAT">
+        </TexMapping>
+      </texture_mapping>
+      <color_mapping>
+        <ColorMapping use_color_ramp="FALSE"
+                      brightness="1"
+                      contrast="1"
+                      saturation="1"
+                      blend_type="MIX"
+                      blend_color="0.8 0.8 0.8"
+                      blend_factor="0">
+          <color_ramp>
+            <ColorRamp interpolation="LINEAR"
+                       hue_interpolation="NEAR"
+                       color_mode="RGB">
+              <elements>
+                <ColorRampElement color="0 0 0 1"
+                                  alpha="1"
+                                  position="0">
+                </ColorRampElement>
+                <ColorRampElement color="1 1 1 1"
+                                  alpha="1"
+                                  position="1">
+                </ColorRampElement>
+              </elements>
+            </ColorRamp>
+          </color_ramp>
+        </ColorMapping>
+      </color_mapping>
+      <image_user>
+        <ImageUser use_auto_refresh="FALSE"
+                   frame_current="-1"
+                   use_cyclic="FALSE"
+                   frame_duration="1"
+                   frame_offset="-1"
+                   frame_start="1"
+                   fields_per_frame="2"
+                   multilayer_layer="0"
+                   multilayer_pass="0"
+                   multilayer_view="0">
+        </ImageUser>
+      </image_user>
+      <inputs>
+        <NodeSocketVector name="Vector"
+                          identifier="Vector"
+                          is_output="FALSE"
+                          hide="FALSE"
+                          enabled="TRUE"
+                          link_limit="1"
+                          is_linked="FALSE"
+                          show_expanded="FALSE"
+                          hide_value="TRUE"
+                          node="ShaderNodeTexImage::Image Texture"
+                          type="VECTOR"
+                          bl_idname="NodeSocketVector"
+                          default_value="0 0 0">
+        </NodeSocketVector>
+      </inputs>
+      <outputs>
+        <NodeSocketColor name="Color"
+                         identifier="Color"
+                         is_output="TRUE"
+                         hide="FALSE"
+                         enabled="TRUE"
+                         link_limit="4095"
+                         is_linked="TRUE"
+                         show_expanded="FALSE"
+                         hide_value="FALSE"
+                         node="ShaderNodeTexImage::Image Texture"
+                         type="RGBA"
+                         bl_idname="NodeSocketColor"
+                         default_value="0 0 0 0">
+        </NodeSocketColor>
+        <NodeSocketFloat name="Alpha"
+                         identifier="Alpha"
+                         is_output="TRUE"
+                         hide="FALSE"
+                         enabled="TRUE"
+                         link_limit="4095"
+                         is_linked="FALSE"
+                         show_expanded="FALSE"
+                         hide_value="FALSE"
+                         node="ShaderNodeTexImage::Image Texture"
+                         type="VALUE"
+                         bl_idname="NodeSocketFloat"
+                         default_value="0">
+        </NodeSocketFloat>
+      </outputs>
+      <internal_links>
+      </internal_links>
+    </ShaderNodeTexImage>
+    <ShaderNodeTexImage type="TEX_IMAGE"
+                        location="-1085.77 546.799"
+                        width="140"
+                        width_hidden="42"
+                        height="100"
+                        dimensions="140 247.799"
+                        name="Image Texture.002"
+                        label=""
+                        parent="NONE"
+                        use_custom_color="FALSE"
+                        color="0.608 0.608 0.608"
+                        select="FALSE"
+                        show_options="TRUE"
+                        show_preview="FALSE"
+                        hide="FALSE"
+                        mute="FALSE"
+                        show_texture="FALSE"
+                        shading_compatibility="{NEW_SHADING}"
+                        bl_idname="ShaderNodeTexImage"
+                        bl_label="Image Texture"
+                        bl_description=""
+                        bl_icon="NONE"
+                        bl_static_type="TEX_IMAGE"
+                        bl_width_default="140"
+                        bl_width_min="100"
+                        bl_width_max="320"
+                        bl_height_default="100"
+                        bl_height_min="30"
+                        bl_height_max="30"
+                        image="Image::door-normal.bmp"
+                        color_space="NONE"
+                        projection="FLAT"
+                        interpolation="Linear"
+                        projection_blend="0"
+                        extension="REPEAT">
+      <texture_mapping>
+        <TexMapping vector_type="POINT"
+                    translation="0 0 0"
+                    rotation="0 0 0"
+                    scale="1 1 1"
+                    min="0 0 0"
+                    max="1 1 1"
+                    use_min="FALSE"
+                    use_max="FALSE"
+                    mapping_x="X"
+                    mapping_y="Y"
+                    mapping_z="Z"
+                    mapping="FLAT">
+        </TexMapping>
+      </texture_mapping>
+      <color_mapping>
+        <ColorMapping use_color_ramp="FALSE"
+                      brightness="1"
+                      contrast="1"
+                      saturation="1"
+                      blend_type="MIX"
+                      blend_color="0.8 0.8 0.8"
+                      blend_factor="0">
+          <color_ramp>
+            <ColorRamp interpolation="LINEAR"
+                       hue_interpolation="NEAR"
+                       color_mode="RGB">
+              <elements>
+                <ColorRampElement color="0 0 0 1"
+                                  alpha="1"
+                                  position="0">
+                </ColorRampElement>
+                <ColorRampElement color="1 1 1 1"
+                                  alpha="1"
+                                  position="1">
+                </ColorRampElement>
+              </elements>
+            </ColorRamp>
+          </color_ramp>
+        </ColorMapping>
+      </color_mapping>
+      <image_user>
+        <ImageUser use_auto_refresh="FALSE"
+                   frame_current="-1"
+                   use_cyclic="FALSE"
+                   frame_duration="1"
+                   frame_offset="-1"
+                   frame_start="1"
+                   fields_per_frame="2"
+                   multilayer_layer="0"
+                   multilayer_pass="0"
+                   multilayer_view="0">
+        </ImageUser>
+      </image_user>
+      <inputs>
+        <NodeSocketVector name="Vector"
+                          identifier="Vector"
+                          is_output="FALSE"
+                          hide="FALSE"
+                          enabled="TRUE"
+                          link_limit="1"
+                          is_linked="FALSE"
+                          show_expanded="FALSE"
+                          hide_value="TRUE"
+                          node="ShaderNodeTexImage::Image Texture.002"
+                          type="VECTOR"
+                          bl_idname="NodeSocketVector"
+                          default_value="0 0 0">
+        </NodeSocketVector>
+      </inputs>
+      <outputs>
+        <NodeSocketColor name="Color"
+                         identifier="Color"
+                         is_output="TRUE"
+                         hide="FALSE"
+                         enabled="TRUE"
+                         link_limit="4095"
+                         is_linked="TRUE"
+                         show_expanded="FALSE"
+                         hide_value="FALSE"
+                         node="ShaderNodeTexImage::Image Texture.002"
+                         type="RGBA"
+                         bl_idname="NodeSocketColor"
+                         default_value="0 0 0 0">
+        </NodeSocketColor>
+        <NodeSocketFloat name="Alpha"
+                         identifier="Alpha"
+                         is_output="TRUE"
+                         hide="FALSE"
+                         enabled="TRUE"
+                         link_limit="4095"
+                         is_linked="FALSE"
+                         show_expanded="FALSE"
+                         hide_value="FALSE"
+                         node="ShaderNodeTexImage::Image Texture.002"
+                         type="VALUE"
+                         bl_idname="NodeSocketFloat"
+                         default_value="0">
+        </NodeSocketFloat>
+      </outputs>
+      <internal_links>
+      </internal_links>
+    </ShaderNodeTexImage>
+    <ShaderNodeGroup type="GROUP"
+                     location="-508.589 561.455"
+                     width="140"
+                     width_hidden="42"
+                     height="100"
+                     dimensions="140 141.455"
+                     name="Group.003"
+                     label=""
+                     parent="NONE"
+                     use_custom_color="FALSE"
+                     color="0.608 0.608 0.608"
+                     select="FALSE"
+                     show_options="TRUE"
+                     show_preview="FALSE"
+                     hide="FALSE"
+                     mute="FALSE"
+                     show_texture="FALSE"
+                     shading_compatibility="{OLD_SHADING,NEW_SHADING}"
+                     bl_idname="ShaderNodeGroup"
+                     bl_label="Group"
+                     bl_description=""
+                     bl_icon="NONE"
+                     bl_static_type="GROUP"
+                     bl_width_default="140"
+                     bl_width_min="60"
+                     bl_width_max="400"
+                     bl_height_default="100"
+                     bl_height_min="30"
+                     bl_height_max="30"
+                     node_tree="ShaderNodeTree::Standard shader">
+      <interface>
+      </interface>
+      <inputs>
+        <NodeSocketColor name="Color / Specular"
+                         identifier="Input_3"
+                         is_output="FALSE"
+                         hide="FALSE"
+                         enabled="TRUE"
+                         link_limit="1"
+                         is_linked="TRUE"
+                         show_expanded="FALSE"
+                         hide_value="FALSE"
+                         node="ShaderNodeGroup::Group.003"
+                         type="RGBA"
+                         bl_idname="NodeSocketColor"
+                         default_value="1 1 1 1">
+        </NodeSocketColor>
+        <NodeSocketColor name="Normalmap"
+                         identifier="Input_5"
+                         is_output="FALSE"
+                         hide="FALSE"
+                         enabled="TRUE"
+                         link_limit="1"
+                         is_linked="TRUE"
+                         show_expanded="FALSE"
+                         hide_value="FALSE"
+                         node="ShaderNodeGroup::Group.003"
+                         type="RGBA"
+                         bl_idname="NodeSocketColor"
+                         default_value="0.5 0.5 1 1">
+        </NodeSocketColor>
+        <NodeSocketFloat name="Metallic"
+                         identifier="Input_11"
+                         is_output="FALSE"
+                         hide="FALSE"
+                         enabled="TRUE"
+                         link_limit="1"
+                         is_linked="TRUE"
+                         show_expanded="FALSE"
+                         hide_value="FALSE"
+                         node="ShaderNodeGroup::Group.003"
+                         type="VALUE"
+                         bl_idname="NodeSocketFloat"
+                         default_value="0">
+        </NodeSocketFloat>
+        <NodeSocketFloat name="Roughness"
+                         identifier="Input_13"
+                         is_output="FALSE"
+                         hide="FALSE"
+                         enabled="TRUE"
+                         link_limit="1"
+                         is_linked="TRUE"
+                         show_expanded="FALSE"
+                         hide_value="FALSE"
+                         node="ShaderNodeGroup::Group.003"
+                         type="VALUE"
+                         bl_idname="NodeSocketFloat"
+                         default_value="0">
+        </NodeSocketFloat>
+      </inputs>
+      <outputs>
+      </outputs>
+      <internal_links>
+      </internal_links>
+    </ShaderNodeGroup>
+    <ShaderNodeTexImage type="TEX_IMAGE"
+                        location="-901.37 342.923"
+                        width="140"
+                        width_hidden="42"
+                        height="100"
+                        dimensions="140 247.923"
+                        name="Image Texture.001"
+                        label=""
+                        parent="NONE"
+                        use_custom_color="FALSE"
+                        color="0.608 0.608 0.608"
+                        select="FALSE"
+                        show_options="TRUE"
+                        show_preview="FALSE"
+                        hide="FALSE"
+                        mute="FALSE"
+                        show_texture="TRUE"
+                        shading_compatibility="{NEW_SHADING}"
+                        bl_idname="ShaderNodeTexImage"
+                        bl_label="Image Texture"
+                        bl_description=""
+                        bl_icon="NONE"
+                        bl_static_type="TEX_IMAGE"
+                        bl_width_default="140"
+                        bl_width_min="100"
+                        bl_width_max="320"
+                        bl_height_default="100"
+                        bl_height_min="30"
+                        bl_height_max="30"
+                        image="Image::door-material.bmp"
+                        color_space="COLOR"
+                        projection="FLAT"
+                        interpolation="Linear"
+                        projection_blend="0"
+                        extension="REPEAT">
+      <texture_mapping>
+        <TexMapping vector_type="POINT"
+                    translation="0 0 0"
+                    rotation="0 0 0"
+                    scale="1 1 1"
+                    min="0 0 0"
+                    max="1 1 1"
+                    use_min="FALSE"
+                    use_max="FALSE"
+                    mapping_x="X"
+                    mapping_y="Y"
+                    mapping_z="Z"
+                    mapping="FLAT">
+        </TexMapping>
+      </texture_mapping>
+      <color_mapping>
+        <ColorMapping use_color_ramp="FALSE"
+                      brightness="1"
+                      contrast="1"
+                      saturation="1"
+                      blend_type="MIX"
+                      blend_color="0.8 0.8 0.8"
+                      blend_factor="0">
+          <color_ramp>
+            <ColorRamp interpolation="LINEAR"
+                       hue_interpolation="NEAR"
+                       color_mode="RGB">
+              <elements>
+                <ColorRampElement color="0 0 0 1"
+                                  alpha="1"
+                                  position="0">
+                </ColorRampElement>
+                <ColorRampElement color="1 1 1 1"
+                                  alpha="1"
+                                  position="1">
+                </ColorRampElement>
+              </elements>
+            </ColorRamp>
+          </color_ramp>
+        </ColorMapping>
+      </color_mapping>
+      <image_user>
+        <ImageUser use_auto_refresh="FALSE"
+                   frame_current="-1"
+                   use_cyclic="FALSE"
+                   frame_duration="1"
+                   frame_offset="-1"
+                   frame_start="1"
+                   fields_per_frame="2"
+                   multilayer_layer="0"
+                   multilayer_pass="0"
+                   multilayer_view="0">
+        </ImageUser>
+      </image_user>
+      <inputs>
+        <NodeSocketVector name="Vector"
+                          identifier="Vector"
+                          is_output="FALSE"
+                          hide="FALSE"
+                          enabled="TRUE"
+                          link_limit="1"
+                          is_linked="FALSE"
+                          show_expanded="FALSE"
+                          hide_value="TRUE"
+                          node="ShaderNodeTexImage::Image Texture.001"
+                          type="VECTOR"
+                          bl_idname="NodeSocketVector"
+                          default_value="0 0 0">
+        </NodeSocketVector>
+      </inputs>
+      <outputs>
+        <NodeSocketColor name="Color"
+                         identifier="Color"
+                         is_output="TRUE"
+                         hide="FALSE"
+                         enabled="TRUE"
+                         link_limit="4095"
+                         is_linked="TRUE"
+                         show_expanded="FALSE"
+                         hide_value="FALSE"
+                         node="ShaderNodeTexImage::Image Texture.001"
+                         type="RGBA"
+                         bl_idname="NodeSocketColor"
+                         default_value="0 0 0 0">
+        </NodeSocketColor>
+        <NodeSocketFloat name="Alpha"
+                         identifier="Alpha"
+                         is_output="TRUE"
+                         hide="FALSE"
+                         enabled="TRUE"
+                         link_limit="4095"
+                         is_linked="FALSE"
+                         show_expanded="FALSE"
+                         hide_value="FALSE"
+                         node="ShaderNodeTexImage::Image Texture.001"
+                         type="VALUE"
+                         bl_idname="NodeSocketFloat"
+                         default_value="0">
+        </NodeSocketFloat>
+      </outputs>
+      <internal_links>
+      </internal_links>
+    </ShaderNodeTexImage>
+    <ShaderNodeTexImage type="TEX_IMAGE"
+                        location="-721.141 291.404"
+                        width="140"
+                        width_hidden="42"
+                        height="100"
+                        dimensions="140 247.404"
+                        name="Image Texture.003"
+                        label=""
+                        parent="NONE"
+                        use_custom_color="FALSE"
+                        color="0.608 0.608 0.608"
+                        select="TRUE"
+                        show_options="TRUE"
+                        show_preview="FALSE"
+                        hide="FALSE"
+                        mute="FALSE"
+                        show_texture="TRUE"
+                        shading_compatibility="{NEW_SHADING}"
+                        bl_idname="ShaderNodeTexImage"
+                        bl_label="Image Texture"
+                        bl_description=""
+                        bl_icon="NONE"
+                        bl_static_type="TEX_IMAGE"
+                        bl_width_default="140"
+                        bl_width_min="100"
+                        bl_width_max="320"
+                        bl_height_default="100"
+                        bl_height_min="30"
+                        bl_height_max="30"
+                        image="Image::door-material.bmp"
+                        color_space="COLOR"
+                        projection="FLAT"
+                        interpolation="Linear"
+                        projection_blend="0"
+                        extension="REPEAT">
+      <texture_mapping>
+        <TexMapping vector_type="POINT"
+                    translation="0 0 0"
+                    rotation="0 0 0"
+                    scale="1 1 1"
+                    min="0 0 0"
+                    max="1 1 1"
+                    use_min="FALSE"
+                    use_max="FALSE"
+                    mapping_x="X"
+                    mapping_y="Y"
+                    mapping_z="Z"
+                    mapping="FLAT">
+        </TexMapping>
+      </texture_mapping>
+      <color_mapping>
+        <ColorMapping use_color_ramp="FALSE"
+                      brightness="1"
+                      contrast="1"
+                      saturation="1"
+                      blend_type="MIX"
+                      blend_color="0.8 0.8 0.8"
+                      blend_factor="0">
+          <color_ramp>
+            <ColorRamp interpolation="LINEAR"
+                       hue_interpolation="NEAR"
+                       color_mode="RGB">
+              <elements>
+                <ColorRampElement color="0 0 0 1"
+                                  alpha="1"
+                                  position="0">
+                </ColorRampElement>
+                <ColorRampElement color="1 1 1 1"
+                                  alpha="1"
+                                  position="1">
+                </ColorRampElement>
+              </elements>
+            </ColorRamp>
+          </color_ramp>
+        </ColorMapping>
+      </color_mapping>
+      <image_user>
+        <ImageUser use_auto_refresh="FALSE"
+                   frame_current="-1"
+                   use_cyclic="FALSE"
+                   frame_duration="1"
+                   frame_offset="-1"
+                   frame_start="1"
+                   fields_per_frame="2"
+                   multilayer_layer="0"
+                   multilayer_pass="0"
+                   multilayer_view="0">
+        </ImageUser>
+      </image_user>
+      <inputs>
+        <NodeSocketVector name="Vector"
+                          identifier="Vector"
+                          is_output="FALSE"
+                          hide="FALSE"
+                          enabled="TRUE"
+                          link_limit="1"
+                          is_linked="FALSE"
+                          show_expanded="FALSE"
+                          hide_value="TRUE"
+                          node="ShaderNodeTexImage::Image Texture.003"
+                          type="VECTOR"
+                          bl_idname="NodeSocketVector"
+                          default_value="0 0 0">
+        </NodeSocketVector>
+      </inputs>
+      <outputs>
+        <NodeSocketColor name="Color"
+                         identifier="Color"
+                         is_output="TRUE"
+                         hide="FALSE"
+                         enabled="TRUE"
+                         link_limit="4095"
+                         is_linked="TRUE"
+                         show_expanded="FALSE"
+                         hide_value="FALSE"
+                         node="ShaderNodeTexImage::Image Texture.003"
+                         type="RGBA"
+                         bl_idname="NodeSocketColor"
+                         default_value="0 0 0 0">
+        </NodeSocketColor>
+        <NodeSocketFloat name="Alpha"
+                         identifier="Alpha"
+                         is_output="TRUE"
+                         hide="FALSE"
+                         enabled="TRUE"
+                         link_limit="4095"
+                         is_linked="FALSE"
+                         show_expanded="FALSE"
+                         hide_value="FALSE"
+                         node="ShaderNodeTexImage::Image Texture.003"
+                         type="VALUE"
+                         bl_idname="NodeSocketFloat"
+                         default_value="0">
+        </NodeSocketFloat>
+      </outputs>
+      <internal_links>
+      </internal_links>
+    </ShaderNodeTexImage>
+  </nodes>
+  <outputs>
+  </outputs>
+</Template>
+{
+	"textures" : 
+	{
+		"door" : 
+		{
+			"sRGB" : "true",
+			"wrapmode" : "repeat",
+			"file" : "C:\Projektit\Concept Engine\assets\mesh\..\textures\door.bmp"
+		}
+		,
+		"door-material" : 
+		{
+			"sRGB" : "true",
+			"wrapmode" : "repeat",
+			"file" : "C:\Projektit\Concept Engine\assets\mesh\..\textures\door-material.bmp"
+		}
+		,
+		"door-normal" : 
+		{
+			"sRGB" : "false",
+			"wrapmode" : "repeat",
+			"file" : "C:\Projektit\Concept Engine\assets\mesh\..\textures\door-normal.bmp"
+		}
+	}
+	,
+	"materials" : 
+	{
+		"Template" : 
+		{
+			"vs" : "gbuffer.vs",
+			"fs" : "gbuffer.fs",
+			"diffuseTex" : "door",
+			"normalMap" : "door-normal",
+			"roughnessTex" : "door-material"
+			"metallicTex" : "door-material"
+		}
+	}
+}

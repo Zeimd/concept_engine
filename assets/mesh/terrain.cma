@@ -1,0 +1,79 @@
+{
+	"textures" :
+	{
+		"grass" :
+		{
+			"sRGB" : true ,
+			"file" : ["grass.dds"]
+		} ,
+
+		"grass-normal" :
+		{
+			"sRGB" : false ,
+			"normalmap" : true ,
+			"file" : ["grass-normal-bc5.dds"]
+		},
+
+		"rock" :
+		{
+			"sRGB" : true ,
+			"file" : ["rock.dds"]
+		} ,
+
+		"rock-normal" :
+		{
+			"sRGB" : false ,
+			"normalmap" : true ,
+			"file" : ["rock-normal-bc5.dds"]
+		},
+
+		"snow" :
+		{
+			"sRGB" : true ,
+			"file" : ["snow.dds"]
+		} ,
+
+		"snow-normal" :
+		{
+			"sRGB" : false ,
+			"normalmap" : true ,
+			"file" : ["snow-normal-bc5.dds"]
+		}
+	},
+
+	"materials" :
+	{
+		"Snow" :
+		{
+			"vs" : "gbuffer.vs" ,
+			"fs" : "gbuffer.fs" ,
+			"fs_flags" : ["MATERIAL_UNIFORM"] ,
+			"diffuseTex" : [ "tex2d" , "snow" ] ,
+			"normalMap" : [ "tex2d" , "snow-normal" ] ,
+			"materialMetallic" : 0.15 ,
+			"materialRoughness" : 0.8
+		},
+
+		"Rock" :
+		{
+			"vs" : "gbuffer.vs" ,
+			"fs" : "gbuffer.fs" ,
+			"fs_flags" : ["MATERIAL_UNIFORM"] ,
+			"diffuseTex" : [ "tex2d" , "rock" ] ,
+			"normalMap" : [ "tex2d" , "rock-normal" ] ,
+			"materialMetallic" : 0.3 ,
+			"materialRoughness" : 0.8
+		},
+
+		"Grass" :
+		{
+			"vs" : "gbuffer.vs" ,
+			"fs" : "gbuffer.fs" ,
+			"fs_flags" : ["MATERIAL_UNIFORM"] ,
+			"diffuseTex" : [ "tex2d" , "grass" ] ,
+			"normalMap" : [ "tex2d" , "grass-normal" ] ,
+			"materialMetallic" : 0.1 ,
+			"materialRoughness" : 0.8
+		}
+	}
+}

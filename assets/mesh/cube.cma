@@ -1,0 +1,39 @@
+{
+	"textures" : 
+	{
+		"door" : 
+		{
+			"sRGB" : true,
+			"wrapmode" : "repeat",
+			"file" : [ "door.dds" , "door.png" ]
+		}
+		,
+		"Door-material" : 
+		{
+			"sRGB" : false,
+			"wrapmode" : "repeat",
+			"file" : [ "Door-material.dds" , "Door-material.dds" ]
+		}
+		,
+		"door-normal" : 
+		{
+			"sRGB" : false,
+			"wrapmode" : "repeat",
+			"normalmap" : true,
+			"file" : [ "door-normal.dds" , "door-normal.png" ]
+		}
+	}
+	,
+	"materials" : 
+	{
+		"Door" : 
+		{
+			"vs" : "gbuffer.vs",
+			"fs" : "gbuffer.fs",
+			"fs_flags" : [ "MATERIAL_TEXTURE" ],
+			"diffuseTex" : [ "tex2d" , "door" ],
+			"normalMap" : [ "tex2d" , "door-normal" ],
+			"materialTex" : [ "tex2d" , "Door-material" ]
+		}
+	}
+}
