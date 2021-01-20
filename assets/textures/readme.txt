@@ -1,1 +1,0 @@
-This is a placeholder. When executing the binary, it will looks for texture files from this folder.

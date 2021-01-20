@@ -3,6 +3,9 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+# Texture folder in assets
+assets/textures/
+
 # User-specific files
 *.rsuser
 *.suo
