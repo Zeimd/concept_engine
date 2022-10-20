@@ -172,11 +172,11 @@ const EngineResult::value CEngine::CreateIrradianceMap(Ceng::Cubemap *envMap, Ce
 
 	// From +X to -Z
 	// -sc -tc -m
-	faceMatrix[4].data[0][0] = 0.0f;
-	faceMatrix[4].data[0][2] = 1.0f;
+	faceMatrix[5].data[0][0] = 0.0f;
+	faceMatrix[5].data[0][2] = 1.0f;
 
-	faceMatrix[4].data[2][0] = -1.0f;
-	faceMatrix[4].data[2][2] = 0.0f;
+	faceMatrix[5].data[2][0] = -1.0f;
+	faceMatrix[5].data[2][2] = 0.0f;
 
 	Ceng::UINT32 faceSize = 4 * sourceWidthInt*sourceWidthInt;
 
