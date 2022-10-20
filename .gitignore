@@ -99,6 +99,9 @@ StyleCopReport.xml
 # Exception to .obj for mesh files
 !assets/mesh/*.obj
 
+# Exclude blender backup files
+*.blend1
+
 # Chutzpah Test files
 _Chutzpah*
 
