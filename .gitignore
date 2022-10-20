@@ -96,6 +96,9 @@ StyleCopReport.xml
 *.svclog
 *.scc
 
+# Exception to .obj for mesh files
+!assets/mesh/*.obj
+
 # Chutzpah Test files
 _Chutzpah*
 
