@@ -64,6 +64,17 @@ def Render(camera, cubeSide, outputName):
 
     bpy.context.scene.render.filepath = "//render_out/"+outputName
 
+    bpy.context.scene.render.resolution_percentage = 100
+    bpy.context.scene.render.resolution_x = int(cubeSide)
+    bpy.context.scene.render.resolution_y = int(cubeSide)
+
+    image_settings = bpy.context.scene.render.image_settings
+
+    image_settings.file_format = "OPEN_EXR"
+    image_settings.exr_codec = "ZIP"
+    image_settings.color_mode = "RGB"
+    image_settings.color_depth = "16"
+
     scene.update()
 
     #bpy.ops.render.view_show()
