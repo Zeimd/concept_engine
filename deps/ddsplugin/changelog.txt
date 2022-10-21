@@ -1,0 +1,18 @@
+Concept Engine texture tool
+Last updated by Jari Korkala 20/6/2016
+
+************************************************************************
+Build 5
+
+- Normalization of base texture when normal map compression drops
+  blue channel
+
+************************************************************************
+Build 4
+
+- Can load rgb PNG and compress it into DXT1
+
+- Normal maps are compressed in DXT5 so that red channel (x) is
+  stored in alpha channel and red,blue are set to one. 
+
+

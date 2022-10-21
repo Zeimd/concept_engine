@@ -1,0 +1,173 @@
+K 25
+svn:wc:ra_dav:version-url
+V 23
+/svn/!svn/ver/243/trunk
+END
+README
+K 25
+svn:wc:ra_dav:version-url
+V 30
+/svn/!svn/ver/182/trunk/README
+END
+color.c
+K 25
+svn:wc:ra_dav:version-url
+V 31
+/svn/!svn/ver/186/trunk/color.c
+END
+dds.h
+K 25
+svn:wc:ra_dav:version-url
+V 29
+/svn/!svn/ver/225/trunk/dds.h
+END
+Makefile.mingw32
+K 25
+svn:wc:ra_dav:version-url
+V 40
+/svn/!svn/ver/232/trunk/Makefile.mingw32
+END
+vec.h
+K 25
+svn:wc:ra_dav:version-url
+V 29
+/svn/!svn/ver/218/trunk/vec.h
+END
+color.h
+K 25
+svn:wc:ra_dav:version-url
+V 31
+/svn/!svn/ver/222/trunk/color.h
+END
+mipmap.c
+K 25
+svn:wc:ra_dav:version-url
+V 32
+/svn/!svn/ver/230/trunk/mipmap.c
+END
+TODO
+K 25
+svn:wc:ra_dav:version-url
+V 28
+/svn/!svn/ver/135/trunk/TODO
+END
+ddswrite.c
+K 25
+svn:wc:ra_dav:version-url
+V 34
+/svn/!svn/ver/243/trunk/ddswrite.c
+END
+INSTALL
+K 25
+svn:wc:ra_dav:version-url
+V 31
+/svn/!svn/ver/182/trunk/INSTALL
+END
+Makefile.mingw64
+K 25
+svn:wc:ra_dav:version-url
+V 40
+/svn/!svn/ver/232/trunk/Makefile.mingw64
+END
+COPYING
+K 25
+svn:wc:ra_dav:version-url
+V 31
+/svn/!svn/ver/177/trunk/COPYING
+END
+mipmap.h
+K 25
+svn:wc:ra_dav:version-url
+V 32
+/svn/!svn/ver/230/trunk/mipmap.h
+END
+LICENSE.nvtt
+K 25
+svn:wc:ra_dav:version-url
+V 36
+/svn/!svn/ver/217/trunk/LICENSE.nvtt
+END
+misc.c
+K 25
+svn:wc:ra_dav:version-url
+V 30
+/svn/!svn/ver/229/trunk/misc.c
+END
+Makefile
+K 25
+svn:wc:ra_dav:version-url
+V 32
+/svn/!svn/ver/234/trunk/Makefile
+END
+dxt_tables.h
+K 25
+svn:wc:ra_dav:version-url
+V 36
+/svn/!svn/ver/212/trunk/dxt_tables.h
+END
+ddsplugin.h
+K 25
+svn:wc:ra_dav:version-url
+V 35
+/svn/!svn/ver/243/trunk/ddsplugin.h
+END
+dxt.c
+K 25
+svn:wc:ra_dav:version-url
+V 29
+/svn/!svn/ver/235/trunk/dxt.c
+END
+misc.h
+K 25
+svn:wc:ra_dav:version-url
+V 30
+/svn/!svn/ver/186/trunk/misc.h
+END
+LICENSE
+K 25
+svn:wc:ra_dav:version-url
+V 31
+/svn/!svn/ver/182/trunk/LICENSE
+END
+mktables.c
+K 25
+svn:wc:ra_dav:version-url
+V 34
+/svn/!svn/ver/212/trunk/mktables.c
+END
+endian.h
+K 25
+svn:wc:ra_dav:version-url
+V 32
+/svn/!svn/ver/186/trunk/endian.h
+END
+dxt.h
+K 25
+svn:wc:ra_dav:version-url
+V 29
+/svn/!svn/ver/229/trunk/dxt.h
+END
+ddsread.c
+K 25
+svn:wc:ra_dav:version-url
+V 33
+/svn/!svn/ver/241/trunk/ddsread.c
+END
+imath.h
+K 25
+svn:wc:ra_dav:version-url
+V 31
+/svn/!svn/ver/186/trunk/imath.h
+END
+README.dxt
+K 25
+svn:wc:ra_dav:version-url
+V 34
+/svn/!svn/ver/101/trunk/README.dxt
+END
+dds.c
+K 25
+svn:wc:ra_dav:version-url
+V 29
+/svn/!svn/ver/230/trunk/dds.c
+END
