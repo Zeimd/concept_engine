@@ -1161,14 +1161,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		return 0;
 	}
 
-	/*
-	cresult = renderDevice->CreateCubemap(envDesc, envDataDesc, &envMap);
-	if (cresult != Ceng::CE_OK)
-	{
-	return 0;
-	}
-	*/
-
 	Ceng::ShaderResourceView *envView;
 
 	Ceng::ShaderResourceViewDesc envViewDesc;
