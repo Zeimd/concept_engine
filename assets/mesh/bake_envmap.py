@@ -5,6 +5,7 @@ import bmesh
 import os
 import subprocess
 import ctypes
+import math
 
 from shutil import copyfile
 
@@ -44,6 +45,12 @@ if not os.path.exists(dist_path_abs):
 if not os.path.exists(dist_tex_path_abs):
     os.makedirs(dist_tex_path_abs)
 
+faceCameras = ( (math.radians(90.0),math.radians(0.0),math.radians(-90.0)), (math.radians(90.0),math.radians(0.0),math.radians(90.0))\
+    ,(math.radians(180.0),math.radians(0.0),math.radians(0.0)), (math.radians(0.0),math.radians(0.0),math.radians(0.0)),\
+        (math.radians(-90.0),math.radians(0.0),math.radians(180.0)), (math.radians(90.0),math.radians(0.0),math.radians(0.0)) )
+
+faceEulerMode = ('XYZ', 'XYZ', 'XYZ', 'XYZ', 'ZXY', 'XYZ')
+
 def Render(camera, cubeSide, outputName):
 
     # store current scene data
@@ -52,13 +59,9 @@ def Render(camera, cubeSide, outputName):
 
     print("scene = " + scene.name)
 
-    # Get old values
+    # TODO: store old values and restore on exit
 
     oldCamera = scene.camera
-
-    # TODO: render settings
-
-    #print("old camera = " + oldCamera.name)
 
     scene.camera = camera
 
@@ -75,6 +78,10 @@ def Render(camera, cubeSide, outputName):
     image_settings.color_mode = "RGB"
     image_settings.color_depth = "16"
 
+    #image_settings.file_format = "PNG"
+    #image_settings.color_mode = "RGB"
+    #image_settings.color_depth = "8"
+
     scene.update()
 
     #bpy.ops.render.view_show()
@@ -83,12 +90,8 @@ def Render(camera, cubeSide, outputName):
 
     #bpy.ops.render.view_cancel()
 
-    #print("scene: current camera = " + scene.camera.name)
-
     scene.camera = oldCamera
     scene.update()
-
-    #print("scene: current camera = " + scene.camera.name)
 
 def BakeEnvProbe(probe):
 
@@ -106,23 +109,29 @@ def BakeEnvProbe(probe):
 
     print("Cubemap size = " + str(cubeSide))
 
-    for index, faceName in enumerate(camera_order):
+    camData = bpy.data.cameras.new(name="TempEnvProbeCamera")
 
-        for child in probe.children:
+    tempCamera = bpy.data.objects.new(name="TempEnvProbeCamera",object_data=camData)
 
-            if (child.type != 'CAMERA'):
-                continue
+    tempCamera.location = probe.location
 
-            if (child.name != faceName):
-                continue
+    camData.angle = math.radians(90.0)
 
-            print(child.name + " , face number = " + str(index))
+    for index in range(0,6):
 
-            outputName = probe.name + "_" + str(index);
+        tempCamera.rotation_mode = faceEulerMode[index]
 
-            print(outputName)
+        tempCamera.rotation_euler = faceCameras[index]
 
-            Render(child, cubeSide, outputName)
+        outputName = probe.name + "_" + str(index);
+
+        print(outputName)
+
+        Render(tempCamera, cubeSide, outputName)
+
+    tempCamera.parent = None
+
+    bpy.data.objects.remove(tempCamera)
 
 print("**** object names:")
 
