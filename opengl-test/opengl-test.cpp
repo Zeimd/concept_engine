@@ -531,7 +531,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	std::shared_ptr<CEngine::ShaderProgram> lightProbeProg;
 
-	eresult = shaderManager.CreateProgramFromFile("quad.vs", "light-probe.fs", lightProbeProg);
+	//eresult = shaderManager.CreateProgramFromFile("quad.vs", "light-probe.fs", lightProbeProg);
+	
+	std::vector<Ceng::StringUtf8> envFsFlags;
+
+	envFsFlags.push_back("ENVMAP_PARALLAX_CUBE");
+
+	eresult = shaderManager.CreateProgramFromFile("quad.vs", nullptr, "light-probe.fs", &envFsFlags, lightProbeProg);
+
 	//eresult = shaderManager.CreateProgramFromFile("quad.vs", "light-spot-shadow.fs", lightProbeProg);
 	if (eresult != CEngine::EngineResult::ok)
 	{
@@ -607,6 +614,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	Ceng::ShaderConstant *probe_cameraReverse;
 	cresult = shaderProgram->GetConstant("cameraReverseRotation", &probe_cameraReverse);
+
+	Ceng::ShaderConstant* probe_cubeCenterWorldPos;
+	cresult = shaderProgram->GetConstant("cubeCenterWorldPos", &probe_cubeCenterWorldPos);
+
+	Ceng::ShaderConstant* probe_cubeSideHalf;
+	cresult = shaderProgram->GetConstant("cubeSideHalf", &probe_cubeSideHalf);
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Environment (background) drawing pass
@@ -2084,6 +2097,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				probe_reflectionEnv->SetInt(3);
 				probe_diffuseEnv->SetInt(4);
 
+				Ceng::FLOAT32 cubePos[] = { 0.0f,0.0f, 0.0f };
+				probe_cubeCenterWorldPos->SetFloat3(cubePos);
+
+				probe_cubeSideHalf->SetFloat(2.0);
+
 				/////////////////////////////////////////////////////////////
 				// Room environment map
 
@@ -2279,6 +2297,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	probe_zTermB->Release();
 
 	probe_cameraReverse->Release();
+
+	probe_cubeCenterWorldPos->Release();
+	probe_cubeSideHalf->Release();
 
 	probeView->Release();
 
