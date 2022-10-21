@@ -1155,11 +1155,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	defaultTexOptions.sRGB = true;
 	defaultTexOptions.options = Ceng::BufferOptions::generate_mip_maps;
 
-	//eresult = textureManager.LoadCubemap("env-calib.bmp", defaultTexOptions, envMapHandle);
-	//eresult = textureManager.LoadCubemap("envtest.bmp", defaultTexOptions, envMapHandle);
 	eresult = textureManager.LoadCubemap("envmap.bmp", defaultTexOptions, envMapHandle);
-	//eresult = textureManager.LoadCubemap("env-bake.exr", defaultTexOptions, envMapHandle);
-	//eresult = textureManager.LoadCubemap("envprobe000_.exr", defaultTexOptions, envMapHandle);
 	if (eresult != CEngine::EngineResult::ok)
 	{
 		return 0;
@@ -1215,8 +1211,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	std::shared_ptr<CEngine::Texture> probeMapHandle;
 
-	//eresult = textureManager.LoadCubemap("envmap.bmp", defaultTexOptions, probeMapHandle);
-	eresult = textureManager.LoadCubemap("envprobe000_.exr", defaultTexOptions, probeMapHandle);
+	eresult = textureManager.LoadCubemap("EnvProbe_1.exr", defaultTexOptions, probeMapHandle);
 	if (eresult != CEngine::EngineResult::ok)
 	{
 		return 0;

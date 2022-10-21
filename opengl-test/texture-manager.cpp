@@ -420,21 +420,11 @@ const EngineResult::value TextureManager::LoadCubemapFromSequence(const Ceng::St
 		forceLinear = true;
 	}
 
-	// Load first image
-
 	EngineResult::value eresult;
 
-	eresult = (this->*loadFunction)(filename, options, bitmaps[0]);
-	if (eresult != EngineResult::ok)
+	for (Ceng::UINT32 k = 0; k < 6; ++k)
 	{
-		return eresult;
-	}
-
-	// Load remaining
-
-	for (Ceng::UINT32 k = 1; k < 6; ++k)
-	{
-		Ceng::StringUtf8 chainName = name + k + '.' + extension;
+		Ceng::StringUtf8 chainName = name + '_' + k + '.' + extension;
 
 		eresult = (this->*loadFunction)(chainName, options, bitmaps[k]);
 		if (eresult != EngineResult::ok)
