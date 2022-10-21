@@ -621,6 +621,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	Ceng::ShaderConstant* probe_cubeSideHalf;
 	cresult = shaderProgram->GetConstant("cubeSideHalf", &probe_cubeSideHalf);
 
+	Ceng::ShaderConstant* probe_cameraPos;
+	cresult = shaderProgram->GetConstant("cameraPos", &probe_cameraPos);
+
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Environment (background) drawing pass
 
@@ -2100,7 +2103,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				Ceng::FLOAT32 cubePos[] = { 0.0f,0.0f, 0.0f };
 				probe_cubeCenterWorldPos->SetFloat3(cubePos);
 
-				probe_cubeSideHalf->SetFloat(2.0);
+				probe_cubeSideHalf->SetFloat(4.0);
+
+				CEngine::Vec3 cameraPos;
+
+				camera.GetPosition(&cameraPos);
+
+				probe_cameraPos->SetFloat3((Ceng::FLOAT32*)&cameraPos);
 
 				/////////////////////////////////////////////////////////////
 				// Room environment map
@@ -2300,6 +2309,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	probe_cubeCenterWorldPos->Release();
 	probe_cubeSideHalf->Release();
+	probe_cameraPos->Release();
 
 	probeView->Release();
 

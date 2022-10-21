@@ -14,6 +14,8 @@ uniform float maxEnvLOD;
 
 // Axis-aligned bounding cube used for parallax correction
 
+uniform vec3 cameraPos;
+
 uniform vec3 cubeCenterWorldPos;
 
 uniform float cubeSideHalf;
@@ -51,15 +53,11 @@ void main()
 
 	vec3 reflectDir_eye = reflect(rayDir_eye,normal);
 
-	// TODO: transform f_eyePos to world space
-
-	vec3 f_worldPos = (cameraReverseRotation * vec4(f_eyePos,1.0)).xyz;
-
 	// Transform reflected direction to world space (where the cube map is defined)
 
 	vec3 reflectDir_world = (cameraReverseRotation * vec4(reflectDir_eye,1.0)).xyz;
 
-	vec3 cubeDir = ParallaxCorrection(f_worldPos, reflectDir_world);
+	vec3 cubeDir = ParallaxCorrection(f_eyePos, reflectDir_world);
 	//vec3 cubeDir = reflectDir_world;
 
 	float lod = maxEnvLOD*roughness;
@@ -141,8 +139,10 @@ vec4 RayCubeFaceCollision(vec3 rayStart, vec3 rayDir, vec3 faceCenter, vec3 face
 
 #if defined(ENVMAP_PARALLAX_CUBE)
 
-	vec3 ParallaxCorrection(vec3 f_worldPos, vec3 reflectDir_world)
+	vec3 ParallaxCorrection(vec3 f_eyePos, vec3 reflectDir_world)
 	{
+		vec3 f_worldPos = (cameraReverseRotation * vec4(f_eyePos,1.0)).xyz + cameraPos;
+
 		vec3 f_boxPos = f_worldPos - cubeCenterWorldPos;
 
 		vec3 faceCenter;
