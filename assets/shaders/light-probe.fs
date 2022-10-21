@@ -10,7 +10,7 @@ uniform samplerCube diffuseEnv;
 
 uniform float maxEnvLOD;
 
-#if defined(ENVMAP_PARALLAX_CUBE)
+#if defined(ENVMAP_PARALLAX_AA_CUBE)
 
 // Axis-aligned bounding cube used for parallax correction
 
@@ -22,7 +22,7 @@ uniform float cubeSideHalf;
 
 #endif
 
-#if defined(ENVMAP_PARALLAX_BOX)
+#if defined(ENVMAP_PARALLAX_AA_BOX)
 
 // Arbitrary axis-aligned bounding box used for parallax correction
 
@@ -137,7 +137,7 @@ vec4 RayCubeFaceCollision(vec3 rayStart, vec3 rayDir, vec3 faceCenter, vec3 face
 }
 
 
-#if defined(ENVMAP_PARALLAX_CUBE)
+#if defined(ENVMAP_PARALLAX_AA_CUBE)
 
 	vec3 ParallaxCorrection(vec3 f_eyePos, vec3 reflectDir_world)
 	{
@@ -245,7 +245,7 @@ vec4 RayCubeFaceCollision(vec3 rayStart, vec3 rayDir, vec3 faceCenter, vec3 face
 		discard;
 	}
 
-#elif defined(ENVMAP_PARALLAX_BOX)
+#elif defined(ENVMAP_PARALLAX_AA_BOX)
 
 	vec3 ParallaxCorrection(vec3 f_worldPos, vec3 reflectDir_world)
 	{

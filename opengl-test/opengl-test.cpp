@@ -535,7 +535,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	
 	std::vector<Ceng::StringUtf8> envFsFlags;
 
-	envFsFlags.push_back("ENVMAP_PARALLAX_CUBE");
+	envFsFlags.push_back("ENVMAP_PARALLAX_AA_CUBE");
 
 	eresult = shaderManager.CreateProgramFromFile("quad.vs", nullptr, "light-probe.fs", &envFsFlags, lightProbeProg);
 
