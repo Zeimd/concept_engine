@@ -10,25 +10,36 @@ uniform samplerCube diffuseEnv;
 
 uniform float maxEnvLOD;
 
+/*
+// DEPRECATED: subcase of ENVMAP_PARALLAX_AA_BOX
 #if defined(ENVMAP_PARALLAX_AA_CUBE)
 
 // Axis-aligned bounding cube used for parallax correction
 
-uniform vec3 cameraPos;
-
-uniform vec3 cubeCenterWorldPos;
+#define ENVMAP_PARALLAX_CORRECTION
 
 uniform float cubeSideHalf;
-
-#endif
+*/
 
 #if defined(ENVMAP_PARALLAX_AA_BOX)
 
+#define ENVMAP_PARALLAX_CORRECTION
+
 // Arbitrary axis-aligned bounding box used for parallax correction
 
-// TODO
+uniform vec3 boxSideHalf;
 
 #endif
+
+// Common parallax correction variables
+#if defined(ENVMAP_PARALLAX_CORRECTION)
+
+uniform vec3 cameraPos;
+
+uniform vec3 boundaryCenterWorldPos;
+
+#endif
+
 
 vec3 ParallaxCorrection(vec3 f_worldPos, vec3 reflectDir_world);
 
@@ -103,7 +114,7 @@ void main()
 }
 
 // returns vec3(k, u, v) : if k <= 0, the ray isn't moving towards the face and there is no intersection
-vec4 RayCubeFaceCollision(vec3 rayStart, vec3 rayDir, vec3 faceCenter, vec3 faceNormal, float sideHalf, vec3 baseU, vec3 baseV)
+vec4 RayCubeFaceCollision(vec3 rayStart, vec3 rayDir, vec3 faceCenter, vec3 faceNormal, vec3 baseU, vec3 baseV, float uLimit, float vLimit)
 {
 	float rayDotNormal = dot(rayDir, faceNormal);
 
@@ -128,7 +139,7 @@ vec4 RayCubeFaceCollision(vec3 rayStart, vec3 rayDir, vec3 faceCenter, vec3 face
 	float u = dot(planar, baseU);
 	float v = dot(planar, baseV);
 
-	if (abs(u) > sideHalf || abs(v) > sideHalf)
+	if (abs(u) > uLimit || abs(v) > vLimit)
 	{
 		return vec4(-1.0, vec3(0.0,0.0,0.0));
 	}
@@ -136,14 +147,14 @@ vec4 RayCubeFaceCollision(vec3 rayStart, vec3 rayDir, vec3 faceCenter, vec3 face
 	return vec4(k, intersect);
 }
 
-
+/*
 #if defined(ENVMAP_PARALLAX_AA_CUBE)
 
 	vec3 ParallaxCorrection(vec3 f_eyePos, vec3 reflectDir_world)
 	{
 		vec3 f_worldPos = (cameraReverseRotation * vec4(f_eyePos,1.0)).xyz + cameraPos;
 
-		vec3 f_boxPos = f_worldPos - cubeCenterWorldPos;
+		vec3 f_boxPos = f_worldPos - boundaryCenterWorldPos;
 
 		vec3 faceCenter;
 		vec3 faceNormal;
@@ -159,7 +170,8 @@ vec4 RayCubeFaceCollision(vec3 rayStart, vec3 rayDir, vec3 faceCenter, vec3 face
 		baseU = vec3(0.0, 1.0, 0.0);
 		baseV = vec3(0.0, 0.0, 1.0);
 
-		vec4 resultXP = RayCubeFaceCollision(f_boxPos, reflectDir_world, faceCenter, faceNormal, cubeSideHalf, baseU, baseV);
+		vec4 resultXP = RayCubeFaceCollision(f_boxPos, reflectDir_world, faceCenter, 
+			faceNormal, baseU, baseV, cubeSideHalf, cubeSideHalf);
 
 		if (resultXP.x > 0)
 		{
@@ -174,7 +186,8 @@ vec4 RayCubeFaceCollision(vec3 rayStart, vec3 rayDir, vec3 faceCenter, vec3 face
 		baseU = vec3(0.0, 1.0, 0.0);
 		baseV = vec3(0.0, 0.0, -1.0);
 
-		vec4 resultXN = RayCubeFaceCollision(f_boxPos, reflectDir_world, faceCenter, faceNormal, cubeSideHalf, baseU, baseV);
+		vec4 resultXN = RayCubeFaceCollision(f_boxPos, reflectDir_world, faceCenter, 
+			faceNormal, baseU, baseV, cubeSideHalf, cubeSideHalf);
 
 		if (resultXN.x > 0)
 		{
@@ -189,7 +202,8 @@ vec4 RayCubeFaceCollision(vec3 rayStart, vec3 rayDir, vec3 faceCenter, vec3 face
 		baseU = vec3(1.0, 0.0, 0.0);
 		baseV = vec3(0.0, 0.0, -1.0);
 
-		vec4 resultYP = RayCubeFaceCollision(f_boxPos, reflectDir_world, faceCenter, faceNormal, cubeSideHalf, baseU, baseV);
+		vec4 resultYP = RayCubeFaceCollision(f_boxPos, reflectDir_world, faceCenter, 
+			faceNormal, baseU, baseV, cubeSideHalf, cubeSideHalf);
 
 		if (resultYP.x > 0)
 		{
@@ -204,7 +218,8 @@ vec4 RayCubeFaceCollision(vec3 rayStart, vec3 rayDir, vec3 faceCenter, vec3 face
 		baseU = vec3(1.0, 0.0, 0.0);
 		baseV = vec3(0.0, 0.0, 1.0);
 
-		vec4 resultYN = RayCubeFaceCollision(f_boxPos, reflectDir_world, faceCenter, faceNormal, cubeSideHalf, baseU, baseV);
+		vec4 resultYN = RayCubeFaceCollision(f_boxPos, reflectDir_world, faceCenter, 
+			faceNormal, baseU, baseV, cubeSideHalf, cubeSideHalf);
 
 		if (resultYN.x > 0)
 		{
@@ -219,7 +234,8 @@ vec4 RayCubeFaceCollision(vec3 rayStart, vec3 rayDir, vec3 faceCenter, vec3 face
 		baseU = vec3(-1.0, 0.0, 0.0);
 		baseV = vec3(0.0, 1.0, 0.0);
 
-		vec4 resultZP = RayCubeFaceCollision(f_boxPos, reflectDir_world, faceCenter, faceNormal, cubeSideHalf, baseU, baseV);
+		vec4 resultZP = RayCubeFaceCollision(f_boxPos, reflectDir_world, faceCenter, 
+			faceNormal, baseU, baseV, cubeSideHalf, cubeSideHalf);
 
 		if (resultZP.x > 0)
 		{
@@ -234,7 +250,8 @@ vec4 RayCubeFaceCollision(vec3 rayStart, vec3 rayDir, vec3 faceCenter, vec3 face
 		baseU = vec3(1.0, 0.0, 0.0);
 		baseV = vec3(0.0, 1.0, 0.0);
 
-		vec4 resultZN = RayCubeFaceCollision(f_boxPos, reflectDir_world, faceCenter, faceNormal, cubeSideHalf, baseU, baseV);
+		vec4 resultZN = RayCubeFaceCollision(f_boxPos, reflectDir_world, faceCenter, 
+			faceNormal, baseU, baseV, cubeSideHalf, cubeSideHalf);
 
 		if (resultZN.x > 0)
 		{
@@ -244,11 +261,120 @@ vec4 RayCubeFaceCollision(vec3 rayStart, vec3 rayDir, vec3 faceCenter, vec3 face
 		// Ray didn't hit any face, so no lighting from this environment map
 		discard;
 	}
+*/
 
-#elif defined(ENVMAP_PARALLAX_AA_BOX)
+#if defined(ENVMAP_PARALLAX_AA_BOX)
 
-	vec3 ParallaxCorrection(vec3 f_worldPos, vec3 reflectDir_world)
+	vec3 ParallaxCorrection(vec3 f_eyePos, vec3 reflectDir_world)
 	{
+		vec3 f_worldPos = (cameraReverseRotation * vec4(f_eyePos,1.0)).xyz + cameraPos;
+
+		vec3 f_boxPos = f_worldPos - boundaryCenterWorldPos;
+
+		vec3 faceCenter;
+		vec3 faceNormal;
+
+		vec3 baseU;
+		vec3 baseV;
+
+		// +X face
+
+		faceCenter = vec3(boxSideHalf.x, 0.0, 0.0);
+		faceNormal = vec3(-1.0, 0.0, 0.0);
+
+		baseU = vec3(0.0, 1.0, 0.0);
+		baseV = vec3(0.0, 0.0, 1.0);
+
+		vec4 resultXP = RayCubeFaceCollision(f_boxPos, reflectDir_world, faceCenter, 
+			faceNormal, baseU, baseV, boxSideHalf.y, boxSideHalf.z);
+
+		if (resultXP.x > 0)
+		{
+			return resultXP.yzw;
+		}
+
+		// -X face
+
+		faceCenter = vec3(-boxSideHalf.x, 0.0, 0.0);
+		faceNormal = vec3(1.0, 0.0, 0.0);
+
+		baseU = vec3(0.0, 1.0, 0.0);
+		baseV = vec3(0.0, 0.0, -1.0);
+
+		vec4 resultXN = RayCubeFaceCollision(f_boxPos, reflectDir_world, faceCenter, 
+			faceNormal, baseU, baseV, boxSideHalf.y, boxSideHalf.z);
+
+		if (resultXN.x > 0)
+		{
+			return resultXN.yzw;
+		}
+
+		// +Y face
+
+		faceCenter = vec3(0.0, boxSideHalf.y, 0.0);
+		faceNormal = vec3(0.0, -1.0, 0.0);
+
+		baseU = vec3(1.0, 0.0, 0.0);
+		baseV = vec3(0.0, 0.0, -1.0);
+
+		vec4 resultYP = RayCubeFaceCollision(f_boxPos, reflectDir_world, faceCenter, 
+			faceNormal, baseU, baseV, boxSideHalf.x, boxSideHalf.z);
+
+		if (resultYP.x > 0)
+		{
+			return resultYP.yzw;
+		}
+
+		// -Y face
+
+		faceCenter = vec3(0.0, -boxSideHalf.y, 0.0);
+		faceNormal = vec3(0.0, 1.0, 0.0);
+
+		baseU = vec3(1.0, 0.0, 0.0);
+		baseV = vec3(0.0, 0.0, 1.0);
+
+		vec4 resultYN = RayCubeFaceCollision(f_boxPos, reflectDir_world, faceCenter, 
+			faceNormal, baseU, baseV, boxSideHalf.x, boxSideHalf.z);
+
+		if (resultYN.x > 0)
+		{
+			return resultYN.yzw;
+		}
+
+		// +Z face
+
+		faceCenter = vec3(0.0, 0.0, boxSideHalf.z);
+		faceNormal = vec3(0.0, 0.0, -1.0);
+
+		baseU = vec3(-1.0, 0.0, 0.0);
+		baseV = vec3(0.0, 1.0, 0.0);
+
+		vec4 resultZP = RayCubeFaceCollision(f_boxPos, reflectDir_world, faceCenter, 
+			faceNormal, baseU, baseV, boxSideHalf.x, boxSideHalf.y);
+
+		if (resultZP.x > 0)
+		{
+			return resultZP.yzw;
+		}
+
+		// -Z face
+
+		faceCenter = vec3(0.0, 0.0, -boxSideHalf.z);
+		faceNormal = vec3(0.0, 0.0, 1.0);
+
+		baseU = vec3(1.0, 0.0, 0.0);
+		baseV = vec3(0.0, 1.0, 0.0);
+
+		vec4 resultZN = RayCubeFaceCollision(f_boxPos, reflectDir_world, faceCenter, 
+			faceNormal, baseU, baseV, boxSideHalf.x, boxSideHalf.y);
+
+		if (resultZN.x > 0)
+		{
+			return resultZN.yzw;
+		}
+
+		// Ray didn't hit any face, so no lighting from this environment map
+		discard;
 
 	}
 

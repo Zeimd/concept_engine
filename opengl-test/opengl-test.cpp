@@ -535,7 +535,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	
 	std::vector<Ceng::StringUtf8> envFsFlags;
 
-	envFsFlags.push_back("ENVMAP_PARALLAX_AA_CUBE");
+	//envFsFlags.push_back("ENVMAP_PARALLAX_AA_CUBE");
+	envFsFlags.push_back("ENVMAP_PARALLAX_AA_BOX");
 
 	eresult = shaderManager.CreateProgramFromFile("quad.vs", nullptr, "light-probe.fs", &envFsFlags, lightProbeProg);
 
@@ -615,14 +616,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	Ceng::ShaderConstant *probe_cameraReverse;
 	cresult = shaderProgram->GetConstant("cameraReverseRotation", &probe_cameraReverse);
 
-	Ceng::ShaderConstant* probe_cubeCenterWorldPos;
-	cresult = shaderProgram->GetConstant("cubeCenterWorldPos", &probe_cubeCenterWorldPos);
-
-	Ceng::ShaderConstant* probe_cubeSideHalf;
-	cresult = shaderProgram->GetConstant("cubeSideHalf", &probe_cubeSideHalf);
+	Ceng::ShaderConstant* probe_boundaryCenterWorldPos;
+	cresult = shaderProgram->GetConstant("boundaryCenterWorldPos", &probe_boundaryCenterWorldPos);
 
 	Ceng::ShaderConstant* probe_cameraPos;
 	cresult = shaderProgram->GetConstant("cameraPos", &probe_cameraPos);
+
+	/*
+	Ceng::ShaderConstant* probe_cubeSideHalf;
+	cresult = shaderProgram->GetConstant("cubeSideHalf", &probe_cubeSideHalf);
+	*/
+
+	Ceng::ShaderConstant* probe_boxSideHalf;
+	cresult = shaderProgram->GetConstant("boxSideHalf", &probe_boxSideHalf);
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Environment (background) drawing pass
@@ -2087,10 +2093,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				probe_reflectionEnv->SetInt(3);
 				probe_diffuseEnv->SetInt(4);
 
-				Ceng::FLOAT32 cubePos[] = { 0.0f,0.0f, 0.0f };
-				probe_cubeCenterWorldPos->SetFloat3(cubePos);
+				Ceng::FLOAT32 boundaryWorldPos[] = { 0.0f, 1.5f, 0.0f };
+				probe_boundaryCenterWorldPos->SetFloat3(boundaryWorldPos);
 
-				probe_cubeSideHalf->SetFloat(4.0);
+				Ceng::FLOAT32 boxSideHalf[] = { 4.0, 2.5 , 4.0 };
+				//probe_cubeSideHalf->SetFloat(4.0);
+				probe_boxSideHalf->SetFloat3(boxSideHalf);
 
 				CEngine::Vec3 cameraPos;
 
@@ -2294,8 +2302,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	probe_cameraReverse->Release();
 
-	probe_cubeCenterWorldPos->Release();
-	probe_cubeSideHalf->Release();
+	probe_boundaryCenterWorldPos->Release();
+	//probe_cubeSideHalf->Release();
+	probe_boxSideHalf->Release();
 	probe_cameraPos->Release();
 
 	probeView->Release();
