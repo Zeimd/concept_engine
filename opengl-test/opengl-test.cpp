@@ -593,64 +593,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	envProbes.push_back(roomEnvProbe);
 
-	// Uniforms
-
-	/*
-
-	Ceng::ShaderConstant *probe_windowWidth;
-	cresult = shaderProgram->GetConstant("windowWidth", &probe_windowWidth);
-
-	Ceng::ShaderConstant *probe_windowHeight;
-	cresult = shaderProgram->GetConstant("windowHeight", &probe_windowHeight);
-
-	Ceng::ShaderConstant *probe_xDilationDiv;
-	cresult = shaderProgram->GetConstant("xDilationDiv", &probe_xDilationDiv);
-
-	Ceng::ShaderConstant *probe_yDilationDiv;
-	cresult = shaderProgram->GetConstant("yDilationDiv", &probe_yDilationDiv);
-
-	Ceng::ShaderConstant *probe_zTermA;
-	cresult = shaderProgram->GetConstant("zTermA", &probe_zTermA);
-
-	Ceng::ShaderConstant *probe_zTermB;
-	cresult = shaderProgram->GetConstant("zTermB", &probe_zTermB);
-
-	Ceng::ShaderConstant *probe_gbufferColor;
-	cresult = shaderProgram->GetConstant("gbufferColor", &probe_gbufferColor);
-
-	Ceng::ShaderConstant *probe_gbufferNormal;
-	cresult = shaderProgram->GetConstant("gbufferNormal", &probe_gbufferNormal);
-
-	Ceng::ShaderConstant *probe_depthBuffer;
-	cresult = shaderProgram->GetConstant("depthBuffer", &probe_depthBuffer);
-
-	Ceng::ShaderConstant *probe_reflectionEnv;
-	cresult = shaderProgram->GetConstant("reflectionEnv", &probe_reflectionEnv);
-
-	Ceng::ShaderConstant *probe_diffuseEnv;
-	cresult = shaderProgram->GetConstant("diffuseEnv", &probe_diffuseEnv);
-
-	Ceng::ShaderConstant *probe_maxEnvLOD;
-	cresult = shaderProgram->GetConstant("maxEnvLOD", &probe_maxEnvLOD);
-
-	Ceng::ShaderConstant *probe_cameraReverse;
-	cresult = shaderProgram->GetConstant("cameraReverseRotation", &probe_cameraReverse);
-
-	Ceng::ShaderConstant* probe_boundaryCenterWorldPos;
-	cresult = shaderProgram->GetConstant("boundaryCenterWorldPos", &probe_boundaryCenterWorldPos);
-
-	Ceng::ShaderConstant* probe_cameraPos;
-	cresult = shaderProgram->GetConstant("cameraPos", &probe_cameraPos);
-	*/
-
-	/*
-	Ceng::ShaderConstant* probe_cubeSideHalf;
-	cresult = shaderProgram->GetConstant("cubeSideHalf", &probe_cubeSideHalf);
-	*/
-
-	//Ceng::ShaderConstant* probe_boxSideHalf;
-	//cresult = shaderProgram->GetConstant("boxSideHalf", &probe_boxSideHalf);
-
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Environment (background) drawing pass
 
@@ -2314,32 +2256,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	lightmapSampler->Release();
 
 	// Light probe shader uniforms
-
-	/*
-	probe_depthBuffer->Release();
-	probe_gbufferColor->Release();
-	probe_gbufferNormal->Release();
-
-	probe_reflectionEnv->Release();
-	probe_diffuseEnv->Release();
-
-	probe_maxEnvLOD->Release();
-
-	probe_windowWidth->Release();
-	probe_windowHeight->Release();
-
-	probe_xDilationDiv->Release();
-	probe_yDilationDiv->Release();
-	probe_zTermA->Release();
-	probe_zTermB->Release();
-
-	probe_cameraReverse->Release();
-
-	probe_boundaryCenterWorldPos->Release();
-	//probe_cubeSideHalf->Release();
-	probe_boxSideHalf->Release();
-	probe_cameraPos->Release();
-	*/
 
 	probeView->Release();
 
