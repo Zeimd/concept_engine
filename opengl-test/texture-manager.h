@@ -77,7 +77,9 @@ namespace CEngine
 		// expected sequence:
 		//     img_0.exr, img_1.exr,...
 		const EngineResult::value LoadCubemap(const Ceng::StringUtf8 &filename,
-			const TextureOptions &options, std::shared_ptr<Texture> &output);
+			const TextureOptions &options, std::shared_ptr<Texture> &output, std::shared_ptr<Texture> &out_irradiance);
+
+	protected:
 
 		const EngineResult::value LoadBitmap_EXR(const Ceng::StringUtf8 &filename, 
 			const TextureOptions &options,CEngine::Bitmap &bitmap);
@@ -109,12 +111,9 @@ namespace CEngine
 		const EngineResult::value LoadCubemap_EXR(const Ceng::StringUtf8 &filename,
 			const TextureOptions &options, Ceng::Cubemap **out_texture);
 
-		// Load cubemap given as six separate image files.
-		// Filename shall give full name of the image file sequence EXCEPT for numbering:
-		// 
-		// fileName = "img.exr"
-		// expected sequence:
-		//     img_0.exr, img_1.exr,...
+		const EngineResult::value GenerateIrradianceMapFromCube(const Ceng::StringUtf8& name, 
+			const TextureOptions& options, Ceng::Cubemap* cubemap, Ceng::Cubemap** irradianceMap);
+
 		const EngineResult::value LoadCubemapFromSequence(const Ceng::StringUtf8 &filename,
 			const Ceng::StringUtf8 &extension,
 			const TextureOptions &options, Ceng::Cubemap **out_texture);

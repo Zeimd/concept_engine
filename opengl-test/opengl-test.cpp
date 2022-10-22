@@ -1114,8 +1114,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Enviroment cube map
 
-	std::shared_ptr<CEngine::Texture> envMapHandle;
-
 	defaultTexOptions.bindFlags = Ceng::BufferBinding::shader_resource;
 	defaultTexOptions.cpuAccessFlags = 0;
 	defaultTexOptions.firstMip = 0;
@@ -1124,20 +1122,26 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	defaultTexOptions.sRGB = true;
 	defaultTexOptions.options = Ceng::BufferOptions::generate_mip_maps;
 
-	eresult = textureManager.LoadCubemap("envmap.bmp", defaultTexOptions, envMapHandle);
+	defaultTexOptions.generateIrradianceMap = true;
+	defaultTexOptions.irradianceSize = 16;;
+
+	std::shared_ptr<CEngine::Texture> skybox, skyboxIrradiance;
+
+	eresult = textureManager.LoadCubemap("envmap.bmp", defaultTexOptions, skybox, skyboxIrradiance);
 	if (eresult != CEngine::EngineResult::ok)
 	{
+		Ceng::Log::Print("Failed to load cubemap\n");
 		return 0;
 	}
 
-	Ceng::ShaderResourceView *envView;
+	Ceng::ShaderResourceView *skyboxView;
 
 	Ceng::ShaderResourceViewDesc envViewDesc;
 
 	envViewDesc.cubeMap.baseMipLevel = 0;
 	envViewDesc.cubeMap.maxMipLevel = 1;
 
-	cresult = envMapHandle->AsCubemap()->GetShaderViewCubemap(envViewDesc, &envView);
+	cresult = skybox->AsCubemap()->GetShaderViewCubemap(envViewDesc, &skyboxView);
 	if (cresult != Ceng::CE_OK)
 	{
 		return 0;
@@ -1145,6 +1149,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	// Irradiance map
 
+	/*
 	Ceng::Cubemap *diffuseEnv;
 
 	cresult = renderDevice->CreateCubemap(diffuseEnvDesc, nullptr, &diffuseEnv);
@@ -1152,40 +1157,44 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	{
 		return 0;
 	}
+	*/
 
-	Ceng::ShaderResourceView *diffuseEnvView;
+	Ceng::ShaderResourceView *skyboxIrradianceView;
 
-	cresult = diffuseEnv->GetShaderViewCubemap(diffuseViewDesc, &diffuseEnvView);
+	cresult = skyboxIrradiance->AsCubemap()->GetShaderViewCubemap(diffuseViewDesc, &skyboxIrradianceView);
 	if (cresult != Ceng::CE_OK)
 	{
 		return 0;
 	}
 
+	/*
 	eresult = CEngine::CreateIrradianceMap(envMapHandle->AsCubemap(), diffuseEnv);
 	if (eresult != CEngine::EngineResult::ok)
 	{
 		return 0;
 	}
+	*/
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Room environment probe
 
-	std::shared_ptr<CEngine::Texture> probeMapHandle;
+	std::shared_ptr<CEngine::Texture> probeReflection, probeIrradiance;
 
-	eresult = textureManager.LoadCubemap("EnvProbe_1.exr", defaultTexOptions, probeMapHandle);
+	eresult = textureManager.LoadCubemap("EnvProbe_1.exr", defaultTexOptions, probeReflection, probeIrradiance);
 	if (eresult != CEngine::EngineResult::ok)
 	{
 		return 0;
 	}
 
-	Ceng::ShaderResourceView *probeView;
+	Ceng::ShaderResourceView *probeReflectionView;
 
-	cresult = probeMapHandle->AsCubemap()->GetShaderViewCubemap(envViewDesc, &probeView);
+	cresult = probeReflection->AsCubemap()->GetShaderViewCubemap(envViewDesc, &probeReflectionView);
 	if (cresult != Ceng::CE_OK)
 	{
 		return 0;
 	}
 
+	/*
 	Ceng::Cubemap *probeIrradiance;
 
 	cresult = renderDevice->CreateCubemap(diffuseEnvDesc, nullptr, &probeIrradiance);
@@ -1193,20 +1202,23 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	{
 		return 0;
 	}
+	*/
 
 	Ceng::ShaderResourceView *probeIrradianceView;
 
-	cresult = probeIrradiance->GetShaderViewCubemap(diffuseViewDesc, &probeIrradianceView);
+	cresult = probeIrradiance->AsCubemap()->GetShaderViewCubemap(diffuseViewDesc, &probeIrradianceView);
 	if (cresult != Ceng::CE_OK)
 	{
 		return 0;
 	}
 
+	/*
 	eresult = CEngine::CreateIrradianceMap(probeMapHandle->AsCubemap(), probeIrradiance);
 	if (eresult != CEngine::EngineResult::ok)
 	{
 		return 0;
 	}
+	*/
 
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2079,11 +2091,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 					Ceng::BufferData2D data;
 
-					probeMapHandle->AsCubemap()->GetBufferData2D(&data);
+					probeReflection->AsCubemap()->GetBufferData2D(&data);
 
 					envProbe->fs_maxEnvLOD->SetFloat(Ceng::FLOAT32(data.mipLevels));
 
-					renderContext->SetPixelShaderResource(3, probeView);
+					renderContext->SetPixelShaderResource(3, probeReflectionView);
 					renderContext->SetPixelShaderSamplerState(3, diffuseSampler);
 
 					renderContext->SetPixelShaderResource(4, probeIrradianceView);
@@ -2139,7 +2151,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 				ev_envMap->SetInt(0);
 
-				renderContext->SetPixelShaderResource(0, envView);
+				renderContext->SetPixelShaderResource(0, skyboxView);
 				//renderContext->SetPixelShaderResource(0, diffuseEnvView);
 				//renderContext->SetPixelShaderSamplerState(0, diffuseSampler);
 				//renderContext->SetPixelShaderSamplerState(0, nearestSampler);
@@ -2201,8 +2213,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	} while (exitLoop == false);
 
-	diffuseEnvView->Release();
-	diffuseEnv->Release();
+	skyboxIrradianceView->Release();
+
+	//diffuseEnv->Release();
 
 	ev_xDilationDiv->Release();
 	ev_yDilationDiv->Release();
@@ -2215,7 +2228,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	ev_windowWidth->Release();
 	ev_windowHeight->Release();
 
-	envView->Release();
+	skyboxView->Release();
 
 	quadProgTex->Release();
 	quadIndices->Release();
@@ -2257,7 +2270,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	// Light probe shader uniforms
 
-	probeView->Release();
+	//probeView->Release();
 
 	// Point light shader uniforms
 

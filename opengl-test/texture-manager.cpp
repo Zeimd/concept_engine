@@ -9,6 +9,7 @@
 #include <IL/il.h>
 #include <IL/ilu.h>
 #include "texture-manager.h"
+#include "env-map.h"
 
 using namespace CEngine;
 
@@ -310,7 +311,7 @@ const EngineResult::value TextureManager::LoadTexture2D(const Ceng::StringUtf8 &
 }
 
 const EngineResult::value TextureManager::LoadCubemap(const Ceng::StringUtf8 &filename,
-	const TextureOptions &options, std::shared_ptr<Texture> &output)
+	const TextureOptions &options, std::shared_ptr<Texture> &output, std::shared_ptr<Texture>& out_irradiance)
 {
 	auto find = FindTexture(filename, TextureType::cubemap, options.sRGB);
 
@@ -322,6 +323,8 @@ const EngineResult::value TextureManager::LoadCubemap(const Ceng::StringUtf8 &fi
 
 	auto iter = filename.FindLast('.', filename.ConstBeginIterator());
 
+	Ceng::StringUtf8 name = filename.SubString(filename.ConstBeginIterator(), iter);
+
 	++iter;
 
 	Ceng::StringUtf8 extension = filename.SubString(iter, filename.ConstEndIterator());
@@ -330,7 +333,7 @@ const EngineResult::value TextureManager::LoadCubemap(const Ceng::StringUtf8 &fi
 
 	//Ceng::Log::Print(extension);
 
-	Ceng::Cubemap *texture;
+	Ceng::Cubemap *rawCubemap = nullptr;
 
 	EngineResult::value eresult;
 
@@ -344,30 +347,88 @@ const EngineResult::value TextureManager::LoadCubemap(const Ceng::StringUtf8 &fi
 	}
 	else
 	{
-		eresult = LoadCubemapFromSequence(finalName, extension, options, &texture);
+		eresult = LoadCubemapFromSequence(finalName, extension, options, &rawCubemap);
 	}
 
 	if (eresult != EngineResult::ok)
 	{
-
+		output = nullptr;
+		out_irradiance = nullptr;
+		return EngineResult::fail;
 	}
 
-	TextureCube *texHandle;
+	std::shared_ptr<TextureCube> cubeHandle = std::make_shared<TextureCube>();
+
+	cubeHandle->name = filename;
+	cubeHandle->sRGB = options.sRGB;
+	cubeHandle->type = TextureType::cubemap;
+	cubeHandle->texture = rawCubemap;
+	cubeHandle->irradianceParent = nullptr;
+	cubeHandle->relatedIrradiance = nullptr;
+
+	Ceng::Cubemap* rawIrradianceMap = nullptr;
+
+	std::shared_ptr<TextureCube> irradianceHandle = nullptr;
+
+	if (options.generateIrradianceMap)
+	{
+		name = filename + "+?irradiance";
+
+		eresult = GenerateIrradianceMapFromCube(name, options, rawCubemap, &rawIrradianceMap);
+
+		if (eresult != EngineResult::ok)
+		{
+			output = nullptr;
+			out_irradiance = nullptr;
+			return EngineResult::fail;
+		}
+
+		irradianceHandle = std::make_shared<TextureCube>();
+
+		irradianceHandle->name = name;
+		irradianceHandle->sRGB = options.sRGB;
+		irradianceHandle->type = TextureType::cubemap;
+		irradianceHandle->texture = rawIrradianceMap;
+		irradianceHandle->irradianceParent = cubeHandle.get();
+		irradianceHandle->relatedIrradiance = nullptr;
+
+		cubeHandle->relatedIrradiance = irradianceHandle.get();
+	}
+
+	textureList.push_back(cubeHandle);
+
+	if (options.generateIrradianceMap)
+	{
+		textureList.push_back(irradianceHandle);
+	}
+
+	//texHandle->relatedIrradiance = ;
+	/*
+	TextureCube* cubeHandle;
 
 	try
 	{
-		texHandle = new TextureCube();
+		cubeHandle = new TextureCube();
 	}
 	catch (std::bad_alloc&)
 	{
-		texture->Release();
+		if (rawIrradianceMap != nullptr)
+		{
+			rawIrradianceMap->Release();
+		}
+
+		rawCubemap->Release();
 		return EngineResult::out_of_memory;
 	}
+
+	if 
 
 	texHandle->name = filename;
 	texHandle->sRGB = options.sRGB;
 	texHandle->type = TextureType::cubemap;
-	texHandle->texture = texture;
+	texHandle->texture = rawCubemap;
+	
+	//texHandle->relatedIrradiance = ;
 
 	std::shared_ptr<Texture> texPtr;
 
@@ -377,7 +438,12 @@ const EngineResult::value TextureManager::LoadCubemap(const Ceng::StringUtf8 &fi
 	}
 	catch (std::bad_alloc&)
 	{
-		texture->Release();
+		if (rawIrradianceMap != nullptr)
+		{
+			rawIrradianceMap->Release();
+		}
+
+		rawCubemap->Release();
 		return EngineResult::out_of_memory;
 	}
 
@@ -389,8 +455,10 @@ const EngineResult::value TextureManager::LoadCubemap(const Ceng::StringUtf8 &fi
 	{
 		return EngineResult::out_of_memory;
 	}
+	*/
 
-	output = texPtr;
+	output = cubeHandle;
+	out_irradiance = irradianceHandle;
 
 	return EngineResult::ok;
 }
@@ -482,4 +550,54 @@ const EngineResult::value TextureManager::LoadCubemapFromSequence(const Ceng::St
 
 
 	return EngineResult::ok;
+}
+
+const EngineResult::value TextureManager::GenerateIrradianceMapFromCube(const Ceng::StringUtf8& name, 
+	const TextureOptions& options, Ceng::Cubemap* cubemap, Ceng::Cubemap** output)
+{
+	*output = nullptr;
+
+	//Ceng::Log::Print("TextureManager::GenerateIrradianceMapFromCube\n");
+
+	Ceng::Texture2dDesc diffuseEnvDesc;
+
+	diffuseEnvDesc.width = options.irradianceSize;
+	diffuseEnvDesc.height = options.irradianceSize;
+
+	diffuseEnvDesc.format = Ceng::IMAGE_FORMAT::CF16_ABGR;
+
+	diffuseEnvDesc.mipLevels = 0;
+	diffuseEnvDesc.arraySize = 1;
+
+	diffuseEnvDesc.bindFlags = Ceng::BufferBinding::shader_resource;
+	diffuseEnvDesc.sRGB = false;
+	diffuseEnvDesc.usage = Ceng::BufferUsage::gpu_read_only;
+	diffuseEnvDesc.cpuAccessFlags = Ceng::Buffer_CPU_Access::read | Ceng::Buffer_CPU_Access::write;
+
+	diffuseEnvDesc.optionFlags = 0;
+	diffuseEnvDesc.multisampleDesc.count = 0;
+	diffuseEnvDesc.multisampleDesc.quality = 0;
+
+	Ceng::CRESULT cresult;
+
+	Ceng::Cubemap* probeIrradiance;
+
+	cresult = renderDevice->CreateCubemap(diffuseEnvDesc, nullptr, &probeIrradiance);
+	if (cresult != Ceng::CE_OK)
+	{
+		return EngineResult::fail;
+	}
+
+	EngineResult::value eresult;
+
+	eresult = CEngine::CreateIrradianceMap(cubemap, probeIrradiance);
+	if (eresult != CEngine::EngineResult::ok)
+	{
+		return EngineResult::fail;
+	}
+
+	*output = probeIrradiance;
+
+	return EngineResult::ok;
+
 }

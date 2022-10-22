@@ -51,6 +51,12 @@ namespace CEngine
 		* Combination of Ceng::BufferOptions values.
 		*/
 		Ceng::UINT32 options;
+
+		// For cubemaps only. If set, create another cubemap by convoluting the
+		// diffuse contribution of loaded cubemap.
+		Ceng::BOOL generateIrradianceMap;
+
+		Ceng::UINT32 irradianceSize;
 	};
 }
 

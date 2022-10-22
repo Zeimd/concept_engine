@@ -85,6 +85,12 @@ namespace CEngine
 	public:
 		Ceng::Cubemap *texture;
 
+		// Corresponding irradiance map if it exists
+		TextureCube* relatedIrradiance;
+
+		// Parent cubemap for irradiance map
+		TextureCube* irradianceParent;
+
 	public:
 		TextureCube()
 		{
