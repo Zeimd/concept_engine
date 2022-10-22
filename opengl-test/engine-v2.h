@@ -11,6 +11,8 @@
 
 #include <ceng.h>
 
+#include "env-probe-shader.h"
+
 #include "shader-manager.h"
 #include "shader.h"
 #include "shader-program.h"

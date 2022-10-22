@@ -129,6 +129,9 @@
     <ClCompile Include="..\..\deps\upng\upng.c">
       <Filter>Source Files\deps\upng</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\opengl-test\env-probe-shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\deps\upng\upng.h">
@@ -246,6 +249,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\opengl-test\basic-types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\opengl-test\env-probe-shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

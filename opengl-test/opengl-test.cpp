@@ -527,11 +527,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Environment probe light pass
 
+	std::vector<std::shared_ptr<CEngine::EnvProbeShader>> envProbes;
+
 	Ceng::ShaderProgram *shaderProgram;
 
 	std::shared_ptr<CEngine::ShaderProgram> lightProbeProg;
-
-	//eresult = shaderManager.CreateProgramFromFile("quad.vs", "light-probe.fs", lightProbeProg);
 	
 	std::vector<Ceng::StringUtf8> envFsFlags;
 
@@ -539,8 +539,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	envFsFlags.push_back("ENVMAP_PARALLAX_AA_BOX");
 
 	eresult = shaderManager.CreateProgramFromFile("quad.vs", nullptr, "light-probe.fs", &envFsFlags, lightProbeProg);
-
-	//eresult = shaderManager.CreateProgramFromFile("quad.vs", "light-spot-shadow.fs", lightProbeProg);
 	if (eresult != CEngine::EngineResult::ok)
 	{
 		Ceng::Log::Print("CreateProgram failed:");
@@ -575,7 +573,29 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		return 0;
 	}
 
+	std::shared_ptr<CEngine::EnvProbeShaderParallaxAABB> roomEnvProbe = std::make_shared<CEngine::EnvProbeShaderParallaxAABB>();
+
+	roomEnvProbe->boundaryCenterWorldPos[0] = 0.0f;
+	roomEnvProbe->boundaryCenterWorldPos[1] = 1.5f;
+	roomEnvProbe->boundaryCenterWorldPos[2] = 0.0f;
+
+	roomEnvProbe->boxSideHalf[0] = 4.0f;
+	roomEnvProbe->boxSideHalf[1] = 2.5f;
+	roomEnvProbe->boxSideHalf[2] = 4.0f;
+
+	eresult = roomEnvProbe->Init(lightProbeProg);
+
+	if (eresult != CEngine::EngineResult::ok)
+	{
+		Ceng::Log::Print("Failed to initialize environment probe\n");
+		return 0;
+	}
+
+	envProbes.push_back(roomEnvProbe);
+
 	// Uniforms
+
+	/*
 
 	Ceng::ShaderConstant *probe_windowWidth;
 	cresult = shaderProgram->GetConstant("windowWidth", &probe_windowWidth);
@@ -621,14 +641,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	Ceng::ShaderConstant* probe_cameraPos;
 	cresult = shaderProgram->GetConstant("cameraPos", &probe_cameraPos);
+	*/
 
 	/*
 	Ceng::ShaderConstant* probe_cubeSideHalf;
 	cresult = shaderProgram->GetConstant("cubeSideHalf", &probe_cubeSideHalf);
 	*/
 
-	Ceng::ShaderConstant* probe_boxSideHalf;
-	cresult = shaderProgram->GetConstant("boxSideHalf", &probe_boxSideHalf);
+	//Ceng::ShaderConstant* probe_boxSideHalf;
+	//cresult = shaderProgram->GetConstant("boxSideHalf", &probe_boxSideHalf);
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Environment (background) drawing pass
@@ -1575,7 +1596,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Camera data
 
-	FPSCamera camera;
+	CEngine::FPSCamera camera;
 
 	camera.SetWorldPosition(Ceng::VectorF4(0.0f, 1.7f, 10.0f));
 	//camera.SetWorldPosition(Ceng::VectorF4(-200.0f, 2.0f, 158.0f));
@@ -2091,57 +2112,52 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				//////////////////////////////////////////////////////////////
 				// Light probe pass
 
-				renderContext->SetShaderProgram(lightProbeProg->GetProgram());
+				for (auto& envProbe : envProbes)
+				{
+					renderContext->SetShaderProgram(envProbe->program->GetProgram());
 
-				probe_windowWidth->SetFloat((Ceng::FLOAT32)displayWidth);
-				probe_windowHeight->SetFloat((Ceng::FLOAT32)displayHeight);
+					envProbe->fs_windowWidth->SetFloat((Ceng::FLOAT32)displayWidth);
+					envProbe->fs_windowHeight->SetFloat((Ceng::FLOAT32)displayHeight);
 
-				probe_xDilationDiv->SetFloat(xDilationDiv);
-				probe_yDilationDiv->SetFloat(yDilationDiv);
-				probe_zTermA->SetFloat(zTermA);
-				probe_zTermB->SetFloat(zTermB);
+					envProbe->fs_xDilationDiv->SetFloat(xDilationDiv);
+					envProbe->fs_yDilationDiv->SetFloat(yDilationDiv);
+					envProbe->fs_zTermA->SetFloat(zTermA);
+					envProbe->fs_zTermB->SetFloat(zTermB);
 
-				probe_gbufferColor->SetInt(0);
-				probe_gbufferNormal->SetInt(1);
-				probe_depthBuffer->SetInt(2);
+					envProbe->fs_gbufferColor->SetInt(0);
+					envProbe->fs_gbufferNormal->SetInt(1);
+					envProbe->fs_depthBuffer->SetInt(2);
 
-				probe_reflectionEnv->SetInt(3);
-				probe_diffuseEnv->SetInt(4);
+					envProbe->fs_reflectionEnv->SetInt(3);
+					envProbe->fs_diffuseEnv->SetInt(4);
 
-				Ceng::FLOAT32 boundaryWorldPos[] = { 0.0f, 1.5f, 0.0f };
-				probe_boundaryCenterWorldPos->SetFloat3(boundaryWorldPos);
+					envProbe->fs_cameraReverse->SetMatrix_4x4(&reverseCameraRotation.data[0][0], true);
 
-				Ceng::FLOAT32 boxSideHalf[] = { 4.0, 2.5 , 4.0 };
-				//probe_cubeSideHalf->SetFloat(4.0);
-				probe_boxSideHalf->SetFloat3(boxSideHalf);
+					envProbe->PrepareRender(&camera);
 
-				CEngine::Vec3 cameraPos;
+					Ceng::BufferData2D data;
 
-				camera.GetPosition(&cameraPos);
+					probeMapHandle->AsCubemap()->GetBufferData2D(&data);
 
-				probe_cameraPos->SetFloat3((Ceng::FLOAT32*)&cameraPos);
+					envProbe->fs_maxEnvLOD->SetFloat(Ceng::FLOAT32(data.mipLevels));
 
-				/////////////////////////////////////////////////////////////
-				// Room environment map
+					renderContext->SetPixelShaderResource(3, probeView);
+					renderContext->SetPixelShaderSamplerState(3, diffuseSampler);
 
-				Ceng::BufferData2D data;
+					renderContext->SetPixelShaderResource(4, probeIrradianceView);
+					renderContext->SetPixelShaderSamplerState(4, diffuseSampler);
 
-				probeMapHandle->AsCubemap()->GetBufferData2D(&data);
 
-				probe_maxEnvLOD->SetFloat(Ceng::FLOAT32(data.mipLevels));				
-
-				renderContext->SetPixelShaderResource(3, probeView);
-				renderContext->SetPixelShaderSamplerState(3, diffuseSampler);
-
-				renderContext->SetPixelShaderResource(4, probeIrradianceView);
-				renderContext->SetPixelShaderSamplerState(4, diffuseSampler);
-
-				probe_cameraReverse->SetMatrix_4x4(&reverseCameraRotation.data[0][0], true);
-
-				renderContext->DrawIndexed(Ceng::PRIMITIVE_TYPE::TRIANGLE_LIST, 0, 6);
+					renderContext->DrawIndexed(Ceng::PRIMITIVE_TYPE::TRIANGLE_LIST, 0, 6);
+				}
 
 				/////////////////////////////////////////////////////////////
 				// Environment map lighting pass
+
+				/*
+				renderContext->SetShaderProgram(lightProbeProg->GetProgram());
+
+				Ceng::BufferData2D data;
 
 				envMapHandle->AsCubemap()->GetBufferData2D(&data);
 
@@ -2154,6 +2170,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				renderContext->SetPixelShaderSamplerState(4, diffuseSampler);
 
 				probe_cameraReverse->SetMatrix_4x4(&reverseCameraRotation.data[0][0], true);
+				*/
 
 				//renderContext->DrawIndexed(Ceng::PRIMITIVE_TYPE::TRIANGLE_LIST, 0, 6);
 
@@ -2298,6 +2315,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	// Light probe shader uniforms
 
+	/*
 	probe_depthBuffer->Release();
 	probe_gbufferColor->Release();
 	probe_gbufferNormal->Release();
@@ -2321,6 +2339,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	//probe_cubeSideHalf->Release();
 	probe_boxSideHalf->Release();
 	probe_cameraPos->Release();
+	*/
 
 	probeView->Release();
 
