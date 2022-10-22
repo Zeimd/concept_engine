@@ -43,6 +43,11 @@
 
 #include "env-map.h"
 
+#include "basic-types.h"
+
+#include "camera.h"
+#include "engine-object.h"
+
 namespace CEngine
 {
 	constexpr Ceng::UINT32 majorVersion = 0;
@@ -50,21 +55,6 @@ namespace CEngine
 	constexpr Ceng::UINT32 build = 113;
 }
 
-struct ColorF4
-{
-	Ceng::FLOAT32 blue;
-	Ceng::FLOAT32 green;
-	Ceng::FLOAT32 red;
-	Ceng::FLOAT32 alpha;
-};
-
-struct TexelF4
-{
-	Ceng::FLOAT32 u;
-	Ceng::FLOAT32 v;
-	Ceng::FLOAT32 s;
-	Ceng::FLOAT32 t;
-};
 
 #include "math-vector.h"
 
@@ -78,89 +68,15 @@ struct ProgVertexData
 	CEngine::TexelF2 texCoord;
 };
 
-class EngineObject
-{
-protected:
-	Ceng::VectorF4 position;
 
-	Ceng::Quaternion rotation;
-	Ceng::VectorF4 rotationBasis[3];
-
-	Ceng::Matrix4 positionMatrix;
-public:
-	EngineObject();
-	virtual ~EngineObject();
-
-	virtual void RotateByDeltas(const Ceng::FLOAT32 xAngle,
-								const Ceng::FLOAT32 yAngle,
-								const Ceng::FLOAT32 zAngle);
-
-	virtual const Ceng::Matrix4 GetRotationMatrix() const;
-	virtual const Ceng::Matrix4 GetPositionMatrix();
-	virtual const Ceng::Matrix4 GetFullTransformation();
-
-	void SetWorldPosition(const Ceng::VectorF4 &newPos);
-	
-	virtual void MoveByDelta(const Ceng::VectorF4 &deltaPos);
-	virtual void MoveByWorldDelta(const Ceng::VectorF4 &deltaPos);
-
-	virtual void GetPosition(CEngine::Vec3 *position);
-};
 
 struct SurfaceData
 {
 	Ceng::INT32 vertexIndices[8];
 };
 
-class Camera : public EngineObject
-{
-protected:
 
-	Ceng::Quaternion reverseRotation;
-
-	Ceng::VectorF4 defaultBasis[3];
-
-public:
-	Camera();
-	virtual ~Camera();
-
-	virtual void RotateByDeltas(const Ceng::FLOAT32 xAngle,
-								const Ceng::FLOAT32 yAngle,
-								const Ceng::FLOAT32 zAngle) override;
-
-	virtual const Ceng::Matrix4 GetRotationMatrix() const override;
-	virtual const Ceng::Matrix4 GetPositionMatrix() override;
-	virtual const Ceng::Matrix4 GetFullTransformation() override;
-
-	const Ceng::Matrix4 GetReverseRotation() const;
-};
-
-class FPSCamera : public Camera
-{
-protected:
-
-	Ceng::VectorF4 walkDir;
-
-public:
-	FPSCamera();
-	virtual ~FPSCamera();
-
-	virtual void RotateByDeltas(const Ceng::FLOAT32 xAngle,
-		const Ceng::FLOAT32 yAngle,
-		const Ceng::FLOAT32 zAngle) override;
-
-	//virtual void MoveByDelta(const Ceng::VectorF4 &deltaPos) override;
-
-	/*
-	virtual const Ceng::Matrix4 GetRotationMatrix() const override;
-	virtual const Ceng::Matrix4 GetPositionMatrix() override;
-	virtual const Ceng::Matrix4 GetFullTransformation() override;
-
-	const Ceng::Matrix4 GetReverseRotation() const;
-	*/
-};
-
-class Actor : public EngineObject
+class Actor : public CEngine::EngineObject
 {
 protected:
 

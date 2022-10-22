@@ -134,10 +134,13 @@ copy "$(SolutionDir)\..\..\ceng-core\lib\win32\Release\*.dll" "$(SolutionDir)\..
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\deps\upng\upng.h" />
+    <ClInclude Include="..\..\opengl-test\basic-types.h" />
     <ClInclude Include="..\..\opengl-test\byte-order.h" />
+    <ClInclude Include="..\..\opengl-test\camera.h" />
     <ClInclude Include="..\..\opengl-test\component.h" />
     <ClInclude Include="..\..\opengl-test\depth-pass.h" />
     <ClInclude Include="..\..\opengl-test\direction-light-shader.h" />
+    <ClInclude Include="..\..\opengl-test\engine-object.h" />
     <ClInclude Include="..\..\opengl-test\engine-result.h" />
     <ClInclude Include="..\..\opengl-test\engine-v2.h" />
     <ClInclude Include="..\..\opengl-test\entity.h" />

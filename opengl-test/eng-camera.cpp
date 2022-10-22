@@ -6,7 +6,9 @@
 *
 *****************************************************************************/
 
-#include "engine-v2.h"
+#include "camera.h"
+
+using namespace CEngine;
 
 Camera::Camera()
 {

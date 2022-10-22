@@ -6,7 +6,9 @@
 *
 *****************************************************************************/
 
-#include "engine-v2.h"
+#include "engine-object.h"
+
+using namespace CEngine;
 
 EngineObject::EngineObject()
 {
