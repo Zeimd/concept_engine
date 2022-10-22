@@ -402,61 +402,6 @@ const EngineResult::value TextureManager::LoadCubemap(const Ceng::StringUtf8 &fi
 		textureList.push_back(irradianceHandle);
 	}
 
-	//texHandle->relatedIrradiance = ;
-	/*
-	TextureCube* cubeHandle;
-
-	try
-	{
-		cubeHandle = new TextureCube();
-	}
-	catch (std::bad_alloc&)
-	{
-		if (rawIrradianceMap != nullptr)
-		{
-			rawIrradianceMap->Release();
-		}
-
-		rawCubemap->Release();
-		return EngineResult::out_of_memory;
-	}
-
-	if 
-
-	texHandle->name = filename;
-	texHandle->sRGB = options.sRGB;
-	texHandle->type = TextureType::cubemap;
-	texHandle->texture = rawCubemap;
-	
-	//texHandle->relatedIrradiance = ;
-
-	std::shared_ptr<Texture> texPtr;
-
-	try
-	{
-		texPtr = std::shared_ptr<Texture>(texHandle);
-	}
-	catch (std::bad_alloc&)
-	{
-		if (rawIrradianceMap != nullptr)
-		{
-			rawIrradianceMap->Release();
-		}
-
-		rawCubemap->Release();
-		return EngineResult::out_of_memory;
-	}
-
-	try
-	{
-		textureList.push_back(texPtr);
-	}
-	catch (std::bad_alloc&)
-	{
-		return EngineResult::out_of_memory;
-	}
-	*/
-
 	output = cubeHandle;
 	out_irradiance = irradianceHandle;
 
@@ -556,8 +501,6 @@ const EngineResult::value TextureManager::GenerateIrradianceMapFromCube(const Ce
 	const TextureOptions& options, Ceng::Cubemap* cubemap, Ceng::Cubemap** output)
 {
 	*output = nullptr;
-
-	//Ceng::Log::Print("TextureManager::GenerateIrradianceMapFromCube\n");
 
 	Ceng::Texture2dDesc diffuseEnvDesc;
 
