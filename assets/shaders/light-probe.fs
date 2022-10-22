@@ -98,17 +98,13 @@ void main()
 	vec3 eyeNormal = (cameraReverseRotation * vec4(normal,1.0)).xyz;
 
 	vec3 diffuseEnv = textureLod(diffuseEnv,eyeNormal,0).rgb;
-	vec3 specularEnv = textureLod(reflectionEnv,cubeDir,lod).rgb;
-
 	vec3 diffuseColor = DiffuseColor(baseColor,metallic);
-
-	//diffuseColor *= 0.005;
-
-	//vec3 finalColor = specularEnv;
+	//vec3 diffuseColor = vec3(0.0,0.0,0.0);
+	
+	vec3 specularEnv = textureLod(reflectionEnv,cubeDir,lod).rgb;
+	//vec3 specularEnv = vec3(0.0,0.0,0.0);
 
 	vec3 finalColor = diffuseColor * diffuseEnv + specularFactor * specularEnv;
-
-	//vec3 finalColor = diffuseColor;
 
 	color = vec4(finalColor,1.0);
 }
