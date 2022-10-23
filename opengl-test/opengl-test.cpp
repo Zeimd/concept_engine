@@ -2121,62 +2121,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				*/
 
 				//////////////////////////////////////////////////////////////
-				// Cube map access setup
+				// Environment probe pass
 
-				//Ceng::Matrix4 reverseCameraRotation = camera.GetReverseRotation();
-
-				//////////////////////////////////////////////////////////////
-				// Light probe pass
+				envMapParams.cameraReverseRotation = camera.GetReverseRotation();
+				camera.GetPosition(&envMapParams.cameraWorldPos);
 
 				envMapManager->Render(renderContext, &deferredParams, &envMapParams);
 
-				/*
-				for (auto& envProbe : envProbes)
-				{
-					renderContext->SetShaderProgram(envProbe->program->GetProgram());
-
-					envProbe->fs_windowWidth->SetFloat((Ceng::FLOAT32)displayWidth);
-					envProbe->fs_windowHeight->SetFloat((Ceng::FLOAT32)displayHeight);
-
-					envProbe->fs_xDilationDiv->SetFloat(xDilationDiv);
-					envProbe->fs_yDilationDiv->SetFloat(yDilationDiv);
-					envProbe->fs_zTermA->SetFloat(zTermA);
-					envProbe->fs_zTermB->SetFloat(zTermB);
-
-					envProbe->fs_gbufferColor->SetInt(0);
-					envProbe->fs_gbufferNormal->SetInt(1);
-					envProbe->fs_depthBuffer->SetInt(2);
-
-					envProbe->fs_reflectionEnv->SetInt(3);
-					envProbe->fs_diffuseEnv->SetInt(4);
-
-					envProbe->fs_cameraReverse->SetMatrix_4x4(&reverseCameraRotation.data[0][0], true);
-
-					envProbe->PrepareRender(&camera);
-
-					Ceng::BufferData2D data;
-
-					probeReflection->AsCubemap()->GetBufferData2D(&data);
-
-					envProbe->fs_maxEnvLOD->SetFloat(Ceng::FLOAT32(data.mipLevels));
-
-					renderContext->SetPixelShaderResource(3, probeReflectionView);
-					renderContext->SetPixelShaderSamplerState(3, diffuseSampler);
-
-					renderContext->SetPixelShaderResource(4, probeIrradianceView);
-					renderContext->SetPixelShaderSamplerState(4, diffuseSampler);
-
-
-					renderContext->DrawIndexed(Ceng::PRIMITIVE_TYPE::TRIANGLE_LIST, 0, 6);
-				}
-				*/
-
 				/////////////////////////////////////////////////////////////
 				// Environment map lighting pass
-
-				envMapParams.cameraReverseRotation = camera.GetReverseRotation();
-
-				camera.GetPosition(&envMapParams.cameraWorldPos);
 
 				/*
 				renderContext->SetShaderProgram(lightProbeProg->GetProgram());
@@ -2205,7 +2158,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				renderContext->SetPixelShaderResource(2, nullptr);
 
 				///////////////////////////////////////////////////
-				// Draw environment
+				// Draw skybox
 				
 				renderContext->SetShaderProgram(envProgLink->GetProgram());
 
