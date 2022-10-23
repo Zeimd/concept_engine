@@ -1138,8 +1138,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	CEngine::Vec3 boundaryPos = { 0.0f, 1.5f, 0.0 };
 	CEngine::Vec3 boxSideHalf = { 4.0f, 2.5f, 4.0f };
 
-	eresult = envMapManager->AddEnvMapParallaxAABB("envmap.bmp", boundaryPos, boxSideHalf);
-	//eresult = envMapManager->AddEnvMapParallaxAABB("EnvProbe_1.exr", boundaryPos, boxSideHalf);
+	//eresult = envMapManager->AddEnvMapParallaxAABB("envmap.bmp", boundaryPos, boxSideHalf);
+	eresult = envMapManager->AddEnvMapParallaxAABB("EnvProbe_1.exr", boundaryPos, boxSideHalf);
 
 	if (eresult != CEngine::EngineResult::ok)
 	{
@@ -2127,6 +2127,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 				//////////////////////////////////////////////////////////////
 				// Light probe pass
+
+				envMapManager->Render(renderContext, &deferredParams, &envMapParams);
 
 				/*
 				for (auto& envProbe : envProbes)

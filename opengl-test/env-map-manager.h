@@ -44,6 +44,8 @@ namespace CEngine
 
 		virtual ~EnvProbe()
 		{
+			envMapView->Release();
+			irradianceMapView->Release();
 
 		}
 

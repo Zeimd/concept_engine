@@ -39,7 +39,8 @@ EnvProbeShader::~EnvProbeShader()
 	fs_cameraReverse->Release();
 }
 
-EngineResult::value EnvProbeShader::GetInstance(std::shared_ptr<CEngine::ShaderProgram>& in_program, EnvProbeShader** output)
+EngineResult::value EnvProbeShader::GetInstance(std::shared_ptr<CEngine::ShaderProgram>& in_program, 
+	EnvProbeShader** output)
 {
 	EnvProbeShader* shader = new EnvProbeShader();
 
@@ -48,6 +49,11 @@ EngineResult::value EnvProbeShader::GetInstance(std::shared_ptr<CEngine::ShaderP
 	shader->program = in_program;
 
 	eresult = shader->Init();
+
+	if (eresult != EngineResult::ok)
+	{
+		return eresult;
+	}
 
 	*output = shader;
 
@@ -271,15 +277,21 @@ EnvProbeShaderParallaxAABB::~EnvProbeShaderParallaxAABB()
 	fs_boxSideHalf->Release();
 }
 
-EngineResult::value EnvProbeShaderParallaxAABB::GetInstance(std::shared_ptr<CEngine::ShaderProgram>& in_program, EnvProbeShaderParallax** output)
+EngineResult::value EnvProbeShaderParallaxAABB::GetInstance(std::shared_ptr<CEngine::ShaderProgram>& in_program, 
+	EnvProbeShaderParallaxAABB** output)
 {
-	EnvProbeShader* shader = new EnvProbeShaderParallaxAABB();
+	EnvProbeShaderParallaxAABB* shader = new EnvProbeShaderParallaxAABB();
 
 	CEngine::EngineResult::value eresult;
 
 	shader->program = in_program;
 
 	eresult = shader->Init();
+
+	if (eresult != EngineResult::ok)
+	{
+		return eresult;
+	}
 
 	*output = shader;
 

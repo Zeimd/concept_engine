@@ -54,8 +54,10 @@ namespace CEngine
 	public:
 		virtual ~EnvProbeShader();
 
-		static EngineResult::value GetInstance(std::shared_ptr<CEngine::ShaderProgram>& in_program, EnvProbeShader** output);
-		
+		static EngineResult::value GetInstance(std::shared_ptr<CEngine::ShaderProgram>& in_program, 
+			EnvProbeShader** output);
+
+
 	};
 
 	class EnvProbeShaderParallax : public EnvProbeShader
@@ -72,6 +74,7 @@ namespace CEngine
 	public:
 		~EnvProbeShaderParallax() override;
 
+
 	};
 
 	class EnvProbeShaderParallaxAABB : public EnvProbeShaderParallax
@@ -87,9 +90,9 @@ namespace CEngine
 	public:
 		~EnvProbeShaderParallaxAABB() override;
 
-		static EngineResult::value GetInstance(std::shared_ptr<CEngine::ShaderProgram>& in_program, EnvProbeShaderParallaxAABB** output);
+		static EngineResult::value GetInstance(std::shared_ptr<CEngine::ShaderProgram>& in_program, 
+			EnvProbeShaderParallaxAABB** output);
 
-	protected:
 
 	};
 }

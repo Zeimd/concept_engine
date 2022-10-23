@@ -134,6 +134,42 @@ EngineResult::value EnvMapManager::AddEnvMapParallaxAABB(const Ceng::StringUtf8&
 		return EngineResult::fail;
 	}
 
+	std::shared_ptr<EnvProbeShaderParallaxAABB> envProbeShader;
+	
+	bool found = false;
+
+	for (auto& shader : shaders)
+	{
+		if (shader->program == lightProbeProg)
+		{
+			envProbeShader = std::static_pointer_cast<EnvProbeShaderParallaxAABB>(shader);
+			found = true;
+			break;
+		}
+	}
+
+	if (!found)
+	{
+		//envProbeShader = std::make_shared< EnvProbeShaderParallaxAABB>();
+
+		EnvProbeShaderParallaxAABB* temp;
+
+		eresult = EnvProbeShaderParallaxAABB::GetInstance(lightProbeProg, &temp);
+
+		if (eresult != EngineResult::ok)
+		{
+			return eresult;
+		}
+
+		envProbeShader.reset(temp);
+
+		shaders.push_back(envProbeShader);
+	}
+
+	envProbeShader->program = lightProbeProg;
+
+	std::shared_ptr<EnvProbeAABOX> envProbe = std::make_shared<EnvProbeAABOX>();
+
 	Ceng::ShaderResourceViewDesc envViewDesc;
 
 	envViewDesc.cubeMap.baseMipLevel = 0;
@@ -157,33 +193,6 @@ EngineResult::value EnvMapManager::AddEnvMapParallaxAABB(const Ceng::StringUtf8&
 		envMapView->Release();
 		return EngineResult::fail;
 	}
-
-	std::shared_ptr<EnvProbeShaderParallaxAABB> envProbeShader;
-	
-	bool found = false;
-
-	for (auto& shader : shaders)
-	{
-		if (shader->program == lightProbeProg)
-		{
-			envProbeShader = std::static_pointer_cast<EnvProbeShaderParallaxAABB>(shader);
-			found = true;
-			break;
-		}
-	}
-
-	if (!found)
-	{
-		//envProbeShader = std::make_shared< EnvProbeShaderParallaxAABB>();
-
-		eresult = EnvProbeShaderParallaxAABB::Init()
-
-		shaders.push_back(envProbeShader);
-	}
-
-	envProbeShader->program = lightProbeProg;
-
-	std::shared_ptr<EnvProbeAABOX> envProbe = std::make_shared<EnvProbeAABOX>();
 
 	envProbe->name = cubemapFile;
 	envProbe->envMap = envMapHandle;
