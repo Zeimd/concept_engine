@@ -45,6 +45,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
+	double loadStart, loadEnd;
+
+	loadStart = Ceng_HighPrecisionTimer();
+
+
 	Ceng::StringUtf8 appPath,currentPath;
 	
 	Ceng_ExePath(appPath);
@@ -1587,6 +1592,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 
 	renderContext->SetRasterizerState(&rasterizerState);
+
+	loadEnd = Ceng_HighPrecisionTimer();
+
+	double loadDuration = loadEnd - loadStart;
+
+	Ceng::String text = "Load complete. Took ";
+	text += loadDuration;
+	text += " seconds";
+
+	Ceng::Log::Print(text);
+
 
 	///////////////////////////////////////////////////////
 	// Prepare for main loop
