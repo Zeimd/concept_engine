@@ -134,6 +134,8 @@ EngineResult::value EnvMapManager::AddEnvMapParallaxAABB(const Ceng::StringUtf8&
 		return EngineResult::fail;
 	}
 
+	Ceng::Log::Print("Cubemap loaded\n");
+
 	std::shared_ptr<EnvProbeShaderParallaxAABB> envProbeShader;
 	
 	bool found = false;
@@ -158,6 +160,7 @@ EngineResult::value EnvMapManager::AddEnvMapParallaxAABB(const Ceng::StringUtf8&
 
 		if (eresult != EngineResult::ok)
 		{
+			Ceng::Log::Print("EnvProbeShaderParallaxAABB::GetInstance failed\n");
 			return eresult;
 		}
 

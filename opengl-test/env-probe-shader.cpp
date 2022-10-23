@@ -69,12 +69,14 @@ EngineResult::value EnvProbeShader::Init()
 	cresult = shaderProgram->GetConstant("windowWidth", &fs_windowWidth);
 	if (cresult != Ceng::CE_OK)
 	{
+		Ceng::Log::Print("EnvProbeShader::Init: Failed to get shader constant: windowWidth\n");
 		return EngineResult::fail;
 	}
 
 	cresult = shaderProgram->GetConstant("windowHeight", &fs_windowHeight);
 	if (cresult != Ceng::CE_OK)
 	{
+		Ceng::Log::Print("EnvProbeShader::Init: Failed to get shader constant: windowHeight\n");
 		fs_windowWidth->Release();
 		return EngineResult::fail;
 	}
@@ -82,6 +84,7 @@ EngineResult::value EnvProbeShader::Init()
 	cresult = shaderProgram->GetConstant("xDilationDiv", &fs_xDilationDiv);
 	if (cresult != Ceng::CE_OK)
 	{
+		Ceng::Log::Print("EnvProbeShader::Init: Failed to get shader constant: xDilationDiv\n");
 		fs_windowWidth->Release();
 		fs_windowHeight->Release();
 		return EngineResult::fail;
@@ -90,6 +93,7 @@ EngineResult::value EnvProbeShader::Init()
 	cresult = shaderProgram->GetConstant("yDilationDiv", &fs_yDilationDiv);
 	if (cresult != Ceng::CE_OK)
 	{
+		Ceng::Log::Print("EnvProbeShader::Init: Failed to get shader constant: yDilationDiv\n");
 		fs_windowWidth->Release();
 		fs_windowHeight->Release();
 		fs_xDilationDiv->Release();
@@ -99,6 +103,7 @@ EngineResult::value EnvProbeShader::Init()
 	cresult = shaderProgram->GetConstant("zTermA", &fs_zTermA);
 	if (cresult != Ceng::CE_OK)
 	{
+		Ceng::Log::Print("EnvProbeShader::Init: Failed to get shader constant: zTermA\n");
 		fs_windowWidth->Release();
 		fs_windowHeight->Release();
 		fs_xDilationDiv->Release();
@@ -109,6 +114,7 @@ EngineResult::value EnvProbeShader::Init()
 	cresult = shaderProgram->GetConstant("zTermB", &fs_zTermB);
 	if (cresult != Ceng::CE_OK)
 	{
+		Ceng::Log::Print("EnvProbeShader::Init: Failed to get shader constant: zTermB\n");
 		fs_windowWidth->Release();
 		fs_windowHeight->Release();
 		fs_xDilationDiv->Release();
@@ -120,6 +126,7 @@ EngineResult::value EnvProbeShader::Init()
 	cresult = shaderProgram->GetConstant("gbufferColor", &fs_gbufferColor);
 	if (cresult != Ceng::CE_OK)
 	{
+		Ceng::Log::Print("EnvProbeShader::Init: Failed to get shader constant: gbufferColor\n");
 		fs_windowWidth->Release();
 		fs_windowHeight->Release();
 		fs_xDilationDiv->Release();
@@ -132,6 +139,7 @@ EngineResult::value EnvProbeShader::Init()
 	cresult = shaderProgram->GetConstant("gbufferNormal", &fs_gbufferNormal);
 	if (cresult != Ceng::CE_OK)
 	{
+		Ceng::Log::Print("EnvProbeShader::Init: Failed to get shader constant: gbufferNormal\n");
 		fs_windowWidth->Release();
 		fs_windowHeight->Release();
 		fs_xDilationDiv->Release();
@@ -145,6 +153,7 @@ EngineResult::value EnvProbeShader::Init()
 	cresult = shaderProgram->GetConstant("depthBuffer", &fs_depthBuffer);
 	if (cresult != Ceng::CE_OK)
 	{
+		Ceng::Log::Print("EnvProbeShader::Init: Failed to get shader constant: depthBuffer\n");
 		fs_windowWidth->Release();
 		fs_windowHeight->Release();
 		fs_xDilationDiv->Release();
@@ -159,6 +168,7 @@ EngineResult::value EnvProbeShader::Init()
 	cresult = shaderProgram->GetConstant("reflectionEnv", &fs_reflectionEnv);
 	if (cresult != Ceng::CE_OK)
 	{
+		Ceng::Log::Print("EnvProbeShader::Init: Failed to get shader constant: reflectionEnv\n");
 		fs_windowWidth->Release();
 		fs_windowHeight->Release();
 		fs_xDilationDiv->Release();
@@ -174,6 +184,8 @@ EngineResult::value EnvProbeShader::Init()
 	cresult = shaderProgram->GetConstant("diffuseEnv", &fs_diffuseEnv);
 	if (cresult != Ceng::CE_OK)
 	{
+		Ceng::Log::Print(cresult);
+		Ceng::Log::Print("EnvProbeShader::Init: Failed to get shader constant: diffuseEnv\n");
 		fs_windowWidth->Release();
 		fs_windowHeight->Release();
 		fs_xDilationDiv->Release();
@@ -190,6 +202,7 @@ EngineResult::value EnvProbeShader::Init()
 	cresult = shaderProgram->GetConstant("maxEnvLOD", &fs_maxEnvLOD);
 	if (cresult != Ceng::CE_OK)
 	{
+		Ceng::Log::Print("EnvProbeShader::Init: Failed to get shader constant: maxEnvLOD\n");
 		fs_windowWidth->Release();
 		fs_windowHeight->Release();
 		fs_xDilationDiv->Release();
@@ -207,6 +220,7 @@ EngineResult::value EnvProbeShader::Init()
 	cresult = shaderProgram->GetConstant("cameraReverseRotation", &fs_cameraReverse);
 	if (cresult != Ceng::CE_OK)
 	{
+		Ceng::Log::Print("EnvProbeShader::Init: Failed to get shader constant: cameraReverseRotation\n");
 		fs_windowWidth->Release();
 		fs_windowHeight->Release();
 		fs_xDilationDiv->Release();
@@ -254,12 +268,14 @@ EngineResult::value EnvProbeShaderParallax::Init()
 	cresult = shaderProgram->GetConstant("boundaryCenterWorldPos", &fs_boundaryCenterWorldPos);
 	if (cresult != Ceng::CE_OK)
 	{
+		Ceng::Log::Print("EnvProbeShaderParallax::Init: Failed to get shader constant: boundaryCenterWorldPos\n");
 		return EngineResult::fail;
 	}
 
 	cresult = shaderProgram->GetConstant("cameraPos", &fs_cameraPos);
 	if (cresult != Ceng::CE_OK)
 	{
+		Ceng::Log::Print("EnvProbeShaderParallax::Init: Failed to get shader constant: cameraPos\n");
 		fs_boundaryCenterWorldPos->Release();
 		return EngineResult::fail;
 	}
@@ -316,6 +332,7 @@ EngineResult::value EnvProbeShaderParallaxAABB::Init()
 	cresult = shaderProgram->GetConstant("boxSideHalf", &fs_boxSideHalf);
 	if (cresult != Ceng::CE_OK)
 	{
+		Ceng::Log::Print("EnvProbeShaderParallaxAABB::Init: Failed to get shader constant: boxSideHalf\n");
 		return EngineResult::fail;
 	}
 
