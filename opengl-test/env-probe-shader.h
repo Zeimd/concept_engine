@@ -46,13 +46,16 @@ namespace CEngine
 
 		Ceng::ShaderConstant* fs_cameraReverse;
 
-	public:
+	protected:
 		EnvProbeShader();
+
+		virtual EngineResult::value Init();
+
+	public:
 		virtual ~EnvProbeShader();
 
-		virtual EngineResult::value Init(std::shared_ptr<CEngine::ShaderProgram>& in_program);
-
-		virtual EngineResult::value PrepareRender(Camera* camera)=0;
+		static EngineResult::value GetInstance(std::shared_ptr<CEngine::ShaderProgram>& in_program, EnvProbeShader** output);
+		
 	};
 
 	class EnvProbeShaderParallax : public EnvProbeShader
@@ -61,32 +64,33 @@ namespace CEngine
 		Ceng::ShaderConstant* fs_boundaryCenterWorldPos;
 		Ceng::ShaderConstant* fs_cameraPos;
 
-		Ceng::FLOAT32 boundaryCenterWorldPos[3];
-		Ceng::FLOAT32 cameraPos[3];
+	protected:
+		EnvProbeShaderParallax();
+
+		EngineResult::value Init() override;
 
 	public:
-		EnvProbeShaderParallax();
 		~EnvProbeShaderParallax() override;
 
-		EngineResult::value Init(std::shared_ptr<CEngine::ShaderProgram>& in_program) override;
-
-		EngineResult::value PrepareRender(Camera* camera) override;
 	};
 
 	class EnvProbeShaderParallaxAABB : public EnvProbeShaderParallax
 	{
 	public:
 		Ceng::ShaderConstant* fs_boxSideHalf;
-		
-		Ceng::FLOAT32 boxSideHalf[3];
+
+	protected:
+		EnvProbeShaderParallaxAABB();
+
+		EngineResult::value Init() override;
 
 	public:
-		EnvProbeShaderParallaxAABB();
 		~EnvProbeShaderParallaxAABB() override;
 
-		EngineResult::value Init(std::shared_ptr<CEngine::ShaderProgram>& in_program) override;
+		static EngineResult::value GetInstance(std::shared_ptr<CEngine::ShaderProgram>& in_program, EnvProbeShaderParallaxAABB** output);
 
-		EngineResult::value PrepareRender(Camera* camera) override;
+	protected:
+
 	};
 }
 

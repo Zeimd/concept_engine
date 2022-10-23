@@ -532,6 +532,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Environment probe light pass
 
+	/*
 	std::vector<std::shared_ptr<CEngine::EnvProbeShader>> envProbes;
 
 	Ceng::ShaderProgram *shaderProgram;
@@ -597,9 +598,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	}
 
 	envProbes.push_back(roomEnvProbe);
+	*/
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Environment (background) drawing pass
+
+	Ceng::ShaderProgram* shaderProgram;
 
 	std::shared_ptr<CEngine::ShaderProgram> envProgLink;
 
@@ -1117,8 +1121,33 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	diffuseEnvViewDesc.cubeMap.maxMipLevel = 1;
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Enviroment cube map
+	// Enviroment probes
 
+	Ceng::Log::Print("Load environment probes\n");
+
+	CEngine::EnvMapManager* envMapManager;
+
+	eresult = CEngine::EnvMapManager::GetInstance(renderDevice, &textureManager, &shaderManager, &envMapManager);
+
+	if (eresult != CEngine::EngineResult::ok)
+	{
+		Ceng::Log::Print("Failed to initialize environment map manager\n");
+		return 0;
+	}
+
+	CEngine::Vec3 boundaryPos = { 0.0f, 1.5f, 0.0 };
+	CEngine::Vec3 boxSideHalf = { 4.0f, 2.5f, 4.0f };
+
+	eresult = envMapManager->AddEnvMapParallaxAABB("envmap.bmp", boundaryPos, boxSideHalf);
+	//eresult = envMapManager->AddEnvMapParallaxAABB("EnvProbe_1.exr", boundaryPos, boxSideHalf);
+
+	if (eresult != CEngine::EngineResult::ok)
+	{
+		Ceng::Log::Print("Failed to create envmap from file\n");
+		return 0;
+	}
+
+	/*
 	defaultTexOptions.bindFlags = Ceng::BufferBinding::shader_resource;
 	defaultTexOptions.cpuAccessFlags = 0;
 	defaultTexOptions.firstMip = 0;
@@ -1164,6 +1193,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	}
 	*/
 
+	/*
 	Ceng::ShaderResourceView *skyboxIrradianceView;
 
 	cresult = skyboxIrradiance->AsCubemap()->GetShaderViewCubemap(diffuseViewDesc, &skyboxIrradianceView);
@@ -1171,6 +1201,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	{
 		return 0;
 	}
+	*/
 
 	/*
 	eresult = CEngine::CreateIrradianceMap(envMapHandle->AsCubemap(), diffuseEnv);
@@ -1183,6 +1214,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Room environment probe
 
+	/*
 	std::shared_ptr<CEngine::Texture> probeReflection, probeIrradiance;
 
 	eresult = textureManager.LoadCubemap("EnvProbe_1.exr", defaultTexOptions, probeReflection, probeIrradiance);
@@ -1198,6 +1230,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	{
 		return 0;
 	}
+	*/
 
 	/*
 	Ceng::Cubemap *probeIrradiance;
@@ -1209,6 +1242,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	}
 	*/
 
+	/*
 	Ceng::ShaderResourceView *probeIrradianceView;
 
 	cresult = probeIrradiance->AsCubemap()->GetShaderViewCubemap(diffuseViewDesc, &probeIrradianceView);
@@ -1216,6 +1250,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	{
 		return 0;
 	}
+	*/
 
 	/*
 	eresult = CEngine::CreateIrradianceMap(probeMapHandle->AsCubemap(), probeIrradiance);
@@ -1570,9 +1605,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	Ceng::FLOAT32 zFar = 1000.0f;
 	Ceng::FLOAT32 zDiv = 1.0f / (zFar - zNear);
 
-	Ceng::FLOAT32 zTermA = 2.0f*zNear*zFar / (zFar - zNear);
-	Ceng::FLOAT32 zTermB = (zFar + zNear) / (zFar - zNear);
-
 	Ceng::FLOAT32 viewAngle = 70.0f;
 
 	renderDevice->CreateProjectionMatrix(640, 480, viewAngle, zNear, zFar, &projectionMatrix);
@@ -1586,10 +1618,25 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	Ceng::FLOAT32 cameraRotateSpeed = 90.0f;
 
-	Ceng::FLOAT32 xDilationDiv = 1.0f / projectionMatrix.data[0][0];
-	Ceng::FLOAT32 yDilationDiv = 1.0f / projectionMatrix.data[1][1];
+	CEngine::DeferredPassCommonParams deferredParams;
 
+	deferredParams.zTermA = 2.0f * zNear * zFar / (zFar - zNear);
+	deferredParams.zTermB = (zFar + zNear) / (zFar - zNear);
+	deferredParams.xDilationDiv = 1.0f / projectionMatrix.data[0][0];
+	deferredParams.yDilationDiv = 1.0f / projectionMatrix.data[1][1];
+	deferredParams.windowWidth = 0;
+	deferredParams.windowHeight = 0;
 
+	deferredParams.gbufferColorSlot = 0;
+	deferredParams.gbufferNormalSlot = 1;
+	deferredParams.depthBufferSlot = 2;
+
+	window->GetClientArea(&deferredParams.windowWidth, &deferredParams.windowHeight);
+
+	CEngine::EnvMapCommonParams envMapParams;
+
+	envMapParams.envMapSlot = 3;
+	envMapParams.irradianceSlot = 4;
 
 	renderContext->SetRasterizerState(&rasterizerState);
 
@@ -1612,10 +1659,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	Ceng::CRESULT messageResult;
 	Ceng::BOOL exitLoop = false;
-
-	Ceng::UINT32 displayWidth, displayHeight;
-
-	window->GetClientArea(&displayWidth, &displayHeight);
 
 	// FPS measurement variables
 	double startTime, endTime;
@@ -1837,14 +1880,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 				if (window->IsResized())
 				{
-					window->GetClientArea(&displayWidth, &displayHeight);
+					window->GetClientArea(&deferredParams.windowWidth, &deferredParams.windowHeight);
 
-					renderDevice->CreateProjectionMatrix(displayWidth,
-						displayHeight,
+					renderDevice->CreateProjectionMatrix(deferredParams.windowWidth,
+						deferredParams.windowHeight,
 						viewAngle, zNear, zFar,
 						&projectionMatrix);
 
-					renderContext->SetViewport(0, 0, displayWidth, displayHeight);
+					renderContext->SetViewport(0, 0, deferredParams.windowWidth, deferredParams.windowHeight);
 				}
 
 				mouse->ClipToWindow(true);
@@ -1867,10 +1910,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					startTime = Ceng_HighPrecisionTimer();
 
 					captionInfo = " | ";
-					captionInfo += (int)displayWidth;
+					captionInfo += (int)deferredParams.windowWidth;
 					//captionInfo += mouseState.xPos;
 					captionInfo += " x ";
-					captionInfo += (int)displayHeight;
+					captionInfo += (int)deferredParams.windowHeight;
 					//captionInfo += mouseState.yPos;
 					captionInfo += " | FPS = ";
 					captionInfo += fps;
@@ -1905,7 +1948,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				renderContext->SetDepthStencilState(gbufferDepthState);
 
 				renderContext->SetRasterizerState(&rasterizerState);
-				renderContext->SetViewport(0, 0, displayWidth, displayHeight);
+				renderContext->SetViewport(0, 0, deferredParams.windowWidth, deferredParams.windowHeight);
 
 				cameraFullTransform = camera.GetFullTransformation();
 				normalTransform = camera.GetRotationMatrix();
@@ -1973,8 +2016,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 				// Position reconstruction data
 
-				xDilationDiv = 1.0f / projectionMatrix.data[0][0];
-				yDilationDiv = 1.0f / projectionMatrix.data[1][1];
+				deferredParams.xDilationDiv = 1.0f / projectionMatrix.data[0][0];
+				deferredParams.yDilationDiv = 1.0f / projectionMatrix.data[1][1];
 
 				// Additive blend mode
 
@@ -2007,7 +2050,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					0, 1, 2);
 					*/
 
-				spotShadowShader.Configure(renderContext, displayWidth, displayHeight, xDilationDiv, yDilationDiv, zTermA, zTermB,
+				spotShadowShader.Configure(renderContext, deferredParams.windowWidth,
+					deferredParams.windowHeight, 
+					deferredParams.xDilationDiv, deferredParams.yDilationDiv, 
+					deferredParams.zTermA, deferredParams.zTermB,
 					0, 1, 2);
 
 				CEngine::SpotLightComponent *spotComp;
@@ -2077,11 +2123,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				//////////////////////////////////////////////////////////////
 				// Cube map access setup
 
-				Ceng::Matrix4 reverseCameraRotation = camera.GetReverseRotation();
+				//Ceng::Matrix4 reverseCameraRotation = camera.GetReverseRotation();
 
 				//////////////////////////////////////////////////////////////
 				// Light probe pass
 
+				/*
 				for (auto& envProbe : envProbes)
 				{
 					renderContext->SetShaderProgram(envProbe->program->GetProgram());
@@ -2120,9 +2167,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 					renderContext->DrawIndexed(Ceng::PRIMITIVE_TYPE::TRIANGLE_LIST, 0, 6);
 				}
+				*/
 
 				/////////////////////////////////////////////////////////////
 				// Environment map lighting pass
+
+				envMapParams.cameraReverseRotation = camera.GetReverseRotation();
+
+				camera.GetPosition(&envMapParams.cameraWorldPos);
 
 				/*
 				renderContext->SetShaderProgram(lightProbeProg->GetProgram());
@@ -2155,26 +2207,28 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				
 				renderContext->SetShaderProgram(envProgLink->GetProgram());
 
-				ev_cameraReverse->SetMatrix_4x4(&reverseCameraRotation.data[0][0], true);
+				ev_cameraReverse->SetMatrix_4x4(&envMapParams.cameraReverseRotation.data[0][0], true);
 
 				ev_zNear->SetFloat(zNear);
 
-				ev_xDilationDiv->SetFloat(xDilationDiv);
-				ev_yDilationDiv->SetFloat(yDilationDiv);
+				ev_xDilationDiv->SetFloat(deferredParams.xDilationDiv);
+				ev_yDilationDiv->SetFloat(deferredParams.yDilationDiv);
 
-				ev_windowWidth->SetFloat((Ceng::FLOAT32)displayWidth);
-				ev_windowHeight->SetFloat((Ceng::FLOAT32)displayHeight);
+				ev_windowWidth->SetFloat((Ceng::FLOAT32)deferredParams.windowWidth);
+				ev_windowHeight->SetFloat((Ceng::FLOAT32)deferredParams.windowHeight);
 
 				ev_envMap->SetInt(0);
 
-				renderContext->SetPixelShaderResource(0, skyboxView);
+				//renderContext->SetPixelShaderResource(0, skyboxView);
+				
+				
 				//renderContext->SetPixelShaderResource(0, diffuseEnvView);
 				//renderContext->SetPixelShaderSamplerState(0, diffuseSampler);
 				//renderContext->SetPixelShaderSamplerState(0, nearestSampler);
 
 				renderContext->SetDepthStencilState(envDrawDepthState);
 
-				renderContext->DrawIndexed(Ceng::PRIMITIVE_TYPE::TRIANGLE_LIST, 0, 6);
+				//renderContext->DrawIndexed(Ceng::PRIMITIVE_TYPE::TRIANGLE_LIST, 0, 6);
 
 				///////////////////////////////////////////////////
 				// Post process hdr backbuffer	
@@ -2229,9 +2283,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	} while (exitLoop == false);
 
-	skyboxIrradianceView->Release();
+	//skyboxIrradianceView->Release();
 
 	//diffuseEnv->Release();
+
+	delete envMapManager;
 
 	ev_xDilationDiv->Release();
 	ev_yDilationDiv->Release();
@@ -2244,7 +2300,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	ev_windowWidth->Release();
 	ev_windowHeight->Release();
 
-	skyboxView->Release();
+	//skyboxView->Release();
 
 	quadProgTex->Release();
 	quadIndices->Release();

@@ -11,7 +11,10 @@
 
 #include <ceng.h>
 
+#include "render-params.h"
+
 #include "env-probe-shader.h"
+#include "env-map-manager.h"
 
 #include "shader-manager.h"
 #include "shader.h"

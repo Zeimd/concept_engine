@@ -105,6 +105,7 @@ copy "$(SolutionDir)\..\..\ceng-core\lib\win32\Release\*.dll" "$(SolutionDir)\..
     <ClCompile Include="..\..\opengl-test\eng-camera.cpp" />
     <ClCompile Include="..\..\opengl-test\eng-object.cpp" />
     <ClCompile Include="..\..\opengl-test\entity.cpp" />
+    <ClCompile Include="..\..\opengl-test\env-map-manager.cpp" />
     <ClCompile Include="..\..\opengl-test\env-map.cpp" />
     <ClCompile Include="..\..\opengl-test\env-probe-shader.cpp" />
     <ClCompile Include="..\..\opengl-test\exr-loader.cpp" />
@@ -145,6 +146,7 @@ copy "$(SolutionDir)\..\..\ceng-core\lib\win32\Release\*.dll" "$(SolutionDir)\..
     <ClInclude Include="..\..\opengl-test\engine-result.h" />
     <ClInclude Include="..\..\opengl-test\engine-v2.h" />
     <ClInclude Include="..\..\opengl-test\entity.h" />
+    <ClInclude Include="..\..\opengl-test\env-map-manager.h" />
     <ClInclude Include="..\..\opengl-test\env-map.h" />
     <ClInclude Include="..\..\opengl-test\env-probe-shader.h" />
     <ClInclude Include="..\..\opengl-test\json.h" />
@@ -162,6 +164,7 @@ copy "$(SolutionDir)\..\..\ceng-core\lib\win32\Release\*.dll" "$(SolutionDir)\..
     <ClInclude Include="..\..\opengl-test\point-light-component.h" />
     <ClInclude Include="..\..\opengl-test\point-light-shader.h" />
     <ClInclude Include="..\..\opengl-test\position-component.h" />
+    <ClInclude Include="..\..\opengl-test\render-params.h" />
     <ClInclude Include="..\..\opengl-test\rotation-component.h" />
     <ClInclude Include="..\..\opengl-test\shader-manager.h" />
     <ClInclude Include="..\..\opengl-test\shader-program.h" />

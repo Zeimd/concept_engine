@@ -23,7 +23,7 @@ namespace CEngine
 	public:
 		Manager();
 
-		~Manager();
+		virtual ~Manager();
 
 		const EngineResult::value AddPath(const Ceng::StringUtf8 &assetPath);
 
