@@ -15,6 +15,10 @@ Automation
 ------------------------------------------
 Bug fixes
 
+- [ ] Artifacts on envmap when moving
+
+- [ ] Envmap manager fails to load envmap when light-probe.fs has specularEnv or diffuseColor zeroed.
+
 - [ ] Prevent lightmap-lit surfaces from being doubly lit by a diffuse environment map generated from the same scene.
       Stencil buffer or extra g-buffer fields?
 
