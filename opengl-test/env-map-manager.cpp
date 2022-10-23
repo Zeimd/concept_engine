@@ -68,7 +68,6 @@ EngineResult::value EnvMapManager::AddEnvMapParallaxAABB(const Ceng::StringUtf8&
 
 	CEngine::EngineResult::value eresult;
 
-	Ceng::ShaderProgram* shaderProgram;
 	std::shared_ptr<CEngine::ShaderProgram> lightProbeProg;
 
 	std::vector<Ceng::StringUtf8> envFsFlags;
@@ -85,7 +84,7 @@ EngineResult::value EnvMapManager::AddEnvMapParallaxAABB(const Ceng::StringUtf8&
 		return EngineResult::fail;
 	}
 
-	shaderProgram = lightProbeProg->GetProgram();
+	Ceng::ShaderProgram* shaderProgram = lightProbeProg->GetProgram();
 
 	if (shaderProgram == nullptr)
 	{
@@ -109,6 +108,8 @@ EngineResult::value EnvMapManager::AddEnvMapParallaxAABB(const Ceng::StringUtf8&
 
 		return EngineResult::fail;
 	}
+
+	
 
 	CEngine::TextureOptions defaultTexOptions;
 
@@ -231,16 +232,9 @@ void EnvMapManager::Render(Ceng::RenderContext* renderContext, DeferredPassCommo
 		envShader->fs_zTermA->SetFloat(deferredParams->zTermA);
 		envShader->fs_zTermB->SetFloat(deferredParams->zTermB);
 
-		//envShader->fs_gbufferColor->SetInt(0);
-		//envShader->fs_gbufferNormal->SetInt(1);
-		//envShader->fs_depthBuffer->SetInt(2);
-
 		envShader->fs_gbufferColor->SetInt(deferredParams->gbufferColorSlot);
 		envShader->fs_gbufferNormal->SetInt(deferredParams->gbufferNormalSlot);
 		envShader->fs_depthBuffer->SetInt(deferredParams->depthBufferSlot);
-
-		//envShader->fs_reflectionEnv->SetInt(3);
-		//envShader->fs_diffuseEnv->SetInt(4);
 
 		envShader->fs_reflectionEnv->SetInt(envMapParams->envMapSlot);
 		envShader->fs_diffuseEnv->SetInt(envMapParams->irradianceSlot);
