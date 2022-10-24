@@ -1,8 +1,8 @@
+concept_engine
+
 TODO
 ------------------------------------------
 Automation
-
-- [ ] Add environment map manager to automatize their rendering
 
 - [ ] Design a scene file format in JSON
 
@@ -33,6 +33,22 @@ Project structure
 
 - [ ] Check all dependecies and remove or replace 
       those that aren't compatible with MIT license
+
+------------------------------------------
+Environment maps
+
+- [ ] Different cube map generation point and boundary shape center. Right now they are treated as equal.
+
+- [ ] Oriented boundary shape option. This just requires that fragment world positions is further rotated into boundary
+      shape's body frame
+
+- [ ] Spherical boundary shape
+
+------------------------------------------
+Skybox
+
+- [ ] Skybox rendering has different shader, so it can't be in env map manager. 
+      NOTE: Env map manager can handle the environment part of the skybox
 
 ------------------------------------------
 Graphics features
