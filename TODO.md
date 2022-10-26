@@ -15,6 +15,8 @@ Automation
 ------------------------------------------
 Bug fixes
 
+- [ ] Envmap renders incorrectly on laptop. GPU driver difference?
+
 - [ ] Envmap manager fails to load envmap when light-probe.fs has specularEnv or diffuseColor zeroed.
       NOTE: this is caused by compiler optimizing them away. It doesn't cause the program to crash, but when function result
             is checked, it gives an error which causes Envmap manager to fail
