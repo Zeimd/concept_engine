@@ -37,18 +37,21 @@
 			}
 		}
 	}
-	"entities" :
+	"entityList" :
 	{
 		"Cube" :
 		{
-			"mesh" :
+			"type" :
 			{
-				"meshFile" : "cube.cme",
-				"meshName" : "Cube"
-			}
-			"position" : [0.0, 1.0, 0.0],
-			"rotationType" : "EULER_XYZ",
-			"rotation" : [0.0, 0.0, 0.0]
+				"file" : "cube.cen",
+				"name" : "Cube"
+			},
+
+			"components" :
+			[
+				"Position3" : [0.0, 1.0, 0.0],
+				"Rotation3" : ["EULER_XYZ", [0.0, 0.0, 0.0]]
+			]
 		}
 	}
 }

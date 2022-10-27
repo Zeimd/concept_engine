@@ -1,0 +1,16 @@
+{
+	"Cube" : 
+	{
+		"mesh" : 
+		{
+			"file" : "cube.cme",
+			"entry" : "Cube"
+		},
+
+		"requiredComponents" :
+		[
+			"Position3",
+			"Rotation3"
+		]
+	}
+}
