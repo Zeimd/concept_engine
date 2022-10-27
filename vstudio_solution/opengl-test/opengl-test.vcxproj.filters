@@ -135,6 +135,12 @@
     <ClCompile Include="..\..\opengl-test\env-map-manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\opengl-test\scene-manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\opengl-test\json.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\deps\upng\upng.h">
@@ -261,6 +267,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\opengl-test\render-params.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\opengl-test\scene-manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

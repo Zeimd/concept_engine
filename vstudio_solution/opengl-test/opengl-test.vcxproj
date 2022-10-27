@@ -112,6 +112,7 @@ copy "$(SolutionDir)\..\..\ceng-core\lib\win32\Release\*.dll" "$(SolutionDir)\..
     <ClCompile Include="..\..\opengl-test\fps-camera.cpp" />
     <ClCompile Include="..\..\opengl-test\image-format-string.cpp" />
     <ClCompile Include="..\..\opengl-test\img-loader.cpp" />
+    <ClCompile Include="..\..\opengl-test\json.cpp" />
     <ClCompile Include="..\..\opengl-test\ktx-loader.cpp" />
     <ClCompile Include="..\..\opengl-test\manager.cpp" />
     <ClCompile Include="..\..\opengl-test\material-change.cpp" />
@@ -127,6 +128,7 @@ copy "$(SolutionDir)\..\..\ceng-core\lib\win32\Release\*.dll" "$(SolutionDir)\..
     <ClCompile Include="..\..\opengl-test\point-light-shader.cpp" />
     <ClCompile Include="..\..\opengl-test\position-component.cpp" />
     <ClCompile Include="..\..\opengl-test\rotation-component.cpp" />
+    <ClCompile Include="..\..\opengl-test\scene-manager.cpp" />
     <ClCompile Include="..\..\opengl-test\shader-manager.cpp" />
     <ClCompile Include="..\..\opengl-test\shadowmap-component.cpp" />
     <ClCompile Include="..\..\opengl-test\spot-light-component.cpp" />
@@ -166,6 +168,7 @@ copy "$(SolutionDir)\..\..\ceng-core\lib\win32\Release\*.dll" "$(SolutionDir)\..
     <ClInclude Include="..\..\opengl-test\position-component.h" />
     <ClInclude Include="..\..\opengl-test\render-params.h" />
     <ClInclude Include="..\..\opengl-test\rotation-component.h" />
+    <ClInclude Include="..\..\opengl-test\scene-manager.h" />
     <ClInclude Include="..\..\opengl-test\shader-manager.h" />
     <ClInclude Include="..\..\opengl-test\shader-program.h" />
     <ClInclude Include="..\..\opengl-test\shader.h" />
