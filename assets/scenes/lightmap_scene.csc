@@ -1,19 +1,16 @@
 {
 	"static_geometry" :
 	{
-		"world" :
+		"mesh" :
 		{
-			"mesh" :
-			{
-				"file" : "lightmap-test.cme",
-				"name" : "Room"
-			}
+			"fileName" : "lightmap-test.cme",
+			"meshName" : "Room"
 		},
-		"EnvProbes" :
+		"envProbe" :
 		{
 			"EnvProbe_1" :
 			{
-				"envMap" : "EnvProbe_1_0.exr",
+				"envMap" : "EnvProbe_1.exr",
 				"irradianceMap" : null,
 				"samplePos" : [0.0, 1.5, 0.0],
 				"parallaxCorrection"
@@ -32,11 +29,15 @@
 		},
 		"skybox" :
 		{
-			"envMap" : "envmap.bmp"
-			"irradianceMap" : null
+			"default" : "normal",
+			"normal" :
+			{
+				"envMap" : "envmap.bmp",
+				"irradianceMap" : null
+			}
 		}
 	}
-	"objects" :
+	"entities" :
 	{
 		"Cube" :
 		{
