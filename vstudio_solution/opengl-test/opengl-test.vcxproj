@@ -98,6 +98,7 @@ copy "$(SolutionDir)\..\..\ceng-core\lib\win32\Release\*.dll" "$(SolutionDir)\..
     <ClCompile Include="..\..\deps\upng\upng.c" />
     <ClCompile Include="..\..\opengl-test\bmp-loader.cpp" />
     <ClCompile Include="..\..\opengl-test\byte-order.cpp" />
+    <ClCompile Include="..\..\opengl-test\component-factory.cpp" />
     <ClCompile Include="..\..\opengl-test\dds-loader.cpp" />
     <ClCompile Include="..\..\opengl-test\depth-pass.cpp" />
     <ClCompile Include="..\..\opengl-test\direction-light-shader.cpp" />
@@ -142,6 +143,7 @@ copy "$(SolutionDir)\..\..\ceng-core\lib\win32\Release\*.dll" "$(SolutionDir)\..
     <ClInclude Include="..\..\opengl-test\basic-types.h" />
     <ClInclude Include="..\..\opengl-test\byte-order.h" />
     <ClInclude Include="..\..\opengl-test\camera.h" />
+    <ClInclude Include="..\..\opengl-test\component-factory.h" />
     <ClInclude Include="..\..\opengl-test\component.h" />
     <ClInclude Include="..\..\opengl-test\depth-pass.h" />
     <ClInclude Include="..\..\opengl-test\direction-light-shader.h" />
