@@ -104,6 +104,7 @@ copy "$(SolutionDir)\..\..\ceng-core\lib\win32\Release\*.dll" "$(SolutionDir)\..
     <ClCompile Include="..\..\opengl-test\eng-actor.cpp" />
     <ClCompile Include="..\..\opengl-test\eng-camera.cpp" />
     <ClCompile Include="..\..\opengl-test\eng-object.cpp" />
+    <ClCompile Include="..\..\opengl-test\entity-type.cpp" />
     <ClCompile Include="..\..\opengl-test\entity.cpp" />
     <ClCompile Include="..\..\opengl-test\env-map-manager.cpp" />
     <ClCompile Include="..\..\opengl-test\env-map.cpp" />
@@ -147,6 +148,7 @@ copy "$(SolutionDir)\..\..\ceng-core\lib\win32\Release\*.dll" "$(SolutionDir)\..
     <ClInclude Include="..\..\opengl-test\engine-object.h" />
     <ClInclude Include="..\..\opengl-test\engine-result.h" />
     <ClInclude Include="..\..\opengl-test\engine-v2.h" />
+    <ClInclude Include="..\..\opengl-test\entity-type.h" />
     <ClInclude Include="..\..\opengl-test\entity.h" />
     <ClInclude Include="..\..\opengl-test\env-map-manager.h" />
     <ClInclude Include="..\..\opengl-test\env-map.h" />
