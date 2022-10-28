@@ -4,6 +4,13 @@ TODO
 ------------------------------------------
 Automation
 
+- [ ] Entity type registry. From file and from code. 
+      NOTE: For ensuring that dependencies get loaded and entities can be copied.
+
+- [ ] Entity instantiation. From file (via scene JSON?) and from code.
+
+- [ ] Implement default resources list. These are always loaded regardless of scene.
+
 - [ ] Design a scene file format in JSON
 
 - [ ] Add scene manager for loading scene from file
