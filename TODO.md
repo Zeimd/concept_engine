@@ -4,6 +4,9 @@ TODO
 ------------------------------------------
 Automation
 
+- [ ] Component factory: GetInstance(). Should be abstract enough for any component to work with it.
+      Also JSON input version?
+
 - [ ] Entity type registry. From file and from code. 
       NOTE: For ensuring that dependencies get loaded and entities can be copied.
 
