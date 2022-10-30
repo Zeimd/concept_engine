@@ -51,30 +51,49 @@ EngineResult::value EntityRegistry::GetEntityInstance(Ceng::StringUtf8& name,
 
 	EngineResult::value eresult;
 
-	// Add required components
-	for (auto& iter = initialValues.begin(); iter != initialValues.end(); ++iter)
+	for (auto& requiredCompName : typeIter->second->requiredComponents)
 	{
-		auto& factory = componentFactories.find(iter.key());
+		auto& factory = componentFactories.find(requiredCompName);
 
 		if (factory == componentFactories.end())
 		{
 			return EngineResult::fail;
 		}
 
-		std::shared_ptr<Component> component;
+		bool found = false;
 
-		eresult = factory->second->GetInstance(iter.value(), component);
-
-		if (eresult != EngineResult::ok)
+		// Add required components
+		for (auto& iter = initialValues.begin(); iter != initialValues.end(); ++iter)
 		{
-			return eresult;
+			if (iter.key() != requiredCompName.ToCString())
+			{
+				continue;
+			}
+
+			std::shared_ptr<Component> component;
+
+			eresult = factory->second->GetInstance(iter.value(), component);
+
+			if (eresult != EngineResult::ok)
+			{
+				return eresult;
+			}
+
+			eresult = entity->AddComponent(iter.key(), component);
+
+			if (eresult != EngineResult::ok)
+			{
+				return eresult;
+			}
+
+			found = true;
+
+			break;
 		}
 
-		eresult = entity->AddComponent(iter.key(), component);
-
-		if (eresult != EngineResult::ok)
+		if (found == false)
 		{
-			return eresult;
+			return EngineResult::fail;
 		}
 	}	
 
