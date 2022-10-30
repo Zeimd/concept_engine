@@ -76,7 +76,9 @@ EngineResult::value EntityRegistry::GetEntityInstance(Ceng::StringUtf8& name,
 		{
 			return eresult;
 		}
-	}
+	}	
+
+	output = entity;
 
 	return EngineResult::ok;
 }
