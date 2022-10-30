@@ -9,6 +9,8 @@
 #ifndef CENGINE_COMPONENT_FACTORY_H
 #define CENGINE_COMPONENT_FACTORY_H
 
+#include <memory>
+
 #include <ceng.h>
 #include "json.h"
 
@@ -27,7 +29,7 @@ namespace CEngine
 		ComponentFactory();
 		virtual ~ComponentFactory();
 
-		virtual EngineResult::value GetInstance(json& data, Component** output) = 0;
+		virtual EngineResult::value GetInstance(json& data, std::shared_ptr<Component>& output) = 0;
 	};
 
 }
