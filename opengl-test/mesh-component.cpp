@@ -47,6 +47,18 @@ void MeshComponent::AddComponent(const Ceng::StringUtf8 &name, Component *compon
 	}
 }
 
+void MeshComponent::RemoveComponent(const Ceng::StringUtf8& name)
+{
+	if (name == "position")
+	{
+		position = nullptr;
+	}
+	else if (name == "rotation")
+	{
+		rotation = nullptr;
+	}
+}
+
 void MeshComponent::Render(Ceng::RenderContext *context, Ceng::Matrix4 *cameraTransform,
 	Ceng::Matrix4 *cameraRotation, Ceng::Matrix4 *projection, Ceng::SamplerState *materialSampler)
 {
