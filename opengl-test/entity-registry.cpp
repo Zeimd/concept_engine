@@ -107,6 +107,8 @@ EngineResult::value EntityRegistry::GetEntityInstance(const Ceng::StringUtf8& na
 EngineResult::value EntityRegistry::GetEntityInstance(const Ceng::StringUtf8& name,
 	json& initialValues, std::shared_ptr<Entity>& output)
 {
+	output = nullptr;
+
 	EngineResult::value eresult;
 
 	std::shared_ptr<Entity> entity;
