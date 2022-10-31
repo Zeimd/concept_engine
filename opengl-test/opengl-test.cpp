@@ -117,48 +117,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	Ceng::Log::Print(temp);
 
-	/*
-	upng_t *png;
-
-	Ceng::StringUtf8 tempPath = longPath + "textures\\normal b.png";
-
-	Ceng::Log::Print(tempPath);
-
-	png = upng_new_from_file(tempPath.ToCString());
-	if (png != nullptr) {
-		upng_decode(png);
-	}
-
-	CEngine::Bitmap bitmap;
-
-	bitmap.width = upng_get_width(png);
-	bitmap.height = upng_get_height(png);
-
-	bitmap.imageSize = upng_get_size(png);
-
-	const Ceng::UINT8 *sourcePtr = upng_get_buffer(png);
-
-	// Swap blue and red channels
-
-	FILE *dump = fopen("normal.txt", "w");
-
-	for (Ceng::UINT32 y = 0; y < bitmap.height; ++y)
-	{
-		for (Ceng::UINT32 x = 0; x < bitmap.width; ++x)
-		{
-			Ceng::UINT32 offset = 4 * (y*bitmap.width + x);
-			fprintf(dump,"{%u,%u,%u},", sourcePtr[offset], sourcePtr[offset + 1], sourcePtr[offset + 2]);
-		}
-		fprintf(dump, "\n");
-	}
-
-	upng_free(png);
-
-	fclose(dump);
-
-
-	return 0;
-	*/
 	Ceng::UINT32 resX = 800;
 	Ceng::UINT32 resY = 600;
 
@@ -1258,18 +1216,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	entityDict["room"] = roomEntity;
 
-
-
-	//entity = std::make_shared<CEngine::Entity>();
-
-	//entity->AddComponent("position", std::make_shared<CEngine::PositionComponent>(-180.0f, 2.0f, 158.0f));
-	//entity->AddComponent("position", std::make_shared<CEngine::PositionComponent>(0.0f, 0.0f, 0.0f));
-
-	//entity->AddComponent("rotation", std::make_shared<CEngine::RotationComponent>());
-
-	//entity->AddComponent("mesh", std::make_shared<CEngine::MeshComponent>(roomMesh));
-
-	//entityDict["room"] = entity;
+	//return 0;
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Terrain
