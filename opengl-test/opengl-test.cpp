@@ -1185,6 +1185,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	std::shared_ptr<CEngine::Entity> entity;
 
+	std::shared_ptr<CEngine::ComponentFactory> posComp = std::make_shared<CEngine::PositionFactory>();
+
+	eresult = entityRegistry.AddComponentFactory("position", posComp);
+	if (eresult != CEngine::EngineResult::ok)
+	{
+		Ceng::Log::Print("Failed to add component factory");
+		return 0;
+	}
+
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Room
 
@@ -1202,12 +1211,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	initMap["position"] = std::make_shared<CEngine::PositionComponent>(0.0f, 0.0f, 0.0f);
 	initMap["rotation"] = std::make_shared<CEngine::RotationComponent>();
 
-	json empty;
+	json initJSON, rotJSON;
+
+	initJSON["position"] = { 0.0f, 0.0f, 0.0f };
+
+	rotJSON["rotMode"] = "EULER_XYZ";
+	rotJSON["angles"] = { 0.0f, 0.0f, 0.0f };
+
+	initJSON["rotation"] = rotJSON;
 
 	std::shared_ptr<CEngine::Entity> roomEntity;
 
-	//eresult = entityRegistry.GetEntityInstance("room", empty, roomEntity);
-	eresult = entityRegistry.GetEntityInstance("room", initMap, roomEntity);
+	eresult = entityRegistry.GetEntityInstance("room", initJSON, roomEntity);
+	//eresult = entityRegistry.GetEntityInstance("room", initMap, roomEntity);
 
 	if (eresult != CEngine::EngineResult::ok)
 	{
