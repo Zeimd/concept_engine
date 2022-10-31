@@ -24,7 +24,7 @@ EntityRegistry::~EntityRegistry()
 
 }
 
-EngineResult::value EntityRegistry::GetEntityInstance(Ceng::StringUtf8& name,
+EngineResult::value EntityRegistry::GetEntityInstance(const Ceng::StringUtf8& name,
 	json& initialValues, std::shared_ptr<Entity>& output)
 {
 	output = nullptr;
@@ -102,7 +102,7 @@ EngineResult::value EntityRegistry::GetEntityInstance(Ceng::StringUtf8& name,
 	return EngineResult::ok;
 }
 
-EngineResult::value EntityRegistry::AddComponentFactory(Ceng::StringUtf8& name,
+EngineResult::value EntityRegistry::AddComponentFactory(const Ceng::StringUtf8& name,
 	std::shared_ptr<ComponentFactory>& factory)
 {
 	if (componentFactories.find(name) != componentFactories.end())
@@ -115,7 +115,7 @@ EngineResult::value EntityRegistry::AddComponentFactory(Ceng::StringUtf8& name,
 	return EngineResult::ok;
 }
 
-EngineResult::value EntityRegistry::RemoveComponentFactory(Ceng::StringUtf8& name)
+EngineResult::value EntityRegistry::RemoveComponentFactory(const Ceng::StringUtf8& name)
 {
 	auto& iter = componentFactories.find(name);
 
@@ -146,7 +146,7 @@ EngineResult::value EntityRegistry::RemoveComponentFactory(std::shared_ptr<Compo
 	return EngineResult::fail;
 }
 
-EngineResult::value EntityRegistry::ReplaceComponentFactory(Ceng::StringUtf8& name,
+EngineResult::value EntityRegistry::ReplaceComponentFactory(const Ceng::StringUtf8& name,
 	std::shared_ptr<ComponentFactory>& factory)
 {
 	auto& iter = componentFactories.find(name);
@@ -161,7 +161,7 @@ EngineResult::value EntityRegistry::ReplaceComponentFactory(Ceng::StringUtf8& na
 	return EngineResult::ok;	
 }
 
-EngineResult::value EntityRegistry::AddEntityType(Ceng::StringUtf8& name, 
+EngineResult::value EntityRegistry::AddEntityType(const Ceng::StringUtf8& name, 
 	std::shared_ptr<EntityType>& type)
 {
 	if (entityTypes.find(name) != entityTypes.end())
@@ -174,7 +174,7 @@ EngineResult::value EntityRegistry::AddEntityType(Ceng::StringUtf8& name,
 	return EngineResult::ok;
 }
 
-EngineResult::value EntityRegistry::RemoveEntityType(Ceng::StringUtf8& name)
+EngineResult::value EntityRegistry::RemoveEntityType(const Ceng::StringUtf8& name)
 {
 	auto& iter = entityTypes.find(name);
 
@@ -205,7 +205,7 @@ EngineResult::value EntityRegistry::RemoveEntityType(std::shared_ptr<EntityType>
 	return EngineResult::fail;
 }
 
-EngineResult::value EntityRegistry::ReplaceEntityType(Ceng::StringUtf8& name, 
+EngineResult::value EntityRegistry::ReplaceEntityType(const Ceng::StringUtf8& name, 
 	std::shared_ptr<EntityType>& type)
 {
 	auto& iter = entityTypes.find(name);
