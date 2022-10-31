@@ -29,6 +29,10 @@
 #include "mesh-manager.h"
 #include "mesh-action.h"
 
+#include "component-factory.h"
+#include "entity-type.h"
+#include "entity-registry.h"
+
 #include "entity.h"
 #include "position-component.h"
 #include "rotation-component.h"
