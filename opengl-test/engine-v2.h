@@ -33,6 +33,8 @@
 #include "entity-type.h"
 #include "entity-registry.h"
 
+#include "position-factory.h"
+
 #include "entity.h"
 #include "position-component.h"
 #include "rotation-component.h"
