@@ -1256,8 +1256,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	roomType->requiredComponents.push_back("position");
 	roomType->requiredComponents.push_back("rotation");
 
-	entityRegistry.AddEntityType("room", roomType);
-
+	eresult = entityRegistry.AddEntityType("room", roomType);
+	if (eresult != CEngine::EngineResult::ok)
+	{
+		Ceng::Log::Print("Failed to add entity type");
+		Ceng::Log::Print("room");
+		return 0;
+	}
 	/*
 	std::unordered_map<Ceng::StringUtf8, std::shared_ptr<CEngine::Component>> initMap;
 
@@ -1305,9 +1310,63 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Cubes
 
+	auto cubeType = std::make_shared<CEngine::EntityType>();
+
+	cubeType->sharedComponents["mesh"] = std::make_shared<CEngine::MeshComponent>(cubeMesh);
+
+	cubeType->requiredComponents.push_back("position");
+	cubeType->requiredComponents.push_back("rotation");
+
+	eresult = entityRegistry.AddEntityType("cube", cubeType);
+	if (eresult != CEngine::EngineResult::ok)
+	{
+		Ceng::Log::Print("Failed to add entity type");
+		Ceng::Log::Print("cube");
+		return 0;
+	}
+	std::shared_ptr<CEngine::Entity> cubeEntity;
+
+	initJSON["position"] = { 0.0f, 1.0f, 0.0f };
+
+	rotJSON["rotMode"] = "EULER_XYZ";
+	rotJSON["angles"] = { 0.0f, 0.0f, 0.0f };
+
+	initJSON["rotation"] = rotJSON;
+
+	eresult = entityRegistry.GetEntityInstance("cube", initJSON, cubeEntity);
+
+	if (eresult != CEngine::EngineResult::ok)
+	{
+		Ceng::Log::Print("Error: failed to get instance of:");
+		Ceng::Log::Print("cube");
+		return 0;
+	}
+
+	entityDict["cube"] = cubeEntity;
+
+	initJSON["position"] = { 8.0f, 1.0f, 2.0f };
+
+	rotJSON["rotMode"] = "EULER_XYZ";
+	rotJSON["angles"] = { 0.0f, 0.0f, 0.0f };
+
+	initJSON["rotation"] = rotJSON;
+
+	eresult = entityRegistry.GetEntityInstance("cube", initJSON, cubeEntity);
+
+	if (eresult != CEngine::EngineResult::ok)
+	{
+		Ceng::Log::Print("Error: failed to get instance of:");
+		Ceng::Log::Print("cube2");
+		return 0;
+	}
+
+	entityDict["cube2"] = cubeEntity;
+
+	//return 0;
+
+	/*
 	entity = std::make_shared<CEngine::Entity>();
 
-	//entity->AddComponent("position", std::make_shared<CEngine::PositionComponent>(-200.0f, 2.0f, 150.0f));
 	entity->AddComponent("position", std::make_shared<CEngine::PositionComponent>(0.0f, 1.0f, 0.0f));
 
 	auto rotComp = std::make_shared<CEngine::RotationComponent>();
@@ -1334,6 +1393,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	entity->AddComponent("mesh", std::make_shared<CEngine::MeshComponent>(cubeMesh));
 
 	entityDict["cube2"] = entity;
+	*/
+
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Sphere
@@ -1387,6 +1448,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	*/
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Sun test
+
+	auto rotComp = std::make_shared<CEngine::RotationComponent>();
 
 	entity = std::make_shared<CEngine::Entity>();
 
