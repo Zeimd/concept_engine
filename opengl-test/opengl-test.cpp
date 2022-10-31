@@ -1185,12 +1185,22 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	std::shared_ptr<CEngine::Entity> entity;
 
-	std::shared_ptr<CEngine::ComponentFactory> posComp = std::make_shared<CEngine::PositionFactory>();
+	std::shared_ptr<CEngine::ComponentFactory> comp = std::make_shared<CEngine::PositionFactory>();
 
-	eresult = entityRegistry.AddComponentFactory("position", posComp);
+	eresult = entityRegistry.AddComponentFactory("position", comp);
 	if (eresult != CEngine::EngineResult::ok)
 	{
 		Ceng::Log::Print("Failed to add component factory");
+		return 0;
+	}
+
+	comp = std::make_shared<CEngine::RotationFactory>();
+
+	eresult = entityRegistry.AddComponentFactory("rotation", comp);
+	if (eresult != CEngine::EngineResult::ok)
+	{
+		Ceng::Log::Print("Failed to add component factory: ");
+		Ceng::Log::Print("rotation");
 		return 0;
 	}
 
@@ -1206,10 +1216,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	entityRegistry.AddEntityType("room", roomType);
 
+	/*
 	std::unordered_map<Ceng::StringUtf8, std::shared_ptr<CEngine::Component>> initMap;
 
 	initMap["position"] = std::make_shared<CEngine::PositionComponent>(0.0f, 0.0f, 0.0f);
 	initMap["rotation"] = std::make_shared<CEngine::RotationComponent>();
+	*/
 
 	json initJSON, rotJSON;
 
@@ -1232,13 +1244,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		return 0;
 	}
 
-	//roomEntity->AddComponent("position", std::make_shared<CEngine::PositionComponent>(0.0f, 0.0f, 0.0f));
-
-	//roomEntity->AddComponent("rotation", std::make_shared<CEngine::RotationComponent>());
-
 	entityDict["room"] = roomEntity;
-
-	//return 0;
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Terrain

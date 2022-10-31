@@ -153,6 +153,9 @@
     <ClCompile Include="..\..\opengl-test\position-factory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\opengl-test\rotation-factory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\deps\upng\upng.h">
@@ -294,6 +297,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\opengl-test\position-factory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\opengl-test\rotation-factory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

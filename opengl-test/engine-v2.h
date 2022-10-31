@@ -34,6 +34,7 @@
 #include "entity-registry.h"
 
 #include "position-factory.h"
+#include "rotation-factory.h"
 
 #include "entity.h"
 #include "position-component.h"

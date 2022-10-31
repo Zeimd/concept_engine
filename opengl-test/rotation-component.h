@@ -48,7 +48,7 @@ namespace CEngine
 		RotationComponent();
 
 		// Initialize with Euler angles
-		RotationComponent(EulerMode::value mode, Ceng::FLOAT32 a, 
+		explicit RotationComponent(EulerMode::value mode, Ceng::FLOAT32 a, 
 			Ceng::FLOAT32 b, Ceng::FLOAT32 c);
 
 		// Initialize from quaternion
