@@ -62,14 +62,31 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	std::stringstream writer;
 
-	cresult = engineLog.OpenFile("opengl-test-log.txt");
+	Ceng::String logFile = appPath;
+	logFile += "opengl-test-log.txt";
+
+	cresult = engineLog.OpenFile(logFile.ToCString());
 	if (cresult != Ceng::CE_OK)
 	{
+		Ceng::String title = "Error";
+		Ceng::String message = "Failed to open log file: ";
+		message += logFile;
+
+		cresult = Ceng_MessageWindow(NULL, title, message);
 		Ceng::Log::SetLog(NULL);
 		return 0;
 	}
 
-	Ceng::Log::Print("Program started");
+	cresult = Ceng::Log::Print("Program started");
+	if (cresult != Ceng::CE_OK)
+	{
+		Ceng::String title = "Error";
+		Ceng::String message = "Failed to write to log file";
+
+		cresult = Ceng_MessageWindow(NULL, title, message);
+		Ceng::Log::SetLog(NULL);
+		return 0;
+	}
 
 	Ceng::StringUtf8 temp = "executable path = ";
 	temp += appPath;
