@@ -1264,7 +1264,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	auto rotComp = std::make_shared<CEngine::RotationComponent>();
 
-	rotComp->RotateByDeltas(0, 0, 0);
+	rotComp->AddRotation(CEngine::EulerMode::xyx, 0, 0, 0);
 
 	entity->AddComponent("rotation", rotComp);
 
@@ -1279,7 +1279,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	rotComp = std::make_shared<CEngine::RotationComponent>();
 
-	rotComp->RotateByDeltas(0, 0, 0);
+	rotComp->AddRotation(CEngine::EulerMode::xyx, 0, 0, 0);
 
 	entity->AddComponent("rotation", rotComp);
 
@@ -1346,7 +1346,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	rotComp = std::make_shared<CEngine::RotationComponent>();
 
-	rotComp->RotateByDeltas(45, 90+45, 0);
+	rotComp->AddRotation(CEngine::EulerMode::xyx, 45, 90+45, 0);
 
 	entity->AddComponent("rotation", rotComp);
 	//entity->AddComponent("rotation", std::make_shared<CEngine::RotationComponent>());
@@ -1407,7 +1407,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	rotComp = std::make_shared<CEngine::RotationComponent>();
 
 	//rotComp->RotateByDeltas(0, 90, 0);
-	rotComp->RotateByDeltas(0, 15, 0);
+	rotComp->AddRotation(CEngine::EulerMode::xyz, 0, 15, 0);
 
 	entity->AddComponent("rotation", rotComp);
 	//entity->AddComponent("rotation", std::make_shared<CEngine::RotationComponent>());
@@ -1679,25 +1679,29 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					// Rotate cube counterclockwise around y-axis
 					if (keyboard->IsPressed(Ceng::KEYBOARD_KEY::KEY_1))
 					{
-						rotation->RotateByDeltas(0.0f, cameraRotateSpeed*physDeltaTime, 0.0f);
+						rotation->AddRotation(CEngine::EulerMode::xyz,
+							0.0f, cameraRotateSpeed*physDeltaTime, 0.0f);
 					}
 
 					// Rotate cube clockwise around y-axis
 					if (keyboard->IsPressed(Ceng::KEYBOARD_KEY::KEY_2))
 					{
-						rotation->RotateByDeltas(0.0f, -cameraRotateSpeed*physDeltaTime, 0.0f);
+						rotation->AddRotation(CEngine::EulerMode::xyz,
+							0.0f, -cameraRotateSpeed*physDeltaTime, 0.0f);
 					}
 
 					// Rotate cube counterclockwise around y-axis
 					if (keyboard->IsPressed(Ceng::KEYBOARD_KEY::KEY_3))
 					{
-						rotation->RotateByDeltas(0.0f, 0.0f,cameraRotateSpeed*physDeltaTime);
+						rotation->AddRotation(CEngine::EulerMode::xyz,
+							0.0f, 0.0f,cameraRotateSpeed*physDeltaTime);
 					}
 
 					// Rotate cube clockwise around y-axis
 					if (keyboard->IsPressed(Ceng::KEYBOARD_KEY::KEY_4))
 					{
-						rotation->RotateByDeltas(0.0f, 0.0f,-cameraRotateSpeed*physDeltaTime);
+						rotation->AddRotation(CEngine::EulerMode::xyz,
+							0.0f, 0.0f,-cameraRotateSpeed*physDeltaTime);
 					}
 
 					/*
