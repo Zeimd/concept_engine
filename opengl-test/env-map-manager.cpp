@@ -117,7 +117,7 @@ EngineResult::value EnvMapManager::AddEnvMapParallaxAABB(const Ceng::StringUtf8&
 	defaultTexOptions.usage = Ceng::BufferUsage::gpu_read_only;
 	defaultTexOptions.cpuAccessFlags = 0;
 
-	defaultTexOptions.sRGB = true;
+	defaultTexOptions.sRGB = false;
 
 	defaultTexOptions.firstMip = 0;
 	defaultTexOptions.mipLevels = 0;
