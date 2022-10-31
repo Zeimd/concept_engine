@@ -52,7 +52,12 @@ void MeshComponent::Render(Ceng::RenderContext *context, Ceng::Matrix4 *cameraTr
 {
 	if (mesh == nullptr) return;
 
-	Ceng::Matrix4 objectRotation = rotation->RotationMatrix();
+	Ceng::Matrix4 objectRotation;
+
+	if (rotation != nullptr)
+	{
+		objectRotation = rotation->RotationMatrix();
+	}
 
 	objectTransform = position->PositionMatrix() * objectRotation;
 
@@ -68,7 +73,12 @@ void MeshComponent::ShadowRender(Ceng::RenderContext *context, Ceng::Matrix4 *ca
 {
 	if (mesh == nullptr) return;
 
-	Ceng::Matrix4 objectRotation = rotation->RotationMatrix();
+	Ceng::Matrix4 objectRotation;
+	
+	if (rotation != nullptr)
+	{
+		objectRotation = rotation->RotationMatrix();
+	}
 
 	objectTransform = position->PositionMatrix() * objectRotation;
 
