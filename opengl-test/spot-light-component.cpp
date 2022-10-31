@@ -18,6 +18,11 @@ SpotLightComponent::~SpotLightComponent()
 {
 }
 
+std::shared_ptr<Component> SpotLightComponent::Clone() const
+{
+	return std::make_shared<SpotLightComponent>(outerAngle, innerAngle);
+}
+
 SpotLightComponent::SpotLightComponent(const Ceng::FLOAT32 outerAngle, const Ceng::FLOAT32 innerAngle)
 	: outerAngle(outerAngle),innerAngle(innerAngle)
 {

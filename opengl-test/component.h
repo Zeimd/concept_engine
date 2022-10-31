@@ -9,12 +9,16 @@
 #ifndef CENGINE_COMPONENT_H
 #define CENGINE_COMPONENT_H
 
+#include <memory>
+
 #include <ceng/datatypes.h>
 
 namespace CEngine
 {
 	class Component
 	{
+	protected:
+		Component(const Component& component) = delete;
 	public:
 		Component()
 		{
@@ -24,13 +28,18 @@ namespace CEngine
 		{
 		}
 
-		virtual void AddComponent(const Ceng::StringUtf8 &name, Component *component)
+		virtual void AddComponent(const Ceng::StringUtf8& name, Component* component)
 		{
+
 		}
 
-		virtual void RemoveComponent(const Ceng::StringUtf8 &name)
+		virtual void RemoveComponent(const Ceng::StringUtf8& name)
 		{
+
 		}
+
+		virtual std::shared_ptr<Component> Clone() const = 0;
+
 	};
 
 	

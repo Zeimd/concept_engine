@@ -31,12 +31,15 @@ namespace CEngine
 	public:
 		PointLightComponent();
 
-		PointLightComponent(const Ceng::VectorF4 &color,const Ceng::FLOAT32 power,const Ceng::FLOAT32 cutoffDist);
+		PointLightComponent(const Ceng::VectorF4 &color,const Ceng::FLOAT32 power,
+			const Ceng::FLOAT32 cutoffDist);
 
-		virtual ~PointLightComponent();
+		~PointLightComponent() override;
 
-		virtual void AddComponent(const Ceng::StringUtf8 &name, Component *component) override;
-		virtual void RemoveComponent(const Ceng::StringUtf8 &name) override;
+		std::shared_ptr<Component> Clone() const override;
+
+		void AddComponent(const Ceng::StringUtf8 &name, Component *component) override;
+		void RemoveComponent(const Ceng::StringUtf8 &name) override;
 	};
 }
 

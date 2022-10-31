@@ -36,9 +36,13 @@ namespace CEngine
 
 		MeshComponent(const std::shared_ptr<Mesh> &mesh);
 
-		virtual ~MeshComponent();
+		~MeshComponent() override;
 
-		virtual void AddComponent(const Ceng::StringUtf8 &name, Component *component) override;
+		void AddComponent(const Ceng::StringUtf8 &name, Component *component) override;
+
+		void RemoveComponent(const Ceng::StringUtf8& name) override;
+
+		std::shared_ptr<Component> Clone() const override;
 
 		void Render(Ceng::RenderContext *context, Ceng::Matrix4 *cameraTransform,
 			Ceng::Matrix4 *cameraRotation, Ceng::Matrix4 *projection,Ceng::SamplerState *materialSampler);

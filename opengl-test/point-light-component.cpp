@@ -25,6 +25,11 @@ PointLightComponent::~PointLightComponent()
 {
 }
 
+std::shared_ptr<Component> PointLightComponent::Clone() const
+{
+	return std::make_shared< PointLightComponent>(color, power, cutoffDist);
+}
+
 void PointLightComponent::AddComponent(const Ceng::StringUtf8 &name, Component *component)
 {
 	if (name == "position")

@@ -28,6 +28,11 @@ PositionComponent::~PositionComponent()
 {
 }
 
+std::shared_ptr<Component> PositionComponent::Clone() const
+{
+	return std::make_shared<PositionComponent>(x,y,z);
+}
+
 void PositionComponent::AddComponent(const Ceng::StringUtf8 &name, Component *component)
 {
 	if (name == "rotation")

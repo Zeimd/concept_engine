@@ -16,16 +16,24 @@
 using namespace CEngine;
 
 MeshComponent::MeshComponent()
+	: position(nullptr), rotation(nullptr)
 {
 }
 
-MeshComponent::MeshComponent(const std::shared_ptr<Mesh> &mesh) : mesh(mesh)
+MeshComponent::MeshComponent(const std::shared_ptr<Mesh> &mesh) 
+	: mesh(mesh), position(nullptr), rotation(nullptr)
 {
 }
 
 MeshComponent::~MeshComponent()
 {
 }
+
+std::shared_ptr<Component> MeshComponent::Clone() const
+{
+	return std::make_shared<MeshComponent>(this->mesh);
+}
+
 
 void MeshComponent::AddComponent(const Ceng::StringUtf8 &name, Component *component)
 {

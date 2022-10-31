@@ -33,9 +33,11 @@ namespace CEngine
 
 		PositionComponent(const Ceng::FLOAT32 x,const Ceng::FLOAT32 y,const Ceng::FLOAT32 z);
 
-		virtual ~PositionComponent();
+		~PositionComponent() override;
+	
+		std::shared_ptr<Component> Clone() const override;
 
-		virtual void AddComponent(const Ceng::StringUtf8 &name, Component *component);
+		void AddComponent(const Ceng::StringUtf8 &name, Component *component) override;
 
 		void MoveByDelta(const Ceng::VectorF4 &deltaPos);
 		void MoveByWorldDelta(const Ceng::VectorF4 &deltaPos);

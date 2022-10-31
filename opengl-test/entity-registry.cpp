@@ -51,7 +51,7 @@ EngineResult::value EntityRegistry::GetEntityInstanceCommon(const Ceng::StringUt
 	// Deep copy default components
 	for (auto& iter : typeIter->second->defaultComponents)
 	{
-		entity->AddComponent(iter.first, std::make_shared<Component>(*(iter.second)));
+		entity->AddComponent(iter.first, iter.second->Clone());
 	}
 
 	output = entity;

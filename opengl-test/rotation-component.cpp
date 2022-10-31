@@ -122,9 +122,29 @@ RotationComponent::RotationComponent(Ceng::FLOAT32 w, Ceng::FLOAT32 x,
 	SetQuaternion(w, x, y, z);
 }
 
+RotationComponent::RotationComponent(const Ceng::Quaternion& q)
+{
+	SetQuaternion(q);
+}
+
 RotationComponent::~RotationComponent()
 {
 }
+
+std::shared_ptr<Component> RotationComponent::Clone() const
+{
+	auto temp = std::make_shared<RotationComponent>();
+
+	// Less work than initialization from quaternion
+
+	temp->rotation = rotation;
+	temp->rotationBasis[0] = rotationBasis[0];
+	temp->rotationBasis[1] = rotationBasis[1];
+	temp->rotationBasis[2] = rotationBasis[2];
+
+	return temp;
+}
+
 
 
 void RotationComponent::AddComponent(const Ceng::StringUtf8 &name, Component *component)

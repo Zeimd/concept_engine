@@ -26,11 +26,13 @@ namespace CEngine
 	protected:
 		SpotLightComponent();
 	public:
-		virtual ~SpotLightComponent();
+		~SpotLightComponent() override;
+
+		std::shared_ptr<Component> Clone() const override;
 
 		SpotLightComponent(const Ceng::FLOAT32 outerAngle,const Ceng::FLOAT32 innerAngle);
 
-		virtual void AddComponent(const Ceng::StringUtf8 &name, Component *component) override;
+		void AddComponent(const Ceng::StringUtf8 &name, Component *component) override;
 	};
 };
 

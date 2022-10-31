@@ -45,6 +45,8 @@ namespace CEngine
 
 	public:
 
+		std::shared_ptr<Component> Clone() const override;
+
 		RotationComponent();
 
 		// Initialize with Euler angles
@@ -55,9 +57,12 @@ namespace CEngine
 		RotationComponent(Ceng::FLOAT32 w, Ceng::FLOAT32 x, 
 			Ceng::FLOAT32 y, Ceng::FLOAT32 z);
 
-		virtual ~RotationComponent();
+		// Initialize from quaternion
+		RotationComponent(const Ceng::Quaternion & q);
 
-		virtual void AddComponent(const Ceng::StringUtf8 &name, Component *component) override;
+		~RotationComponent() override;
+
+		void AddComponent(const Ceng::StringUtf8 &name, Component *component) override;
 
 		// Set to identity rotation
 		void SetIdentity();
