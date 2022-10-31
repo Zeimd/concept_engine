@@ -27,12 +27,17 @@ EntityRegistry::~EntityRegistry()
 EngineResult::value EntityRegistry::GetEntityInstance(const Ceng::StringUtf8& name,
 	json& initialValues, std::shared_ptr<Entity>& output)
 {
+	Ceng::Log::Print("EntityRegistry::GetEntityInstance");
+	Ceng::Log::Print("Create instance of type: ");
+	Ceng::Log::Print(name);
+
 	output = nullptr;
 
 	auto& typeIter = entityTypes.find(name);
 
 	if (typeIter == entityTypes.end())
 	{
+		Ceng::Log::Print("Error: entity type not found.");
 		return EngineResult::fail;
 	}
 
@@ -57,6 +62,8 @@ EngineResult::value EntityRegistry::GetEntityInstance(const Ceng::StringUtf8& na
 
 		if (factory == componentFactories.end())
 		{
+			Ceng::Log::Print("Error: factory for required component not found:");
+			Ceng::Log::Print(requiredCompName);
 			return EngineResult::fail;
 		}
 
@@ -93,6 +100,8 @@ EngineResult::value EntityRegistry::GetEntityInstance(const Ceng::StringUtf8& na
 
 		if (found == false)
 		{
+			Ceng::Log::Print("Error: required component not in initializer list:");
+			Ceng::Log::Print(requiredCompName);
 			return EngineResult::fail;
 		}
 	}	
