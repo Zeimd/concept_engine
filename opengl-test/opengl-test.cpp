@@ -1251,7 +1251,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	auto roomType = std::make_shared<CEngine::EntityType>();
 
-	roomType->sharedComponents["mesh"] = std::make_shared<CEngine::MeshComponent>(roomMesh);
+	roomType->defaultComponents.emplace_back("mesh", std::make_shared<CEngine::MeshComponent>(roomMesh));
 
 	roomType->requiredComponents.push_back("position");
 	roomType->requiredComponents.push_back("rotation");
@@ -1312,7 +1312,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	auto cubeType = std::make_shared<CEngine::EntityType>();
 
-	cubeType->sharedComponents["mesh"] = std::make_shared<CEngine::MeshComponent>(cubeMesh);
+	cubeType->defaultComponents.emplace_back("mesh", std::make_shared<CEngine::MeshComponent>(cubeMesh));
 
 	cubeType->requiredComponents.push_back("position");
 	cubeType->requiredComponents.push_back("rotation");
