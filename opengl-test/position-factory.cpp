@@ -24,6 +24,8 @@ PositionFactory::~PositionFactory()
 
 EngineResult::value PositionFactory::GetInstance(json& data, std::shared_ptr<Component>& output)
 {
+	output = nullptr;
+
 	if (data.is_array() == false)
 	{
 		return EngineResult::fail;
