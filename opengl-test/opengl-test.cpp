@@ -1192,16 +1192,22 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	roomType->sharedComponents["mesh"] = std::make_shared<CEngine::MeshComponent>(roomMesh);
 
-	//roomType->requiredComponents.push_back("position");
-	//roomType->requiredComponents.push_back("rotation");
+	roomType->requiredComponents.push_back("position");
+	roomType->requiredComponents.push_back("rotation");
 
 	entityRegistry.AddEntityType("room", roomType);
+
+	std::unordered_map<Ceng::StringUtf8, std::shared_ptr<CEngine::Component>> initMap;
+
+	initMap["position"] = std::make_shared<CEngine::PositionComponent>(0.0f, 0.0f, 0.0f);
+	initMap["rotation"] = std::make_shared<CEngine::RotationComponent>();
 
 	json empty;
 
 	std::shared_ptr<CEngine::Entity> roomEntity;
 
-	eresult = entityRegistry.GetEntityInstance("room", empty, roomEntity);
+	//eresult = entityRegistry.GetEntityInstance("room", empty, roomEntity);
+	eresult = entityRegistry.GetEntityInstance("room", initMap, roomEntity);
 
 	if (eresult != CEngine::EngineResult::ok)
 	{
@@ -1210,9 +1216,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		return 0;
 	}
 
-	roomEntity->AddComponent("position", std::make_shared<CEngine::PositionComponent>(0.0f, 0.0f, 0.0f));
+	//roomEntity->AddComponent("position", std::make_shared<CEngine::PositionComponent>(0.0f, 0.0f, 0.0f));
 
-	roomEntity->AddComponent("rotation", std::make_shared<CEngine::RotationComponent>());
+	//roomEntity->AddComponent("rotation", std::make_shared<CEngine::RotationComponent>());
 
 	entityDict["room"] = roomEntity;
 
