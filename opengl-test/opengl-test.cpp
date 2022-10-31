@@ -1042,7 +1042,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	CEngine::Vec3 boundaryPos = { 0.0f, 1.5f, 0.0 };
 	CEngine::Vec3 boxSideHalf = { 4.0f, 2.5f, 4.0f };
 
-	//eresult = envMapManager->AddEnvMapParallaxAABB("envmap.bmp", boundaryPos, boxSideHalf);
 	eresult = envMapManager->AddEnvMapParallaxAABB("EnvProbe_1.exr", boundaryPos, boxSideHalf);
 
 	if (eresult != CEngine::EngineResult::ok)
@@ -1050,6 +1049,49 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		Ceng::Log::Print("Failed to create envmap from file\n");
 		return 0;
 	}
+
+	///////////////////////////////////////////////////////////////////////////77
+	// Skybox
+
+	std::shared_ptr<CEngine::Texture> skybox, skyboxIrradiance;
+
+	CEngine::TextureOptions skyboxOptions;
+
+	skyboxOptions.bindFlags = Ceng::BufferBinding::shader_resource;
+	skyboxOptions.usage = Ceng::BufferUsage::gpu_read_only;
+	skyboxOptions.cpuAccessFlags = 0;
+
+	skyboxOptions.sRGB = false;
+
+	skyboxOptions.firstMip = 0;
+	skyboxOptions.mipLevels = 0;
+
+	skyboxOptions.options = Ceng::BufferOptions::generate_mip_maps;
+
+	skyboxOptions.generateIrradianceMap = true;
+	skyboxOptions.irradianceSize = 16;
+
+	eresult = textureManager.LoadCubemap("envmap.bmp", skyboxOptions, skybox, skyboxIrradiance);
+
+	if (eresult != CEngine::EngineResult::ok)
+	{
+		Ceng::Log::Print("Failed to load skybox\n");
+		return 0;
+	}
+
+	Ceng::ShaderResourceViewDesc envViewDesc;
+
+	envViewDesc.cubeMap.baseMipLevel = 0;
+	envViewDesc.cubeMap.maxMipLevel = 1;
+
+	Ceng::ShaderResourceView* skyBoxView;
+
+	cresult = skybox->AsCubemap()->GetShaderViewCubemap(envViewDesc, &skyBoxView);
+	if (cresult != Ceng::CE_OK)
+	{
+		return 0;
+	}
+
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Object data
@@ -2020,16 +2062,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 				ev_envMap->SetInt(0);
 
-				//renderContext->SetPixelShaderResource(0, skyboxView);
+				renderContext->SetPixelShaderResource(0, skyBoxView);
 				
 				
 				//renderContext->SetPixelShaderResource(0, diffuseEnvView);
-				//renderContext->SetPixelShaderSamplerState(0, diffuseSampler);
-				//renderContext->SetPixelShaderSamplerState(0, nearestSampler);
+				renderContext->SetPixelShaderSamplerState(0, diffuseSampler);
+				renderContext->SetPixelShaderSamplerState(0, nearestSampler);
 
 				renderContext->SetDepthStencilState(envDrawDepthState);
 
-				//renderContext->DrawIndexed(Ceng::PRIMITIVE_TYPE::TRIANGLE_LIST, 0, 6);
+				renderContext->DrawIndexed(Ceng::PRIMITIVE_TYPE::TRIANGLE_LIST, 0, 6);
 
 				///////////////////////////////////////////////////
 				// Post process hdr backbuffer	
@@ -2140,6 +2182,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	diffuseSampler->Release();
 	lightmapSampler->Release();
+
+	skyBoxView->Release();
 
 	// Light probe shader uniforms
 
