@@ -24,8 +24,8 @@ EntityRegistry::~EntityRegistry()
 
 }
 
-EngineResult::value EntityRegistry::GetEntityInstance(const Ceng::StringUtf8& name,
-	json& initialValues, std::shared_ptr<Entity>& output)
+EngineResult::value EntityRegistry::GetEntityInstanceCommon(const Ceng::StringUtf8& name,
+	std::shared_ptr<Entity>& output)
 {
 	Ceng::Log::Print("EntityRegistry::GetEntityInstance");
 	Ceng::Log::Print("Create instance of type: ");
@@ -54,7 +54,72 @@ EngineResult::value EntityRegistry::GetEntityInstance(const Ceng::StringUtf8& na
 		entity->AddComponent(iter.first, std::make_shared<Component>(*(iter.second)));
 	}
 
+	output = entity;
+
+	return EngineResult::ok;
+
+}
+
+EngineResult::value EntityRegistry::GetEntityInstance(const Ceng::StringUtf8& name,
+	std::unordered_map<Ceng::StringUtf8, std::shared_ptr<Component>>& initialValues,
+	std::shared_ptr<Entity>& output)
+{
 	EngineResult::value eresult;
+
+	std::shared_ptr<Entity> entity;
+
+	eresult = GetEntityInstanceCommon(name, entity);
+
+	if (eresult != EngineResult::ok)
+	{
+		return eresult;
+	}
+
+	// Guaranteed to exist at this point
+	auto& typeIter = entityTypes.find(name);
+
+	for (auto& requiredCompName : typeIter->second->requiredComponents)
+	{
+		// NOTE: no need to check for factories since we get ready components from caller
+
+		auto iter = initialValues.find(requiredCompName);
+
+		if (iter == initialValues.end())
+		{
+			Ceng::Log::Print("Error: required component not in initializer list:");
+			Ceng::Log::Print(requiredCompName);
+			return EngineResult::fail;
+		}
+
+		eresult = entity->AddComponent(iter->first, iter->second);
+
+		if (eresult != EngineResult::ok)
+		{
+			return eresult;
+		}
+	}
+
+	output = entity;
+
+	return EngineResult::ok;
+}
+
+EngineResult::value EntityRegistry::GetEntityInstance(const Ceng::StringUtf8& name,
+	json& initialValues, std::shared_ptr<Entity>& output)
+{
+	EngineResult::value eresult;
+
+	std::shared_ptr<Entity> entity;
+
+	eresult = GetEntityInstanceCommon(name, entity);
+
+	if (eresult != EngineResult::ok)
+	{
+		return eresult;
+	}
+	
+	// Guaranteed to exist at this point
+	auto& typeIter = entityTypes.find(name);
 
 	for (auto& requiredCompName : typeIter->second->requiredComponents)
 	{

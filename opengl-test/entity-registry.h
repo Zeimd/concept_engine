@@ -23,6 +23,7 @@ namespace CEngine
 	class Entity;
 	class EntityType;
 	class ComponentFactory;
+	class Component;
 
 	class EntityRegistry
 	{
@@ -59,6 +60,14 @@ namespace CEngine
 		EngineResult::value GetEntityInstance(const Ceng::StringUtf8& name, 
 			json& initialValues, std::shared_ptr<Entity>& output);
 
+		EngineResult::value GetEntityInstance(const Ceng::StringUtf8& name,
+			std::unordered_map<Ceng::StringUtf8,std::shared_ptr<Component>>& initialValues, 
+			std::shared_ptr<Entity>& output);
+
+	protected:
+
+		EngineResult::value GetEntityInstanceCommon(const Ceng::StringUtf8& name,
+			std::shared_ptr<Entity>& output);
 	};
 }
 
