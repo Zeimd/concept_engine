@@ -1203,21 +1203,56 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	eresult = meshManager.LoadMesh("lightmap-test.cme", "Room", roomMesh);
 
+	//////////////////////////////////////////////////////////////////////////
+	// Entity registry
+
+	CEngine::EntityRegistry entityRegistry;
+
 	std::shared_ptr<CEngine::Entity> entity;
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Room
 
-	entity = std::make_shared<CEngine::Entity>();
+	auto roomType = std::make_shared<CEngine::EntityType>();
+
+	roomType->sharedComponents["mesh"] = std::make_shared<CEngine::MeshComponent>(roomMesh);
+
+	//roomType->requiredComponents.push_back("position");
+	//roomType->requiredComponents.push_back("rotation");
+
+	entityRegistry.AddEntityType("room", roomType);
+
+	json empty;
+
+	std::shared_ptr<CEngine::Entity> roomEntity;
+
+	eresult = entityRegistry.GetEntityInstance("room", empty, roomEntity);
+
+	if (eresult != CEngine::EngineResult::ok)
+	{
+		Ceng::Log::Print("Error: failed to get instance of:");
+		Ceng::Log::Print("room");
+		return 0;
+	}
+
+	roomEntity->AddComponent("position", std::make_shared<CEngine::PositionComponent>(0.0f, 0.0f, 0.0f));
+
+	roomEntity->AddComponent("rotation", std::make_shared<CEngine::RotationComponent>());
+
+	entityDict["room"] = roomEntity;
+
+
+
+	//entity = std::make_shared<CEngine::Entity>();
 
 	//entity->AddComponent("position", std::make_shared<CEngine::PositionComponent>(-180.0f, 2.0f, 158.0f));
-	entity->AddComponent("position", std::make_shared<CEngine::PositionComponent>(0.0f, 0.0f, 0.0f));
+	//entity->AddComponent("position", std::make_shared<CEngine::PositionComponent>(0.0f, 0.0f, 0.0f));
 
-	entity->AddComponent("rotation", std::make_shared<CEngine::RotationComponent>());
+	//entity->AddComponent("rotation", std::make_shared<CEngine::RotationComponent>());
 
-	entity->AddComponent("mesh", std::make_shared<CEngine::MeshComponent>(roomMesh));
+	//entity->AddComponent("mesh", std::make_shared<CEngine::MeshComponent>(roomMesh));
 
-	entityDict["room"] = entity;
+	//entityDict["room"] = entity;
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Terrain
