@@ -23,6 +23,13 @@ Automation
 - [ ] Scene export script for Blender: world, env probes, objects, etc..
 
 ------------------------------------------
+Preprocessors
+
+- [ ] Move irradiance map generator to separate library
+
+- [ ] Move conversion of mesh to OpenGL suitable format to separate library 
+
+------------------------------------------
 Debug
 
 - [ ] Add timing to all loaders
