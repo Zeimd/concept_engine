@@ -4,13 +4,13 @@ TODO
 ------------------------------------------
 Automation
 
-- [ ] Component factory: GetInstance(). Should be abstract enough for any component to work with it.
-      Also JSON input version?
+- [ ] Should components provide their dependencies so that entity type's required
+      components list can be generated?
 
 - [ ] Entity type registry. From file and from code. 
       NOTE: For ensuring that dependencies get loaded and entities can be copied.
 
-- [ ] Entity instantiation. From file (via scene JSON?) and from code.
+- [ ] Entity instantiation from code with JSON and STL containers.
 
 - [ ] Implement default resources list. These are always loaded regardless of scene.
 
@@ -21,6 +21,11 @@ Automation
 - [ ] Use a configuration file to determine which scene to load
 
 - [ ] Scene export script for Blender: world, env probes, objects, etc..
+
+------------------------------------------
+Debug
+
+- [ ] Add timing to all loaders
 
 ------------------------------------------
 Bug fixes
@@ -47,7 +52,15 @@ Project structure
       those that aren't compatible with MIT license
 
 ------------------------------------------
+Entities
+
+- [ ] MeshComponent: use built-in position and rotation values if not linked to other components
+
+------------------------------------------
 Environment maps
+
+- [ ] Group envmap renders by their shader programs so that each shader is configured only once
+      per frame
 
 - [ ] Different cube map generation point and boundary shape center. Right now they are treated as equal.
 
