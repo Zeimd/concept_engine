@@ -20,14 +20,18 @@ Automation
 
 - [ ] Use a configuration file to determine which scene to load
 
+------------------------------------------
+Toolchain
+
 - [ ] Scene export script for Blender: world, env probes, objects, etc..
 
-------------------------------------------
-Preprocessors
+- [ ] Separate lightmap data from normal material information to allow material reuse
+
+- [ ] Script for merging material files
 
 - [ ] Move irradiance map generator to separate library
 
-- [ ] Move conversion of mesh to OpenGL suitable format to separate library 
+- [ ] Move conversion of CME mesh format to OpenGL suitable format to separate library 
 
 ------------------------------------------
 Debug
