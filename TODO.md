@@ -70,9 +70,6 @@ Environment maps
 
 - [ ] Use all available mip-map levels instead of only the first
 
-- [ ] Group envmap renders by their shader programs so that each shader is configured only once
-      per frame
-
 - [ ] Different cube map generation point and boundary shape center. Right now they are treated as equal.
 
 - [ ] Oriented boundary shape option. This just requires that fragment world positions is further rotated into boundary
