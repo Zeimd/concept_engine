@@ -23,6 +23,8 @@ EnvMapManager::EnvMapManager()
 EngineResult::value EnvMapManager::GetInstance(Ceng::RenderDevice* renderDevice, TextureManager* textureManager, ShaderManager* shaderManager,
 	EnvMapManager** output)
 {
+	*output = nullptr;
+
 	Ceng::SamplerState* diffuseSampler;
 
 	Ceng::SamplerStateDesc samplerDesc;
@@ -138,14 +140,17 @@ EngineResult::value EnvMapManager::AddEnvMapParallaxAABB(const Ceng::StringUtf8&
 	Ceng::Log::Print("Cubemap loaded\n");
 
 	std::shared_ptr<EnvProbeShaderParallaxAABB> envProbeShader;
+
+	EnvMapEntry* entry = nullptr;
 	
 	bool found = false;
 
-	for (auto& shader : shaders)
+	for (auto& map : envMaps)
 	{
-		if (shader->program == lightProbeProg)
+		if (map.shader->program == lightProbeProg)
 		{
-			envProbeShader = std::static_pointer_cast<EnvProbeShaderParallaxAABB>(shader);
+			entry = &map;
+			envProbeShader = std::static_pointer_cast<EnvProbeShaderParallaxAABB>(map.shader);
 			found = true;
 			break;
 		}
@@ -153,8 +158,6 @@ EngineResult::value EnvMapManager::AddEnvMapParallaxAABB(const Ceng::StringUtf8&
 
 	if (!found)
 	{
-		//envProbeShader = std::make_shared< EnvProbeShaderParallaxAABB>();
-
 		EnvProbeShaderParallaxAABB* temp;
 
 		eresult = EnvProbeShaderParallaxAABB::GetInstance(lightProbeProg, &temp);
@@ -167,10 +170,14 @@ EngineResult::value EnvMapManager::AddEnvMapParallaxAABB(const Ceng::StringUtf8&
 
 		envProbeShader.reset(temp);
 
-		shaders.push_back(envProbeShader);
-	}
+		envMaps.push_back(EnvMapEntry());
 
-	envProbeShader->program = lightProbeProg;
+		entry = &envMaps.back();
+
+		entry->shader = envProbeShader;
+
+		envProbeShader->program = lightProbeProg;
+	}
 
 	std::shared_ptr<EnvProbeAABOX> envProbe = std::make_shared<EnvProbeAABOX>();
 
@@ -209,69 +216,59 @@ EngineResult::value EnvMapManager::AddEnvMapParallaxAABB(const Ceng::StringUtf8&
 
 	envProbe->program = envProbeShader;
 
-	probes.push_back(envProbe);
-
-
+	entry->probes.push_back(envProbe);
 
 	return EngineResult::ok;
 }
 
-void EnvMapManager::Render(Ceng::RenderContext* renderContext, DeferredPassCommonParams* deferredParams, EnvMapCommonParams* envMapParams)
+void EnvMapManager::Render(Ceng::RenderContext* renderContext, 
+	DeferredPassCommonParams* deferredParams, EnvMapCommonParams* envMapParams)
 {
 	Ceng::Matrix4 reverseCameraRotation = envMapParams->cameraReverseRotation;
 
-	for (auto& envShader : shaders)
+	for (auto& entry : envMaps)
 	{
-		//renderContext->SetShaderProgram(envShader->program->GetProgram());
-
-		envShader->fs_windowWidth->SetFloat((Ceng::FLOAT32)deferredParams->windowWidth);
-		envShader->fs_windowHeight->SetFloat((Ceng::FLOAT32)deferredParams->windowHeight);
-
-		envShader->fs_xDilationDiv->SetFloat(deferredParams->xDilationDiv);
-		envShader->fs_yDilationDiv->SetFloat(deferredParams->yDilationDiv);
-		envShader->fs_zTermA->SetFloat(deferredParams->zTermA);
-		envShader->fs_zTermB->SetFloat(deferredParams->zTermB);
-
-		envShader->fs_gbufferColor->SetInt(deferredParams->gbufferColorSlot);
-		envShader->fs_gbufferNormal->SetInt(deferredParams->gbufferNormalSlot);
-		envShader->fs_depthBuffer->SetInt(deferredParams->depthBufferSlot);
-
-		envShader->fs_reflectionEnv->SetInt(envMapParams->envMapSlot);
-		envShader->fs_diffuseEnv->SetInt(envMapParams->irradianceSlot);
-
-		envShader->fs_cameraReverse->SetMatrix_4x4(&reverseCameraRotation.data[0][0], true);
-
-		renderContext->SetPixelShaderSamplerState(envMapParams->envMapSlot, diffuseSampler);
-		renderContext->SetPixelShaderSamplerState(envMapParams->irradianceSlot, diffuseSampler);
-
-	}
-
-	for (auto& envProbe : probes)
-	{
-		CEngine::ShaderProgram* program = envProbe->GetProgram()->program.get();
+		CEngine::ShaderProgram* program = entry.shader->program.get();
 
 		renderContext->SetShaderProgram(program->GetProgram());
 
-		envProbe->PrepareRender(envMapParams->cameraWorldPos);
+		entry.shader->fs_windowWidth->SetFloat((Ceng::FLOAT32)deferredParams->windowWidth);
+		entry.shader->fs_windowHeight->SetFloat((Ceng::FLOAT32)deferredParams->windowHeight);
 
-		Ceng::BufferData2D data;
+		entry.shader->fs_xDilationDiv->SetFloat(deferredParams->xDilationDiv);
+		entry.shader->fs_yDilationDiv->SetFloat(deferredParams->yDilationDiv);
+		entry.shader->fs_zTermA->SetFloat(deferredParams->zTermA);
+		entry.shader->fs_zTermB->SetFloat(deferredParams->zTermB);
 
-		envProbe->envMap->AsCubemap()->GetBufferData2D(&data);
+		entry.shader->fs_gbufferColor->SetInt(deferredParams->gbufferColorSlot);
+		entry.shader->fs_gbufferNormal->SetInt(deferredParams->gbufferNormalSlot);
+		entry.shader->fs_depthBuffer->SetInt(deferredParams->depthBufferSlot);
 
-		envProbe->GetProgram()->fs_maxEnvLOD->SetFloat(Ceng::FLOAT32(data.mipLevels));
+		entry.shader->fs_reflectionEnv->SetInt(envMapParams->envMapSlot);
+		entry.shader->fs_diffuseEnv->SetInt(envMapParams->irradianceSlot);
 
-		renderContext->SetPixelShaderResource(3, envProbe->envMapView);
-		renderContext->SetPixelShaderResource(4, envProbe->irradianceMapView);
+		entry.shader->fs_cameraReverse->SetMatrix_4x4(&reverseCameraRotation.data[0][0], true);
 
-		/*
-		renderContext->SetPixelShaderResource(3, envProbe->envMapView);
-		renderContext->SetPixelShaderSamplerState(3, diffuseSampler);
+		renderContext->SetPixelShaderSamplerState(envMapParams->envMapSlot, diffuseSampler);
+		renderContext->SetPixelShaderSamplerState(envMapParams->irradianceSlot, diffuseSampler);
+	
+		for (auto& probe : entry.probes)
+		{
+			probe->PrepareRender(envMapParams->cameraWorldPos);
 
-		renderContext->SetPixelShaderResource(4, envProbe->irradianceMapView);
-		renderContext->SetPixelShaderSamplerState(4, diffuseSampler);
-		*/
+			Ceng::BufferData2D data;
 
+			probe->envMap->AsCubemap()->GetBufferData2D(&data);
 
-		renderContext->DrawIndexed(Ceng::PRIMITIVE_TYPE::TRIANGLE_LIST, 0, 6);
+			probe->GetProgram()->fs_maxEnvLOD->SetFloat(Ceng::FLOAT32(data.mipLevels));
+
+			renderContext->SetPixelShaderResource(envMapParams->envMapSlot, 
+				probe->envMapView);
+
+			renderContext->SetPixelShaderResource(envMapParams->irradianceSlot, 
+				probe->irradianceMapView);
+
+			renderContext->DrawIndexed(Ceng::PRIMITIVE_TYPE::TRIANGLE_LIST, 0, 6);
+		}
 	}
 }

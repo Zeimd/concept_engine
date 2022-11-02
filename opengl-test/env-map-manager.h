@@ -9,6 +9,9 @@
 #ifndef CENGINE_ENV_MAP_MANAGER_H
 #define CENGINE_ENV_MAP_MANAGER_H
 
+#include <memory>
+#include <utility>
+
 #include "manager.h"
 
 #include "env-probe-shader.h"
@@ -90,6 +93,13 @@ namespace CEngine
 
 	};
 
+	class EnvMapEntry
+	{
+	public:
+		std::shared_ptr<CEngine::EnvProbeShader> shader;
+		std::vector<std::shared_ptr<CEngine::EnvProbe>> probes;
+	};
+
 	class EnvMapManager : public Manager
 	{
 	protected:
@@ -101,9 +111,7 @@ namespace CEngine
 
 		Ceng::SamplerState* diffuseSampler;
 
-		std::vector<std::shared_ptr<CEngine::EnvProbeShader>> shaders;
-
-		std::vector<std::shared_ptr<CEngine::EnvProbe>> probes;
+		std::vector<EnvMapEntry> envMaps;
 
 		EnvMapManager();
 
