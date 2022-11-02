@@ -65,8 +65,6 @@ Project structure
 ------------------------------------------
 Entities
 
-- [ ] MeshComponent: use built-in position and rotation values if not linked to other components
-
 ------------------------------------------
 Environment maps
 
