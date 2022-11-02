@@ -68,6 +68,8 @@ Entities
 ------------------------------------------
 Environment maps
 
+- [ ] Use all available mip-map levels instead of only the first
+
 - [ ] Group envmap renders by their shader programs so that each shader is configured only once
       per frame
 
