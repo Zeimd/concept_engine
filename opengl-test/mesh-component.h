@@ -14,10 +14,11 @@
 #include <ceng.h>
 #include "component.h"
 
+#include "position-component.h"
+#include "rotation-component.h"
+
 namespace CEngine
 {
-	class PositionComponent;
-	class RotationComponent;
 
 	class Mesh;
 
@@ -28,12 +29,17 @@ namespace CEngine
 
 		std::shared_ptr<Mesh> mesh;
 
+		PositionComponent defaultPos;
+		RotationComponent defaultRot;
+
 		PositionComponent *position;
 		RotationComponent *rotation;
 
-	public:
+	protected:
 		MeshComponent();
 
+	public:
+		
 		MeshComponent(const std::shared_ptr<Mesh> &mesh);
 
 		~MeshComponent() override;

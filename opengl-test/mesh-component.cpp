@@ -16,12 +16,12 @@
 using namespace CEngine;
 
 MeshComponent::MeshComponent()
-	: position(nullptr), rotation(nullptr)
+	: position(&defaultPos), rotation(&defaultRot)
 {
 }
 
 MeshComponent::MeshComponent(const std::shared_ptr<Mesh> &mesh) 
-	: mesh(mesh), position(nullptr), rotation(nullptr)
+	: mesh(mesh), position(&defaultPos), rotation(&defaultRot)
 {
 }
 
@@ -51,11 +51,11 @@ void MeshComponent::RemoveComponent(const Ceng::StringUtf8& name)
 {
 	if (name == "position")
 	{
-		position = nullptr;
+		position = &defaultPos;
 	}
 	else if (name == "rotation")
 	{
-		rotation = nullptr;
+		rotation = &defaultRot;
 	}
 }
 
@@ -64,12 +64,7 @@ void MeshComponent::Render(Ceng::RenderContext *context, Ceng::Matrix4 *cameraTr
 {
 	if (mesh == nullptr) return;
 
-	Ceng::Matrix4 objectRotation;
-
-	if (rotation != nullptr)
-	{
-		objectRotation = rotation->RotationMatrix();
-	}
+	Ceng::Matrix4 objectRotation(rotation->RotationMatrix());
 
 	objectTransform = position->PositionMatrix() * objectRotation;
 
@@ -85,12 +80,7 @@ void MeshComponent::ShadowRender(Ceng::RenderContext *context, Ceng::Matrix4 *ca
 {
 	if (mesh == nullptr) return;
 
-	Ceng::Matrix4 objectRotation;
-	
-	if (rotation != nullptr)
-	{
-		objectRotation = rotation->RotationMatrix();
-	}
+	Ceng::Matrix4 objectRotation(rotation->RotationMatrix());
 
 	objectTransform = position->PositionMatrix() * objectRotation;
 
