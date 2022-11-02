@@ -1362,40 +1362,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	entityDict["cube2"] = cubeEntity;
 
-	//return 0;
-
-	/*
-	entity = std::make_shared<CEngine::Entity>();
-
-	entity->AddComponent("position", std::make_shared<CEngine::PositionComponent>(0.0f, 1.0f, 0.0f));
-
-	auto rotComp = std::make_shared<CEngine::RotationComponent>();
-
-	rotComp->AddRotation(CEngine::EulerMode::xyx, 0, 0, 0);
-
-	entity->AddComponent("rotation", rotComp);
-
-	entity->AddComponent("mesh", std::make_shared<CEngine::MeshComponent>(cubeMesh));
-
-	entityDict["cube"] = entity;
-
-	entity = std::make_shared<CEngine::Entity>();
-
-	//entity->AddComponent("position", std::make_shared<CEngine::PositionComponent>(-200.0f, 2.0f, 150.0f));
-	entity->AddComponent("position", std::make_shared<CEngine::PositionComponent>(8.0f, 1.0f, 2.0f));
-
-	rotComp = std::make_shared<CEngine::RotationComponent>();
-
-	rotComp->AddRotation(CEngine::EulerMode::xyx, 0, 0, 0);
-
-	entity->AddComponent("rotation", rotComp);
-
-	entity->AddComponent("mesh", std::make_shared<CEngine::MeshComponent>(cubeMesh));
-
-	entityDict["cube2"] = entity;
-	*/
-
-
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Sphere
 
