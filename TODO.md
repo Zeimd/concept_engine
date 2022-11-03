@@ -4,14 +4,6 @@ TODO
 ------------------------------------------
 Automation
 
-- [ ] Should components provide their dependencies so that entity type's required
-      components list can be generated?
-
-- [ ] Entity type registry. From file and from code. 
-      NOTE: For ensuring that dependencies get loaded and entities can be copied.
-
-- [ ] Entity instantiation from code with JSON and STL containers.
-
 - [ ] Implement default resources list. These are always loaded regardless of scene.
 
 - [ ] Design a scene file format in JSON
@@ -65,17 +57,38 @@ Project structure
 ------------------------------------------
 Entities
 
+- [ ] Should components provide their dependencies so that entity type's required
+      components list can be generated?
+
+- [ ] Entity type registry. From file and from code. 
+      NOTE: For ensuring that dependencies get loaded and entities can be copied.
+
+- [ ] Entity instantiation from code with JSON and STL containers.
+
+
 ------------------------------------------
 Environment maps
 
+- [ ] Naive env map. Currently only parallax corrected box is supported.
+
 - [ ] Use all available mip-map levels instead of only the first
 
-- [ ] Different cube map generation point and boundary shape center. Right now they are treated as equal.
+- [ ] Different cube map generation point and parallax shape center. Right now they are treated as equal.
 
-- [ ] Oriented boundary shape option. This just requires that fragment world positions is further rotated into boundary
+- [ ] Oriented parallax shape option. This just requires that fragment world positions is further rotated into boundary
       shape's body frame
 
-- [ ] Spherical boundary shape
+- [ ] Spherical parallax shape
+
+- [ ] Add area of effect boundary (in addition to parallax correction shape)
+
+------------------------------------------
+Light sources
+
+- [ ] Deferred shading: draw light's bounding box instead of full screen quad
+
+- [ ] Add physically based light sources (take shape into account etc.)
+
 
 ------------------------------------------
 Skybox
@@ -84,28 +97,33 @@ Skybox
       NOTE: Env map manager can handle the environment part of the skybox
 
 ------------------------------------------
-Graphics features
+2d overlay
 
-- [ ] Add area of effect boundary for environment maps (in addition to parallax correction boundary)
+- [ ] Add 2d overlay
 
-- [ ] Add light volumes to deferred lighting pass
+- [ ] FreeType support for text printing
 
-- [ ] Add physically based light sources (take shape into account etc.)
-
-- [ ] Add FreeType support for text printing
-
-- [ ] Post effect: bloom
-
-- [ ] Post effect: SSAO
-
-- [ ] Post effect: Screen space reflections (dynamic objects only?)
-
-- [ ] Post effect: Filmic tone mapping? (uncharted style?)
-
-- [ ] Post effect: Screen space anti-alias
+------------------------------------------
+Texture mapping
 
 - [ ] Parallax mapping
 
+------------------------------------------
+Post effects 
+
+- [ ] Adaptive brightness (human eye)
+
+- [ ] Bloom
+
+- [ ] SSAO
+
+- [ ] Screen space reflections (dynamic objects only?)
+
+- [ ] Filmic tone mapping? (uncharted style?)
+
+- [ ] Screen space anti-alias
+
+- [ ] Atmospheric (scattering?) blue tint for distant objects
 
 ------------------------------------------
 Game logic
