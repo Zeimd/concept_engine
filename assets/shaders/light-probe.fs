@@ -110,7 +110,7 @@ void main()
 }
 
 // returns vec3(k, u, v) : if k <= 0, the ray isn't moving towards the face and there is no intersection
-vec4 RayCubeFaceCollision(vec3 rayStart, vec3 rayDir, vec3 faceCenter, vec3 faceNormal, vec3 baseU, vec3 baseV, float uLimit, float vLimit)
+vec4 RayFaceCollision(vec3 rayStart, vec3 rayDir, vec3 faceCenter, vec3 faceNormal, vec3 baseU, vec3 baseV, float uLimit, float vLimit)
 {
 	float rayDotNormal = dot(rayDir, faceNormal);
 
@@ -165,7 +165,7 @@ vec4 RayCubeFaceCollision(vec3 rayStart, vec3 rayDir, vec3 faceCenter, vec3 face
 		baseU = vec3(0.0, 1.0, 0.0);
 		baseV = vec3(0.0, 0.0, 1.0);
 
-		vec4 resultXP = RayCubeFaceCollision(f_boxPos, reflectDir_world, faceCenter, 
+		vec4 resultXP = RayFaceCollision(f_boxPos, reflectDir_world, faceCenter, 
 			faceNormal, baseU, baseV, boxSideHalf.y, boxSideHalf.z);
 
 		if (resultXP.x > 0)
@@ -181,7 +181,7 @@ vec4 RayCubeFaceCollision(vec3 rayStart, vec3 rayDir, vec3 faceCenter, vec3 face
 		baseU = vec3(0.0, 1.0, 0.0);
 		baseV = vec3(0.0, 0.0, -1.0);
 
-		vec4 resultXN = RayCubeFaceCollision(f_boxPos, reflectDir_world, faceCenter, 
+		vec4 resultXN = RayFaceCollision(f_boxPos, reflectDir_world, faceCenter, 
 			faceNormal, baseU, baseV, boxSideHalf.y, boxSideHalf.z);
 
 		if (resultXN.x > 0)
@@ -197,7 +197,7 @@ vec4 RayCubeFaceCollision(vec3 rayStart, vec3 rayDir, vec3 faceCenter, vec3 face
 		baseU = vec3(1.0, 0.0, 0.0);
 		baseV = vec3(0.0, 0.0, -1.0);
 
-		vec4 resultYP = RayCubeFaceCollision(f_boxPos, reflectDir_world, faceCenter, 
+		vec4 resultYP = RayFaceCollision(f_boxPos, reflectDir_world, faceCenter, 
 			faceNormal, baseU, baseV, boxSideHalf.x, boxSideHalf.z);
 
 		if (resultYP.x > 0)
@@ -213,7 +213,7 @@ vec4 RayCubeFaceCollision(vec3 rayStart, vec3 rayDir, vec3 faceCenter, vec3 face
 		baseU = vec3(1.0, 0.0, 0.0);
 		baseV = vec3(0.0, 0.0, 1.0);
 
-		vec4 resultYN = RayCubeFaceCollision(f_boxPos, reflectDir_world, faceCenter, 
+		vec4 resultYN = RayFaceCollision(f_boxPos, reflectDir_world, faceCenter, 
 			faceNormal, baseU, baseV, boxSideHalf.x, boxSideHalf.z);
 
 		if (resultYN.x > 0)
@@ -229,7 +229,7 @@ vec4 RayCubeFaceCollision(vec3 rayStart, vec3 rayDir, vec3 faceCenter, vec3 face
 		baseU = vec3(-1.0, 0.0, 0.0);
 		baseV = vec3(0.0, 1.0, 0.0);
 
-		vec4 resultZP = RayCubeFaceCollision(f_boxPos, reflectDir_world, faceCenter, 
+		vec4 resultZP = RayFaceCollision(f_boxPos, reflectDir_world, faceCenter, 
 			faceNormal, baseU, baseV, boxSideHalf.x, boxSideHalf.y);
 
 		if (resultZP.x > 0)
@@ -245,7 +245,7 @@ vec4 RayCubeFaceCollision(vec3 rayStart, vec3 rayDir, vec3 faceCenter, vec3 face
 		baseU = vec3(1.0, 0.0, 0.0);
 		baseV = vec3(0.0, 1.0, 0.0);
 
-		vec4 resultZN = RayCubeFaceCollision(f_boxPos, reflectDir_world, faceCenter, 
+		vec4 resultZN = RayFaceCollision(f_boxPos, reflectDir_world, faceCenter, 
 			faceNormal, baseU, baseV, boxSideHalf.x, boxSideHalf.y);
 
 		if (resultZN.x > 0)
