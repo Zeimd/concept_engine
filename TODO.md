@@ -70,6 +70,8 @@ Entities
 ------------------------------------------
 Environment maps
 
+- [ ] Ensure that same env map can't be loaded multiple times
+
 - [ ] Naive env map. Currently only parallax corrected box is supported.
 
 - [ ] Use all available mip-map levels instead of only the first
