@@ -21,9 +21,11 @@ Toolchain
 
 - [ ] Script for merging material files
 
-- [ ] Move irradiance map generator to separate library
+- [ ] Move irradiance map generator to separate DLL
+      NOTE: This allows use from python script
 
-- [ ] Move conversion of CME mesh format to OpenGL suitable format to separate library 
+- [ ] Move conversion of CME mesh format to OpenGL suitable format to separate DLL
+      NOTE: This allows use from python script
 
 ------------------------------------------
 Debug
@@ -39,9 +41,6 @@ Bug fixes
 - [ ] Envmap manager fails to load envmap when light-probe.fs has specularEnv or diffuseColor zeroed.
       NOTE: this is caused by compiler optimizing them away. It doesn't cause the program to crash, but when function result
             is checked, it gives an error which causes Envmap manager to fail
-
-- [ ] Prevent lightmap-lit surfaces from being doubly lit by a diffuse environment map generated from the same scene.
-      Stencil buffer or extra g-buffer fields?
 
 ------------------------------------------
 Project structure
@@ -66,7 +65,6 @@ Entities
 
 - [ ] Entity instantiation from code with JSON and STL containers.
 
-
 ------------------------------------------
 Environment maps
 
@@ -82,6 +80,16 @@ Environment maps
 - [ ] Spherical parallax shape
 
 - [ ] Add area of effect boundary (in addition to parallax correction shape)
+
+- [ ] Optionally draw env map's effect boundary instead of full screen quad
+      NOTE: might also need negative of this to indicate areas where envmap should not render
+
+- [ ] Add debug options to env probe shader, such as "diffuse only", "specular only"
+
+- [ ] Prevent lightmap-lit surfaces from being doubly lit by a diffuse environment map generated from the same scene.
+      Stencil buffer or extra g-buffer fields?
+
+- [ ] Parallax correction for irradiance map?
 
 ------------------------------------------
 Light sources
