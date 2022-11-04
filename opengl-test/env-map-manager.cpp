@@ -158,7 +158,7 @@ EngineResult::value EnvMapManager::LoadEnvMap(const Ceng::StringUtf8& cubemapFil
 	defaultTexOptions.sRGB = false;
 
 	defaultTexOptions.firstMip = 0;
-	defaultTexOptions.mipLevels = 0;
+	defaultTexOptions.mipLevels = -1;
 
 	defaultTexOptions.options = Ceng::BufferOptions::generate_mip_maps;
 
