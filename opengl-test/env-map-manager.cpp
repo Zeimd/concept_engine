@@ -281,8 +281,6 @@ EngineResult::value EnvMapManager::AddEnvMapParallaxAABB(const Ceng::StringUtf8&
 void EnvMapManager::Render(Ceng::RenderContext* renderContext, 
 	DeferredPassCommonParams* deferredParams, EnvMapCommonParams* envMapParams)
 {
-	Ceng::Matrix4 reverseCameraRotation = envMapParams->cameraReverseRotation;
-
 	for (auto& entry : envMaps)
 	{
 		CEngine::ShaderProgram* program = entry.shader->program.get();
@@ -304,7 +302,7 @@ void EnvMapManager::Render(Ceng::RenderContext* renderContext,
 		entry.shader->fs_reflectionEnv->SetInt(envMapParams->envMapSlot);
 		entry.shader->fs_diffuseEnv->SetInt(envMapParams->irradianceSlot);
 
-		entry.shader->fs_cameraReverse->SetMatrix_4x4(&reverseCameraRotation.data[0][0], true);
+		entry.shader->fs_cameraReverse->SetMatrix_4x4(&envMapParams->cameraReverseRotation.data[0][0], true);
 
 		renderContext->SetPixelShaderSamplerState(envMapParams->envMapSlot, diffuseSampler);
 		renderContext->SetPixelShaderSamplerState(envMapParams->irradianceSlot, diffuseSampler);
