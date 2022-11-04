@@ -271,9 +271,9 @@ vec4 RayFaceCollision(vec3 rayStart, vec3 rayDir, vec3 faceCenter, vec3 faceNorm
 
 #else
 
-	vec3 ParallaxCorrection(vec3 f_worldPos, vec3 reflectDir_world)
+	vec4 ParallaxCorrection(vec3 f_worldPos, vec3 reflectDir_world)
 	{
-		return reflectDir_world;
+		return vec4(reflectDir_world,1.0);
 	}
 
 #endif
