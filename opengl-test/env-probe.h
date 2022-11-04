@@ -37,9 +37,9 @@ namespace CEngine
 
 		virtual ~EnvProbe();
 
-		virtual CEngine::EnvProbeShader* GetProgram() = 0;
+		virtual CEngine::EnvProbeShader* GetProgram();
 
-		virtual void PrepareRender(const Vec3& cameraPos) = 0;
+		virtual void PrepareRender(const Vec3& cameraPos);
 	};
 
 	class EnvProbeAABOX : public EnvProbe

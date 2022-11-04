@@ -28,6 +28,16 @@ EnvProbe::~EnvProbe()
 	}
 }
 
+CEngine::EnvProbeShader* EnvProbe::GetProgram()
+{
+	return nullptr;
+}
+
+void EnvProbe::PrepareRender(const Vec3& cameraPos)
+{
+
+}
+
 //////////////////////////////////////////////////////////
 
 EnvProbeAABOX::EnvProbeAABOX()

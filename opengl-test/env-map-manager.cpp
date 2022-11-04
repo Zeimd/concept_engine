@@ -203,6 +203,76 @@ EngineResult::value EnvMapManager::LoadEnvMap(const Ceng::StringUtf8& cubemapFil
 	return EngineResult::ok;
 }
 
+EngineResult::value EnvMapManager::AddEnvMap(const Ceng::StringUtf8& cubemapFile)
+{
+	Ceng::Log::Print("EnvMapManager::AddEnvMap: loading cubemap: ");
+	Ceng::Log::Print(cubemapFile);
+	Ceng::Log::Print("\n");
+
+	CEngine::EngineResult::value eresult;
+
+	std::vector<Ceng::StringUtf8> envFsFlags;
+
+	std::shared_ptr<CEngine::ShaderProgram> lightProbeProg;
+	EnvMapEntry* entry = nullptr;
+
+	eresult = LoadShader(nullptr, nullptr, &entry, lightProbeProg);
+	if (eresult != EngineResult::ok)
+	{
+		Ceng::Log::Print("Failed to load env map shader with options:");
+		for (auto& item : envFsFlags)
+		{
+			Ceng::Log::Print(item);
+		}
+
+		return eresult;
+	}
+
+	std::shared_ptr<CEngine::Texture> envMapHandle, irradianceHandle;
+
+	Ceng::ShaderResourceView* envMapView;
+	Ceng::ShaderResourceView* irradianceView;
+
+	eresult = LoadEnvMap(cubemapFile, envMapHandle, irradianceHandle, &envMapView, &irradianceView);
+	if (eresult != EngineResult::ok)
+	{
+		Ceng::Log::Print("Failed to load env map textures");
+
+		return eresult;
+	}
+
+	// TODO: check that envmap isn't already loaded
+
+	if (entry->shader == nullptr)
+	{
+		EnvProbeShader* temp;
+
+		eresult = EnvProbeShader::GetInstance(lightProbeProg, &temp);
+
+		if (eresult != EngineResult::ok)
+		{
+			Ceng::Log::Print("EnvProbeShaderParallaxAABB::GetInstance failed\n");
+			return eresult;
+		}
+
+		entry->shader.reset(temp);
+	}
+
+	std::shared_ptr<EnvProbe> envProbe = std::make_shared<EnvProbe>();
+
+	envProbe->name = cubemapFile;
+	envProbe->envMap = envMapHandle;
+	envProbe->irradianceMap = irradianceHandle;
+	envProbe->envMapView = envMapView;
+	envProbe->irradianceMapView = irradianceView;
+
+	//envProbe->program = std::static_pointer_cast<EnvProbeShader>(entry->shader);
+
+	entry->probes.push_back(envProbe);
+
+	return EngineResult::ok;
+}
+
 EngineResult::value EnvMapManager::AddEnvMapParallaxAABB(const Ceng::StringUtf8& cubemapFile, Vec3 boundaryPos, Vec3 boxSideHalf)
 {
 	Ceng::Log::Print("EnvMapManager::AddEnvMapParallaxAABB: loading cubemap: ");
@@ -315,7 +385,7 @@ void EnvMapManager::Render(Ceng::RenderContext* renderContext,
 
 			probe->envMap->AsCubemap()->GetBufferData2D(&data);
 
-			probe->GetProgram()->fs_maxEnvLOD->SetFloat(Ceng::FLOAT32(data.mipLevels));
+			entry.shader->fs_maxEnvLOD->SetFloat(Ceng::FLOAT32(data.mipLevels));
 
 			renderContext->SetPixelShaderResource(envMapParams->envMapSlot, 
 				probe->envMapView);
