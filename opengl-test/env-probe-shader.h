@@ -63,7 +63,7 @@ namespace CEngine
 	class EnvProbeShaderParallax : public EnvProbeShader
 	{
 	public:
-		Ceng::ShaderConstant* fs_boundaryCenterWorldPos;
+		Ceng::ShaderConstant* fs_world_cubeGenPos;
 		Ceng::ShaderConstant* fs_cameraPos;
 
 	protected:

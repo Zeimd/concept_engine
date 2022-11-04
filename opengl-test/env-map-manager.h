@@ -77,7 +77,8 @@ namespace CEngine
 		EngineResult::value AddEnvMap(const Ceng::StringUtf8& cubemapFile);
 
 		// Create cubemap with 
-		EngineResult::value AddEnvMapParallaxAABB(const Ceng::StringUtf8& cubemapFile, Vec3 boundaryPos, Vec3 boxSideHalf);
+		EngineResult::value AddEnvMapParallaxAABB(const Ceng::StringUtf8& cubemapFile, const Vec3& world_cubeGenPos, 
+			const Vec3& boxSideHalf);
 
 		void Render(Ceng::RenderContext* renderContext, DeferredPassCommonParams* deferredParams, EnvMapCommonParams* envMapParams);
 	};

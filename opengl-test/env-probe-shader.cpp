@@ -246,7 +246,7 @@ EnvProbeShaderParallax::EnvProbeShaderParallax()
 }
 EnvProbeShaderParallax::~EnvProbeShaderParallax()
 {
-	fs_boundaryCenterWorldPos->Release();
+	fs_world_cubeGenPos->Release();
 	fs_cameraPos->Release();
 }
 
@@ -265,7 +265,7 @@ EngineResult::value EnvProbeShaderParallax::Init()
 
 	Ceng::CRESULT cresult;
 
-	cresult = shaderProgram->GetConstant("boundaryCenterWorldPos", &fs_boundaryCenterWorldPos);
+	cresult = shaderProgram->GetConstant("world_cubeGenPos", &fs_world_cubeGenPos);
 	if (cresult != Ceng::CE_OK)
 	{
 		Ceng::Log::Print("EnvProbeShaderParallax::Init: Failed to get shader constant: boundaryCenterWorldPos\n");
@@ -276,7 +276,7 @@ EngineResult::value EnvProbeShaderParallax::Init()
 	if (cresult != Ceng::CE_OK)
 	{
 		Ceng::Log::Print("EnvProbeShaderParallax::Init: Failed to get shader constant: cameraPos\n");
-		fs_boundaryCenterWorldPos->Release();
+		fs_world_cubeGenPos->Release();
 		return EngineResult::fail;
 	}
 

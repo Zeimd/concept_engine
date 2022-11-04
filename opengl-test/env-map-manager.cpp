@@ -273,7 +273,8 @@ EngineResult::value EnvMapManager::AddEnvMap(const Ceng::StringUtf8& cubemapFile
 	return EngineResult::ok;
 }
 
-EngineResult::value EnvMapManager::AddEnvMapParallaxAABB(const Ceng::StringUtf8& cubemapFile, Vec3 boundaryPos, Vec3 boxSideHalf)
+EngineResult::value EnvMapManager::AddEnvMapParallaxAABB(const Ceng::StringUtf8& cubemapFile, 
+	const Vec3& world_cubeGenPos, const Vec3& boxSideHalf)
 {
 	Ceng::Log::Print("EnvMapManager::AddEnvMapParallaxAABB: loading cubemap: ");
 	Ceng::Log::Print(cubemapFile);
@@ -338,7 +339,7 @@ EngineResult::value EnvMapManager::AddEnvMapParallaxAABB(const Ceng::StringUtf8&
 	envProbe->envMapView = envMapView;
 	envProbe->irradianceMapView = irradianceView;
 
-	envProbe->boundaryCenterWorldPos = boundaryPos;
+	envProbe->world_cubeGenPos = world_cubeGenPos;
 	envProbe->boxSideHalf = boxSideHalf;
 
 	envProbe->program = std::static_pointer_cast<EnvProbeShaderParallaxAABB>(entry->shader);

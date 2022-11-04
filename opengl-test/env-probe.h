@@ -49,7 +49,9 @@ namespace CEngine
 		std::shared_ptr<CEngine::EnvProbeShaderParallaxAABB> program;
 
 		Vec3 boxSideHalf;
-		Vec3 boundaryCenterWorldPos;
+
+		// Position where cubemap was generated
+		Vec3 world_cubeGenPos;
 
 	public:
 		EnvProbeAABOX();

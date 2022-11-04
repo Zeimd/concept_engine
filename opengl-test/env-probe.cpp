@@ -59,7 +59,7 @@ void EnvProbeAABOX::PrepareRender(const Vec3& cameraPos)
 {
 	program->fs_boxSideHalf->SetFloat3((Ceng::FLOAT32*)&boxSideHalf);
 
-	program->fs_boundaryCenterWorldPos->SetFloat3((Ceng::FLOAT32*)&boundaryCenterWorldPos);
+	program->fs_world_cubeGenPos->SetFloat3((Ceng::FLOAT32*)&world_cubeGenPos);
 
 	program->fs_cameraPos->SetFloat3((Ceng::FLOAT32*)&cameraPos);
 }

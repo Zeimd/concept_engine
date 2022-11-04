@@ -36,7 +36,7 @@ uniform vec3 boxSideHalf;
 
 uniform vec3 cameraPos;
 
-uniform vec3 boundaryCenterWorldPos;
+uniform vec3 world_cubeGenPos;
 
 #endif
 
@@ -265,7 +265,7 @@ vec4 RayCubeFaceCollision(vec3 rayStart, vec3 rayDir, vec3 faceCenter, vec3 face
 	{
 		vec3 f_worldPos = (cameraReverseRotation * vec4(f_eyePos,1.0)).xyz + cameraPos;
 
-		vec3 f_boxPos = f_worldPos - boundaryCenterWorldPos;
+		vec3 f_boxPos = f_worldPos - world_cubeGenPos;
 
 		vec3 faceCenter;
 		vec3 faceNormal;
