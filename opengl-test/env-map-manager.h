@@ -14,8 +14,6 @@
 
 #include "manager.h"
 
-#include "env-probe-shader.h"
-
 #include "engine-result.h"
 
 #include "render-params.h"
@@ -27,71 +25,8 @@ namespace CEngine
 	class TextureManager;
 	class ShaderManager;
 
-	class EnvProbe
-	{
-	public:
-
-		Ceng::StringUtf8 name;
-
-		std::shared_ptr<CEngine::Texture> envMap;
-		std::shared_ptr<CEngine::Texture> irradianceMap;
-
-		Ceng::ShaderResourceView* envMapView;
-		Ceng::ShaderResourceView* irradianceMapView;
-
-	public:
-		EnvProbe()
-		{
-
-		}
-
-		virtual ~EnvProbe()
-		{
-			envMapView->Release();
-			irradianceMapView->Release();
-
-		}
-
-		virtual CEngine::EnvProbeShader* GetProgram() = 0;
-
-		virtual void PrepareRender(const Vec3& cameraPos) = 0;
-	};
-
-	class EnvProbeAABOX : public EnvProbe
-	{
-	public:
-
-		std::shared_ptr<CEngine::EnvProbeShaderParallaxAABB> program;
-
-		Vec3 boxSideHalf;
-		Vec3 boundaryCenterWorldPos;
-
-	public:
-		EnvProbeAABOX()
-		{
-
-		}
-
-		~EnvProbeAABOX() override
-		{
-
-		}
-
-		CEngine::EnvProbeShader* GetProgram() override
-		{
-			return program.get();
-		}
-
-		void PrepareRender(const Vec3& cameraPos) override
-		{
-			program->fs_boxSideHalf->SetFloat3((Ceng::FLOAT32*)&boxSideHalf);
-
-			program->fs_boundaryCenterWorldPos->SetFloat3((Ceng::FLOAT32*)&boundaryCenterWorldPos);
-
-			program->fs_cameraPos->SetFloat3((Ceng::FLOAT32*)&cameraPos);
-		}
-
-	};
+	class EnvProbeShader;
+	class EnvProbe;
 
 	class EnvMapEntry
 	{

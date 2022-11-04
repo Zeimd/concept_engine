@@ -13,6 +13,9 @@
 #include "shader-manager.h"
 #include "texture-manager.h"
 
+#include "env-probe.h"
+#include "env-probe-shader.h"
+
 using namespace CEngine;
 
 EnvMapManager::EnvMapManager()
