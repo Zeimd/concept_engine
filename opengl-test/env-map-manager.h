@@ -28,11 +28,21 @@ namespace CEngine
 	class EnvProbeShader;
 	class EnvProbe;
 
+	class ShaderProgram;
+
 	class EnvMapEntry
 	{
 	public:
 		std::shared_ptr<CEngine::EnvProbeShader> shader;
 		std::vector<std::shared_ptr<CEngine::EnvProbe>> probes;
+
+	public:
+
+		EnvMapEntry() : shader(nullptr)
+		{
+
+		}
+
 	};
 
 	class EnvMapManager : public Manager
@@ -50,6 +60,13 @@ namespace CEngine
 
 		EnvMapManager();
 
+		EngineResult::value LoadShader(const std::vector<Ceng::StringUtf8>* vsFlags,
+			const std::vector<Ceng::StringUtf8>* fsFlags, EnvMapEntry** out_entry, std::shared_ptr<ShaderProgram>& out_program);
+
+		EngineResult::value LoadEnvMap(const Ceng::StringUtf8& cubemapFile, std::shared_ptr<CEngine::Texture>& out_envMapHandle,
+			std::shared_ptr<CEngine::Texture>& out_irradianceHandle,
+			Ceng::ShaderResourceView** out_envMapView, Ceng::ShaderResourceView** out_irradianceView);
+
 	public:
 		static EngineResult::value GetInstance(Ceng::RenderDevice* renderDevice, TextureManager* textureManager, 
 			ShaderManager* shaderManager, EnvMapManager** output);
@@ -57,7 +74,7 @@ namespace CEngine
 		~EnvMapManager() override;
 
 		// Create simple environment shader from cubemap
-		//EngineResult::value AddEnvMap(const Ceng::StringUtf8& cubemapFile);
+		EngineResult::value AddEnvMap(const Ceng::StringUtf8& cubemapFile);
 
 		// Create cubemap with 
 		EngineResult::value AddEnvMapParallaxAABB(const Ceng::StringUtf8& cubemapFile, Vec3 boundaryPos, Vec3 boxSideHalf);
