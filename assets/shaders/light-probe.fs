@@ -129,7 +129,8 @@ vec4 RayFaceCollision(vec3 rayStart, vec3 rayDir, vec3 faceCenter, vec3 faceNorm
 
 	float k = normalDotDiff / rayDotNormal;
 
-	// Ignore face if the reflected ray would have to travel backwards to reach it
+	// Ignore face if the reflected ray would have to travel backwards to reach it. Also ignore
+	// case where reflected ray hits the surface it reflects from (k == 0)
 	if (k <= 0.0)
 	{
 		return vec4(-1.0, vec3(0.0,0.0,0.0));
