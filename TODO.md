@@ -34,6 +34,7 @@ Debug
 Bug fixes
 
 - [ ] Envmap renders incorrectly on laptop when using Intel(R) HD Graphics 4000. GPU driver difference?
+      NOTE: this might be because layout modifier for vertex attribute and fragment output isn't supported.
 
 - [ ] Envmap manager fails to load envmap when light-probe.fs has specularEnv or diffuseColor zeroed.
       NOTE: this is caused by compiler optimizing them away. It doesn't cause the program to crash, but when function result
