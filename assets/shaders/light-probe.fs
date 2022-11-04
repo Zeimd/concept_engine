@@ -109,20 +109,27 @@ void main()
 	color = vec4(finalColor,1.0);
 }
 
+// Calculate point of collision between ray and a box face.
 // returns vec3(k, u, v) : if k <= 0, the ray isn't moving towards the face and there is no intersection
 vec4 RayFaceCollision(vec3 rayStart, vec3 rayDir, vec3 faceCenter, vec3 faceNormal, vec3 baseU, vec3 baseV, float uLimit, float vLimit)
 {
 	float rayDotNormal = dot(rayDir, faceNormal);
+
+	// We want collisions against the inner surface of a box, so
+	// ignore the face if the ray is coming from outside of the box
 
 	if (rayDotNormal >= 0.0)
 	{
 		return vec4(-1.0, vec3(0.0,0.0,0.0));
 	}
 
+	// Use the plane equation to calculate the distance from ray's starting point to the face
+
 	float normalDotDiff = dot(faceNormal, faceCenter - rayStart);
 
 	float k = normalDotDiff / rayDotNormal;
 
+	// Ignore face if the reflected ray would have to travel backwards to reach it
 	if (k <= 0.0)
 	{
 		return vec4(-1.0, vec3(0.0,0.0,0.0));
@@ -135,6 +142,7 @@ vec4 RayFaceCollision(vec3 rayStart, vec3 rayDir, vec3 faceCenter, vec3 faceNorm
 	float u = dot(planar, baseU);
 	float v = dot(planar, baseV);
 
+	// Ignore the face if the ray hits the plane outside of the face's circumference
 	if (abs(u) > uLimit || abs(v) > vLimit)
 	{
 		return vec4(-1.0, vec3(0.0,0.0,0.0));
@@ -145,6 +153,8 @@ vec4 RayFaceCollision(vec3 rayStart, vec3 rayDir, vec3 faceCenter, vec3 faceNorm
 
 #if defined(ENVMAP_PARALLAX_AA_BOX)
 
+	// Calculate parallax correction by determining which inner face of the box the reflected ray hits
+	// Because of this the face normals point inwards
 	vec3 ParallaxCorrection(vec3 f_eyePos, vec3 reflectDir_world)
 	{
 		vec3 f_worldPos = (cameraReverseRotation * vec4(f_eyePos,1.0)).xyz + cameraPos;
