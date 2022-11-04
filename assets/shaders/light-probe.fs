@@ -41,7 +41,7 @@ uniform vec3 world_cubeGenPos;
 #endif
 
 
-vec3 ParallaxCorrection(vec3 f_worldPos, vec3 reflectDir_world);
+vec4 ParallaxCorrection(vec3 f_worldPos, vec3 reflectDir_world);
 
 layout(location=0) out vec4 color;
 
@@ -68,7 +68,7 @@ void main()
 
 	vec3 reflectDir_world = (cameraReverseRotation * vec4(reflectDir_eye,1.0)).xyz;
 
-	vec3 cubeDir = ParallaxCorrection(f_eyePos, reflectDir_world);
+	vec4 cubeDir = ParallaxCorrection(f_eyePos, reflectDir_world);
 	//vec3 cubeDir = reflectDir_world;
 
 	float lod = maxEnvLOD*roughness;
@@ -101,7 +101,7 @@ void main()
 	vec3 diffuseColor = DiffuseColor(baseColor,metallic);
 	//vec3 diffuseColor = vec3(0.0,0.0,0.0);
 	
-	vec3 specularEnv = textureLod(reflectionEnv,cubeDir,lod).rgb;
+	vec3 specularEnv = textureLod(reflectionEnv,cubeDir.xyz,lod).rgb * cubeDir.w;
 	//vec3 specularEnv = vec3(0.0,0.0,0.0);
 
 	vec3 finalColor = diffuseColor * diffuseEnv + specularFactor * specularEnv;
@@ -155,7 +155,7 @@ vec4 RayFaceCollision(vec3 rayStart, vec3 rayDir, vec3 faceCenter, vec3 faceNorm
 
 	// Calculate parallax correction by determining which inner face of the box the reflected ray hits
 	// Because of this the face normals point inwards
-	vec3 ParallaxCorrection(vec3 f_eyePos, vec3 reflectDir_world)
+	vec4 ParallaxCorrection(vec3 f_eyePos, vec3 reflectDir_world)
 	{
 		vec3 f_worldPos = (cameraReverseRotation * vec4(f_eyePos,1.0)).xyz + cameraPos;
 
@@ -180,7 +180,7 @@ vec4 RayFaceCollision(vec3 rayStart, vec3 rayDir, vec3 faceCenter, vec3 faceNorm
 
 		if (resultXP.x > 0)
 		{
-			return resultXP.yzw;
+			return vec4(resultXP.yzw, 1.0);
 		}
 
 		// -X face
@@ -196,7 +196,7 @@ vec4 RayFaceCollision(vec3 rayStart, vec3 rayDir, vec3 faceCenter, vec3 faceNorm
 
 		if (resultXN.x > 0)
 		{
-			return resultXN.yzw;
+			return vec4(resultXN.yzw, 1.0);
 		}
 
 		// +Y face
@@ -212,7 +212,7 @@ vec4 RayFaceCollision(vec3 rayStart, vec3 rayDir, vec3 faceCenter, vec3 faceNorm
 
 		if (resultYP.x > 0)
 		{
-			return resultYP.yzw;
+			return vec4(resultYP.yzw,1.0);
 		}
 
 		// -Y face
@@ -228,7 +228,7 @@ vec4 RayFaceCollision(vec3 rayStart, vec3 rayDir, vec3 faceCenter, vec3 faceNorm
 
 		if (resultYN.x > 0)
 		{
-			return resultYN.yzw;
+			return vec4(resultYN.yzw,1.0);
 		}
 
 		// +Z face
@@ -244,7 +244,7 @@ vec4 RayFaceCollision(vec3 rayStart, vec3 rayDir, vec3 faceCenter, vec3 faceNorm
 
 		if (resultZP.x > 0)
 		{
-			return resultZP.yzw;
+			return vec4(resultZP.yzw,1.0);
 		}
 
 		// -Z face
@@ -260,11 +260,11 @@ vec4 RayFaceCollision(vec3 rayStart, vec3 rayDir, vec3 faceCenter, vec3 faceNorm
 
 		if (resultZN.x > 0)
 		{
-			return resultZN.yzw;
+			return vec4(resultZN.yzw,1.0);
 		}
 
 		// Ray didn't hit any face, so no lighting from this environment map
-		discard;
+		return vec4(0.0,0.0,0.0,0.0);
 
 	}
 
