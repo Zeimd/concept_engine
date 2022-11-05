@@ -110,12 +110,12 @@ def BakeEnvProbe(probe):
     print("Cubemap size = " + str(cubeSide))
 
     camData = bpy.data.cameras.new(name="TempEnvProbeCamera")
+    
+    camData.angle = math.radians(90.0)
 
     tempCamera = bpy.data.objects.new(name="TempEnvProbeCamera",object_data=camData)
 
     tempCamera.location = probe.location
-
-    camData.angle = math.radians(90.0)
 
     for index in range(0,6):
 
