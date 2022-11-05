@@ -42,6 +42,8 @@ Bug fixes
       NOTE: this is caused by compiler optimizing them away. It doesn't cause the program to crash, but when function result
             is checked, it gives an error which causes Envmap manager to fail
 
+- [ ] Envmap produces odd results when viewing ceiling through a mirror rotated around Y-axis (vertical)
+
 ------------------------------------------
 Project structure
 
