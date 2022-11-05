@@ -131,9 +131,13 @@ def BakeEnvProbe(probe):
 
     bpy.data.objects.remove(tempCamera)
 
+print("*************************************************************")
+print("Bake envmaps start")
 
 for key,obj in bpy.data.objects.items():
 
     if "IsEnvProbe" in obj and obj["IsEnvProbe"] == 1.0:
         
         BakeEnvProbe(obj)
+
+print("Bake envmaps done")
