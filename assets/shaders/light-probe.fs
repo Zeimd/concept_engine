@@ -200,6 +200,10 @@ vec4 RayFaceCollision(vec3 rayStart, vec3 rayDir, vec3 faceCenter, vec3 faceNorm
         if (tzmax < tmax)
             tmax = tzmax;
 
+        // We sample the cubemap from the "inside", so need to skip the
+        // tmin intersection, which corresponds to the ray hitting the box
+        // from the outside
+
         float t = tmax;
 
         if (t < 0.0)
