@@ -120,6 +120,11 @@ Skybox
 - [ ] FreeType support for text printing
 
 ------------------------------------------
+Controls
+
+- [ ] Add limits to FPS camera angles to prevent 360 degree pitch movement
+
+------------------------------------------
 Texture mapping
 
 - [ ] Parallax mapping
