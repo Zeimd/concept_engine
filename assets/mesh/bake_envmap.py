@@ -53,15 +53,15 @@ faceEulerMode = ('XYZ', 'XYZ', 'XYZ', 'XYZ', 'ZXY', 'XYZ')
 
 def Render(camera, cubeSide, outputName):
 
-    # store current scene data
-
     scene = bpy.context.scene
 
     print("scene = " + scene.name)
 
-    # TODO: store old values and restore on exit
+    # Get old values
 
     oldCamera = scene.camera
+
+    # TODO: render settings
 
     scene.camera = camera
 
@@ -129,17 +129,11 @@ def BakeEnvProbe(probe):
 
         Render(tempCamera, cubeSide, outputName)
 
-    tempCamera.parent = None
-
     bpy.data.objects.remove(tempCamera)
 
-print("**** object names:")
-
-print("**** env probes list:")
 
 for key,obj in bpy.data.objects.items():
 
     if "IsEnvProbe" in obj and obj["IsEnvProbe"] == 1.0:
-        #print(obj.name)
-
+        
         BakeEnvProbe(obj)
