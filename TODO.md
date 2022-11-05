@@ -2,6 +2,11 @@ concept_engine
 
 TODO
 ------------------------------------------
+General
+
+- [ ] Move EulerAngleType enum to ceng-core
+
+------------------------------------------
 Automation
 
 - [ ] Implement default resources list. These are always loaded regardless of scene.
