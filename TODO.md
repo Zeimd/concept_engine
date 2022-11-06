@@ -32,6 +32,8 @@ Toolchain
 - [ ] Move conversion of CME mesh format to OpenGL suitable format to separate DLL
       NOTE: This allows use from python script
 
+- [ ] Ensure that blender's cubemap baking script produces RAW rather than sRGB images.
+
 ------------------------------------------
 Debug
 
