@@ -90,23 +90,6 @@ struct SurfaceData
 
 const Ceng::String ImageFormatToString(const Ceng::IMAGE_FORMAT::value format);
 
-namespace TextureError
-{
-	enum value
-	{
-		ok,
-		invalid_param,
-		file_not_found,
-		unexpected_eof,
-		io_error,
-		unknown_file_format,
-		invalid_texture_type,
-		texture_type_mismatch,
-		failed,
-		out_of_memory,
-	};
-}
-
 #include "object-error.h"
 
 #endif

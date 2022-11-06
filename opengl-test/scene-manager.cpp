@@ -11,6 +11,8 @@
 #include "scene-manager.h"
 #include "mesh-manager.h"
 
+#include "engine-result.h"
+
 using namespace CEngine;
 
 SceneManager::SceneManager()
@@ -123,8 +125,6 @@ EngineResult::value SceneManager::LoadStaticGeometry(json& data)
 
 EngineResult::value SceneManager::LoadEnvProbes(json& data)
 {
-	EngineResult::value eresult;
-
 	for (auto iter = data.begin(); iter != data.end(); ++iter)
 	{
 
