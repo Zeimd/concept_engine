@@ -308,5 +308,8 @@
     <ClInclude Include="..\..\opengl-test\env-probe.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\opengl-test\fps-camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

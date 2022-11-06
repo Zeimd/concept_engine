@@ -58,6 +58,7 @@
 #include "basic-types.h"
 
 #include "camera.h"
+#include "fps-camera.h"
 #include "engine-object.h"
 
 namespace CEngine

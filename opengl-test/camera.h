@@ -37,29 +37,6 @@ namespace CEngine
 
 		const Ceng::Matrix4 GetReverseRotation() const;
 	};
-
-	class FPSCamera : public Camera
-	{
-	protected:
-
-		Ceng::VectorF4 walkDir;
-
-		Ceng::FLOAT32 pitchAngle;
-
-		Ceng::FLOAT32 maxPitch;
-
-	public:
-		FPSCamera();
-
-		FPSCamera(Ceng::FLOAT32 maxPitch);
-
-		~FPSCamera() override;
-
-		void RotateByDeltas(const Ceng::FLOAT32 xAngle,
-			const Ceng::FLOAT32 yAngle,
-			const Ceng::FLOAT32 zAngle) override;
-	};
-
 }
 
 #endif

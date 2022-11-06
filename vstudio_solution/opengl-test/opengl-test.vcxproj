@@ -161,6 +161,7 @@ copy "$(SolutionDir)\..\..\ceng-core\lib\win32\Release\*.dll" "$(SolutionDir)\..
     <ClInclude Include="..\..\opengl-test\env-map.h" />
     <ClInclude Include="..\..\opengl-test\env-probe-shader.h" />
     <ClInclude Include="..\..\opengl-test\env-probe.h" />
+    <ClInclude Include="..\..\opengl-test\fps-camera.h" />
     <ClInclude Include="..\..\opengl-test\json.h" />
     <ClInclude Include="..\..\opengl-test\manager.h" />
     <ClInclude Include="..\..\opengl-test\material-manager.h" />
