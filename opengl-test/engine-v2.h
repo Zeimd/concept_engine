@@ -88,22 +88,7 @@ struct SurfaceData
 	Ceng::INT32 vertexIndices[8];
 };
 
-
-class Actor : public CEngine::EngineObject
-{
-protected:
-
-public:
-	Actor();
-	virtual ~Actor();
-
-//	Ceng::CRESULT SetMesh(Mesh *meshPtr);
-};
-
 const Ceng::String ImageFormatToString(const Ceng::IMAGE_FORMAT::value format);
-
-const Ceng::CRESULT CreateTexture2dFromFile(const Ceng::StringUtf8 &file, Ceng::Texture2dDesc &desc,
-	Ceng::RenderDevice *renderDevice, Ceng::Texture2D **out_texture);
 
 namespace TextureError
 {

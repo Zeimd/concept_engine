@@ -36,9 +36,6 @@
     <ClCompile Include="..\..\opengl-test\direction-light-shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\opengl-test\eng-actor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\opengl-test\eng-camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

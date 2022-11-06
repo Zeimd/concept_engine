@@ -102,7 +102,6 @@ copy "$(SolutionDir)\..\..\ceng-core\lib\win32\Release\*.dll" "$(SolutionDir)\..
     <ClCompile Include="..\..\opengl-test\dds-loader.cpp" />
     <ClCompile Include="..\..\opengl-test\depth-pass.cpp" />
     <ClCompile Include="..\..\opengl-test\direction-light-shader.cpp" />
-    <ClCompile Include="..\..\opengl-test\eng-actor.cpp" />
     <ClCompile Include="..\..\opengl-test\eng-camera.cpp" />
     <ClCompile Include="..\..\opengl-test\eng-object.cpp" />
     <ClCompile Include="..\..\opengl-test\entity-registry.cpp" />
