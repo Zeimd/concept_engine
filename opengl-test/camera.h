@@ -25,15 +25,15 @@ namespace CEngine
 
 	public:
 		Camera();
-		virtual ~Camera();
+		~Camera() override;
 
-		virtual void RotateByDeltas(const Ceng::FLOAT32 xAngle,
+		void RotateByDeltas(const Ceng::FLOAT32 xAngle,
 			const Ceng::FLOAT32 yAngle,
 			const Ceng::FLOAT32 zAngle) override;
 
-		virtual const Ceng::Matrix4 GetRotationMatrix() const override;
-		virtual const Ceng::Matrix4 GetPositionMatrix() override;
-		virtual const Ceng::Matrix4 GetFullTransformation() override;
+		const Ceng::Matrix4 GetRotationMatrix() const override;
+		const Ceng::Matrix4 GetPositionMatrix() override;
+		const Ceng::Matrix4 GetFullTransformation() override;
 
 		const Ceng::Matrix4 GetReverseRotation() const;
 	};
@@ -44,23 +44,20 @@ namespace CEngine
 
 		Ceng::VectorF4 walkDir;
 
+		Ceng::FLOAT32 pitchAngle;
+
+		Ceng::FLOAT32 maxPitch;
+
 	public:
 		FPSCamera();
-		virtual ~FPSCamera();
 
-		virtual void RotateByDeltas(const Ceng::FLOAT32 xAngle,
+		FPSCamera(Ceng::FLOAT32 maxPitch);
+
+		~FPSCamera() override;
+
+		void RotateByDeltas(const Ceng::FLOAT32 xAngle,
 			const Ceng::FLOAT32 yAngle,
 			const Ceng::FLOAT32 zAngle) override;
-
-		//virtual void MoveByDelta(const Ceng::VectorF4 &deltaPos) override;
-
-		/*
-		virtual const Ceng::Matrix4 GetRotationMatrix() const override;
-		virtual const Ceng::Matrix4 GetPositionMatrix() override;
-		virtual const Ceng::Matrix4 GetFullTransformation() override;
-
-		const Ceng::Matrix4 GetReverseRotation() const;
-		*/
 	};
 
 }

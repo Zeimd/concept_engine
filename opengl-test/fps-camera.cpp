@@ -11,20 +11,18 @@
 using namespace CEngine;
 
 
-FPSCamera::FPSCamera() : Camera()
+FPSCamera::FPSCamera() : Camera(), pitchAngle(0), maxPitch(85.0f)
 {
+}
+
+FPSCamera::FPSCamera(Ceng::FLOAT32 maxPitch) : Camera(), maxPitch(maxPitch)
+{
+
 }
 
 FPSCamera::~FPSCamera()
 {
 }
-
-/*
-void FPSCamera::MoveByDelta(const Ceng::VectorF4 &deltaPos)
-{
-	//position += 
-}
-*/
 
 void FPSCamera::RotateByDeltas(const Ceng::FLOAT32 xAngle,
 	const Ceng::FLOAT32 yAngle,
@@ -33,8 +31,21 @@ void FPSCamera::RotateByDeltas(const Ceng::FLOAT32 xAngle,
 	Ceng::Quaternion temp;
 	Ceng::Quaternion reverse;
 
+	Ceng::FLOAT32 xAngleFinal = xAngle;
+
+	if (pitchAngle + xAngle > maxPitch)
+	{
+		xAngleFinal = maxPitch - pitchAngle;
+	}
+	else if (pitchAngle + xAngle < -maxPitch)
+	{
+		xAngleFinal = -maxPitch - pitchAngle;
+	}
+
+	pitchAngle += xAngleFinal;
+
 	// Create rotation around x-axis
-	temp.CreateRotation(defaultBasis[0], -xAngle);
+	temp.CreateRotation(defaultBasis[0], -xAngleFinal);
 	reverse.CreateRotation(rotationBasis[0], xAngle);
 
 	// rotationBasis[] is used to determine local movement directions,
