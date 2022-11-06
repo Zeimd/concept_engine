@@ -72,6 +72,9 @@ Entities
 
 - [ ] Entity instantiation from code with JSON and STL containers.
 
+- [ ] Entity components need DefaultClone() in addition to full Clone(). The former should do what Clone() currently
+      does (copies only non-instance specific fields).
+
 ------------------------------------------
 Environment maps
 
