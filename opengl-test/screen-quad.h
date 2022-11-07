@@ -16,6 +16,7 @@
 
 namespace CEngine
 {
+	// Provides the vertex format and data needed to render a full screen quad
 	class FullScreenQuad
 	{
 	public:
