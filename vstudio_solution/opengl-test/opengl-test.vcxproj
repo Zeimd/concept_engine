@@ -134,6 +134,7 @@ copy "$(SolutionDir)\..\..\ceng-core\lib\win32\Release\*.dll" "$(SolutionDir)\..
     <ClCompile Include="..\..\opengl-test\rotation-component.cpp" />
     <ClCompile Include="..\..\opengl-test\rotation-factory.cpp" />
     <ClCompile Include="..\..\opengl-test\scene-manager.cpp" />
+    <ClCompile Include="..\..\opengl-test\screen-quad.cpp" />
     <ClCompile Include="..\..\opengl-test\shader-manager.cpp" />
     <ClCompile Include="..\..\opengl-test\shadowmap-component.cpp" />
     <ClCompile Include="..\..\opengl-test\spot-light-component.cpp" />
@@ -181,6 +182,7 @@ copy "$(SolutionDir)\..\..\ceng-core\lib\win32\Release\*.dll" "$(SolutionDir)\..
     <ClInclude Include="..\..\opengl-test\rotation-component.h" />
     <ClInclude Include="..\..\opengl-test\rotation-factory.h" />
     <ClInclude Include="..\..\opengl-test\scene-manager.h" />
+    <ClInclude Include="..\..\opengl-test\screen-quad.h" />
     <ClInclude Include="..\..\opengl-test\shader-manager.h" />
     <ClInclude Include="..\..\opengl-test\shader-program.h" />
     <ClInclude Include="..\..\opengl-test\shader.h" />
@@ -192,6 +194,7 @@ copy "$(SolutionDir)\..\..\ceng-core\lib\win32\Release\*.dll" "$(SolutionDir)\..
     <ClInclude Include="..\..\opengl-test\texture-manager.h" />
     <ClInclude Include="..\..\opengl-test\texture-options.h" />
     <ClInclude Include="..\..\opengl-test\texture.h" />
+    <ClInclude Include="..\..\opengl-test\vertex-formats.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

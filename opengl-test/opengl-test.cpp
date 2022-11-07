@@ -570,24 +570,21 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Vertex format for full screen quad
 
+	/*
 	struct Vec2
 	{
 		Ceng::FLOAT32 x;
 		Ceng::FLOAT32 y;
 	};
+	*/
 
-	struct QuadVertex
-	{
-		Vec2 position;
-		CEngine::TexelF2 texCoord;
-	};
-
+	/*
 	progVertexDecl.clear();
 
-	declVar = Ceng::VertexDeclData(0, 0, Ceng::VTX_DATATYPE::FLOAT2, sizeof(QuadVertex), "position");
+	declVar = Ceng::VertexDeclData(0, 0, Ceng::VTX_DATATYPE::FLOAT2, sizeof(CEngine::QuadVertex), "position");
 	progVertexDecl.push_back(declVar);
 
-	declVar = Ceng::VertexDeclData(0, 12, Ceng::VTX_DATATYPE::FLOAT2, sizeof(QuadVertex), "textureUV");
+	declVar = Ceng::VertexDeclData(0, 12, Ceng::VTX_DATATYPE::FLOAT2, sizeof(CEngine::QuadVertex), "textureUV");
 	progVertexDecl.push_back(declVar);
 
 	progVertexDecl.push_back(Ceng::VTX_DECL_END);
@@ -599,11 +596,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	{
 		return 0;
 	}
+	*/
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Vertex buffer for drawing proxy buffer
 
-	QuadVertex fullScreenQuad[4];
+	/*
+	CEngine::QuadVertex fullScreenQuad[4];
 
 	fullScreenQuad[0].position.x = -1.0f;
 	fullScreenQuad[0].position.y = -1.0f;
@@ -627,7 +626,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	Ceng::VertexBuffer *quadVertexBuffer;
 
-	cresult = renderDevice->CreateVertexBuffer(sizeof(QuadVertex), 4,
+	cresult = renderDevice->CreateVertexBuffer(sizeof(CEngine::QuadVertex), 4,
 		Ceng::BufferUsage::gpu_read_only, (Ceng::VertexBuffer**)&quadVertexBuffer);
 	if (cresult != Ceng::CE_OK)
 	{
@@ -651,6 +650,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		fullScreenIndices, (Ceng::IndexBuffer**)&quadIndices);
 	if (cresult != Ceng::CE_OK)
 	{
+		return 0;
+	}
+	*/
+
+	CEngine::FullScreenQuad* quad;
+
+	eresult = CEngine::FullScreenQuad::GetInstance(renderDevice, &quad);
+	if (eresult != CEngine::EngineResult::ok)
+	{
+		Ceng::Log::Print("Failed to create full screen quad");
 		return 0;
 	}
 
@@ -2109,9 +2118,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				renderContext->SetDepthStencilState(nullptr);
 				
 				// Full screen quad vertex data
-				renderContext->SetVertexFormat(quadVertexFormat);
-				renderContext->SetIndexBuffer(quadIndices);
-				renderContext->SetVertexStream(0, quadVertexBuffer, sizeof(QuadVertex), 0);
+				renderContext->SetVertexFormat(quad->quadVertexFormat);
+				renderContext->SetIndexBuffer(quad->quadIndices);
+				renderContext->SetVertexStream(0, quad->quadVertexBuffer, sizeof(CEngine::QuadVertex), 0);
 			
 				renderContext->SetShaderProgram(quadProgram->GetProgram());
 
@@ -2175,9 +2184,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	//skyboxView->Release();
 
 	quadProgTex->Release();
-	quadIndices->Release();
-	quadVertexBuffer->Release();
-	quadVertexFormat->Release();
+	//quadVertexFormat->Release();
 
 	nearestSampler->Release();
 
@@ -2213,6 +2220,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	lightmapSampler->Release();
 
 	skyBoxView->Release();
+
+	delete quad;
 
 	// Light probe shader uniforms
 

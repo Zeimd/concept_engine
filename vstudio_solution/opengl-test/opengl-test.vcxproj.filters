@@ -156,6 +156,9 @@
     <ClCompile Include="..\..\opengl-test\env-probe.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\opengl-test\screen-quad.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\deps\upng\upng.h">
@@ -306,6 +309,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\opengl-test\fps-camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\opengl-test\vertex-formats.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\opengl-test\screen-quad.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

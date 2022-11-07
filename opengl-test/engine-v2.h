@@ -61,6 +61,9 @@
 #include "fps-camera.h"
 #include "engine-object.h"
 
+#include "vertex-formats.h"
+#include "screen-quad.h"
+
 namespace CEngine
 {
 	constexpr Ceng::UINT32 majorVersion = 0;
