@@ -64,6 +64,8 @@
 #include "vertex-formats.h"
 #include "screen-quad.h"
 
+#include "gbuffer.h"
+
 namespace CEngine
 {
 	constexpr Ceng::UINT32 majorVersion = 0;

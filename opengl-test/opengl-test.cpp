@@ -610,300 +610,24 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// G-buffer
 
-	Ceng::Texture2dDesc gbufferDesc;
+	CEngine::Gbuffer* gbuffer;
 
-	gbufferDesc.width = resX;
-	gbufferDesc.height = resY;
-
-	gbufferDesc.format = Ceng::IMAGE_FORMAT::C32_ABGR;
-
-	gbufferDesc.arraySize = 1;
-	gbufferDesc.mipLevels = 1;
-
-	gbufferDesc.sRGB = false;
-
-	gbufferDesc.multisampleDesc.count = 0;
-	gbufferDesc.multisampleDesc.quality = 0;
-
-	gbufferDesc.bindFlags = Ceng::BufferBinding::shader_resource | Ceng::BufferBinding::render_target;
-	gbufferDesc.usage = Ceng::BufferUsage::gpu_read_write;
-
-	gbufferDesc.cpuAccessFlags = 0;
-
-	gbufferDesc.optionFlags = 0;
-
-	Ceng::RenderTargetViewDesc targetDesc;
-
-	targetDesc.type = Ceng::BufferType::texture_2d;
-	targetDesc.tex2d.mipSlice = 0;
-
-	Ceng::Texture2D *gbufferColor;
-	Ceng::ShaderResourceView *gbufferColorView;
-	Ceng::RenderTargetView *gbufferColorTarget;
-
-	cresult = renderDevice->CreateTexture2D(gbufferDesc, nullptr, &gbufferColor);
-	if (cresult != Ceng::CE_OK)
+	eresult = CEngine::Gbuffer::GetInstance(renderDevice, resX, resY, &gbuffer);
+	if (eresult != CEngine::EngineResult::ok)
 	{
-		switch (cresult)
-		{
-		case Ceng::CE_ERR_INVALID_PARAM:
-			Ceng_MessageWindow(window, "Error", "Failed to create G-buffer color texture : invalid param");
-			break;
-		case Ceng::CE_ERR_FAIL:
-			Ceng_MessageWindow(window, "Error", "Failed to create G-buffer color texture : API failure");
-			break;
-		case Ceng::CE_ERR_OUT_OF_VIDEO_MEMORY:
-			Ceng_MessageWindow(window, "Error", "Failed to create G-buffer color texture : Out of video memory");
-			break;
-		default:
-			Ceng_MessageWindow(window, "Error", "Failed to create G-buffer color texture : something odd");
-			break;
-		};
+		Ceng::Log::Print("Failed to create G-buffer");
 		return 0;
 	}
-
-	cresult = gbufferColor->GetRenderTargetView(targetDesc, &gbufferColorTarget);
-	if (cresult != Ceng::CE_OK)
+	else
 	{
-		switch (cresult)
-		{
-		case Ceng::CE_ERR_INVALID_PARAM:
-			Ceng_MessageWindow(window, "Error", "Failed to create G-buffer color target : invalid param");
-			break;
-		case Ceng::CE_ERR_FAIL:
-			Ceng_MessageWindow(window, "Error", "Failed to create G-buffer color target : API failure");
-			break;
-		case Ceng::CE_ERR_OUT_OF_VIDEO_MEMORY:
-			Ceng_MessageWindow(window, "Error", "Failed to create G-buffer color target : Out of video memory");
-			break;
-		default:
-			Ceng_MessageWindow(window, "Error", "Failed to create G-buffer color target : something odd");
-			break;
-		};
-		return 0;
+		Ceng::Log::Print("G-buffer created succesfully");
 	}
-
-	cresult = gbufferColor->GetShaderViewTex2D(diffuseViewDesc, &gbufferColorView);
-	if (cresult != Ceng::CE_OK)
-	{
-		switch (cresult)
-		{
-		case Ceng::CE_ERR_INVALID_PARAM:
-			Ceng_MessageWindow(window, "Error", "Failed to create G-buffer color view : invalid param");
-			break;
-		case Ceng::CE_ERR_FAIL:
-			Ceng_MessageWindow(window, "Error", "Failed to create G-buffer color view : API failure");
-			break;
-		case Ceng::CE_ERR_OUT_OF_VIDEO_MEMORY:
-			Ceng_MessageWindow(window, "Error", "Failed to create G-buffer color view : Out of video memory");
-			break;
-		default:
-			Ceng_MessageWindow(window, "Error", "Failed to create G-buffer color view : something odd");
-			break;
-		};
-		return 0;
-	}
-
-	// Use float16 format to store normals with high precision
-	gbufferDesc.format = Ceng::IMAGE_FORMAT::CF16_ABGR;
-
-	Ceng::Texture2D *gbufferNormal;
-	Ceng::ShaderResourceView *gbufferNormalView;
-	Ceng::RenderTargetView *gbufferNormalTarget;
-
-	cresult = renderDevice->CreateTexture2D(gbufferDesc, nullptr, &gbufferNormal);
-	if (cresult != Ceng::CE_OK)
-	{
-		switch (cresult)
-		{
-		case Ceng::CE_ERR_INVALID_PARAM:
-			Ceng_MessageWindow(window, "Error", "Failed to create G-buffer normal surface : invalid param");
-			break;
-		case Ceng::CE_ERR_FAIL:
-			Ceng_MessageWindow(window, "Error", "Failed to create G-buffer normal surface : API failure");
-			break;
-		case Ceng::CE_ERR_OUT_OF_VIDEO_MEMORY:
-			Ceng_MessageWindow(window, "Error", "Failed to create G-buffer normal surface : Out of video memory");
-			break;
-		default:
-			Ceng_MessageWindow(window, "Error", "Failed to create G-buffer normal surface : something odd");
-			break;
-		};
-		return 0;
-	}
-
-	cresult = gbufferNormal->GetRenderTargetView(targetDesc, &gbufferNormalTarget);
-	if (cresult != Ceng::CE_OK)
-	{
-		switch (cresult)
-		{
-		case Ceng::CE_ERR_INVALID_PARAM:
-			Ceng_MessageWindow(window, "Error", "Failed to create G-buffer normal target : invalid param");
-			break;
-		case Ceng::CE_ERR_FAIL:
-			Ceng_MessageWindow(window, "Error", "Failed to create G-buffer normal target : API failure");
-			break;
-		case Ceng::CE_ERR_OUT_OF_VIDEO_MEMORY:
-			Ceng_MessageWindow(window, "Error", "Failed to create G-buffer normal target : Out of video memory");
-			break;
-		default:
-			Ceng_MessageWindow(window, "Error", "Failed to create G-buffer normal target : something odd");
-			break;
-		};
-		return 0;
-	}
-
-	cresult = gbufferNormal->GetShaderViewTex2D(diffuseViewDesc, &gbufferNormalView);
-	if (cresult != Ceng::CE_OK)
-	{
-		switch (cresult)
-		{
-		case Ceng::CE_ERR_INVALID_PARAM:
-			Ceng_MessageWindow(window, "Error", "Failed to create G-buffer normal view : invalid param");
-			break;
-		case Ceng::CE_ERR_FAIL:
-			Ceng_MessageWindow(window, "Error", "Failed to create G-buffer normal view : API failure");
-			break;
-		case Ceng::CE_ERR_OUT_OF_VIDEO_MEMORY:
-			Ceng_MessageWindow(window, "Error", "Failed to create G-buffer normal view : Out of video memory");
-			break;
-		default:
-			Ceng_MessageWindow(window, "Error", "Failed to create G-buffer normal view : something odd");
-			break;
-		};
-		return 0;
-	}
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Depth texture
-
-	Ceng::Texture2dDesc depthDesc;
-
-	depthDesc.width = resX;
-	depthDesc.height = resY;
-
-	//depthDesc.format = Ceng::IMAGE_FORMAT::D24_S8;
-	depthDesc.format = Ceng::IMAGE_FORMAT::D32F;
-
-	depthDesc.mipLevels = 1;
-	depthDesc.arraySize = 1;
-
-	depthDesc.sRGB = false;
-
-	depthDesc.multisampleDesc.count = 0;
-	depthDesc.multisampleDesc.quality = 0;
-
-	depthDesc.bindFlags = Ceng::BufferBinding::shader_resource | Ceng::BufferBinding::render_target;
-	depthDesc.usage = Ceng::BufferUsage::gpu_read_write;
-	depthDesc.cpuAccessFlags = 0;
-	depthDesc.optionFlags = 0;
-
-	Ceng::Texture2D *depthTexture;
-	Ceng::RenderTargetView *depthTarget;
-	Ceng::ShaderResourceView *depthView;
-
-	cresult = renderDevice->CreateTexture2D(depthDesc, nullptr, &depthTexture);
-	if (cresult != Ceng::CE_OK)
-	{
-		return 0;
-	}
-
-	depthTexture->GetRenderTargetView(targetDesc, &depthTarget);
-	depthTexture->GetShaderViewTex2D(diffuseViewDesc, &depthView);
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Light accumulator blend mode
-
-	Ceng::BlendStateDesc lightBlendDesc;
-	Ceng::RenderTargetBlendDesc lightTargetBlend;
-
-	lightBlendDesc.alphaToCoverage = false;
-	lightBlendDesc.independentBlend = false;
-	lightBlendDesc.targets = 1;
-	lightBlendDesc.descList = &lightTargetBlend;
-
-	lightTargetBlend.blendEnable = true;
-
-	lightTargetBlend.sourceBlend = Ceng::BlendType::one;
-	lightTargetBlend.destBlend = Ceng::BlendType::one;
-
-	lightTargetBlend.blendOp = Ceng::BlendOp::add;
-
-	lightTargetBlend.sourceBlendAlpha = Ceng::BlendType::one;
-	lightTargetBlend.destBlendAlpha = Ceng::BlendType::zero;
-	lightTargetBlend.blendAlphaOp = Ceng::BlendOp::add;
-
-	Ceng::BlendState *lightBlendState;
-
-	cresult = renderDevice->CreateBlendState(&lightBlendDesc, &lightBlendState);
-	if (cresult != Ceng::CE_OK)
-	{
-		return 0;
-	}
+	
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// HDR render target
 
-	Ceng::Texture2dDesc hdrDesc;
 
-	hdrDesc.width = resX;
-	hdrDesc.height = resY;
-
-	hdrDesc.format = Ceng::IMAGE_FORMAT::CF16_ABGR;
-	//hdrDesc.format = Ceng::IMAGE_FORMAT::CF32_ABGR;
-	//hdrDesc.format = Ceng::IMAGE_FORMAT::C32_ABGR;
-
-	hdrDesc.mipLevels = 1;
-	hdrDesc.arraySize = 1;
-
-	hdrDesc.sRGB = false;
-
-	hdrDesc.multisampleDesc.count = 0;
-	hdrDesc.multisampleDesc.quality = 0;
-
-	hdrDesc.bindFlags = Ceng::BufferBinding::shader_resource | Ceng::BufferBinding::render_target;
-	hdrDesc.usage = Ceng::BufferUsage::gpu_read_write;
-	hdrDesc.cpuAccessFlags = 0;
-	hdrDesc.optionFlags = 0;
-
-	Ceng::Texture2D *hdrTargetTex;
-
-	cresult = renderDevice->CreateTexture2D(hdrDesc, nullptr, &hdrTargetTex);
-	if (cresult != Ceng::CE_OK)
-	{
-		switch (cresult)
-		{
-		case Ceng::CE_ERR_INVALID_PARAM:
-			Ceng_MessageWindow(window, "Error", "Failed to create HDR accumulator : invalid param");
-			break;
-		case Ceng::CE_ERR_FAIL:
-			Ceng_MessageWindow(window, "Error", "Failed to create HDR accumulator : API failure");
-			break;
-		case Ceng::CE_ERR_OUT_OF_VIDEO_MEMORY:
-			Ceng_MessageWindow(window, "Error", "Failed to create HDR accumulator : Out of video memory");
-			break;
-		default:
-			Ceng_MessageWindow(window, "Error", "Failed to create HDR accumulator : something odd");
-			break;
-		};
-		return 0;
-	}
-
-	Ceng::ShaderResourceView *hdrView;
-
-	cresult = hdrTargetTex->GetShaderViewTex2D(diffuseViewDesc, &hdrView);
-	if (cresult != Ceng::CE_OK)
-	{
-		return 0;
-	}
-
-	Ceng::RenderTargetView *hdrTarget;
-
-	cresult = hdrTargetTex->GetRenderTargetView(targetDesc, &hdrTarget);
-	if (cresult != Ceng::CE_OK)
-	{
-		return 0;
-	}
 
 	Ceng::SamplerStateDesc nearestDesc;
 
@@ -1807,11 +1531,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 				// Render targets
 
-				renderContext->SetRenderTarget(0, gbufferColorTarget);
-				renderContext->SetRenderTarget(1, gbufferNormalTarget);
-				renderContext->SetRenderTarget(2, hdrTarget);
+				renderContext->SetRenderTarget(0, gbuffer->gbufferColorTarget);
+				renderContext->SetRenderTarget(1, gbuffer->gbufferNormalTarget);
+				renderContext->SetRenderTarget(2, gbuffer->hdrTarget);
 
-				renderContext->SetDepth(depthTarget);
+				renderContext->SetDepth(gbuffer->depthTarget);
 
 				renderContext->ClearTarget(nullptr, Ceng::CE_Color(0.0f, 0.0f, 0.0f, 0.0f));
 				renderContext->ClearDepth(1.0);
@@ -2054,7 +1778,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					static_cast<CEngine::ShadowmapComponent*>(entityDict["test_light"]->components["shadowmap"].get());
 					*/
 
-				renderContext->SetPixelShaderResource(0, hdrView);
+				renderContext->SetPixelShaderResource(0, gbuffer->hdrView);
 
 				//renderContext->SetPixelShaderResource(0, depthView);
 				//renderContext->SetPixelShaderResource(0, shadowComp->depthView);
@@ -2119,22 +1843,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	envDrawDepthState->Release();
 
-	hdrTarget->Release();
-	hdrView->Release();
-	hdrTargetTex->Release();
-
-	gbufferColorTarget->Release();
-	gbufferColorView->Release();
-	gbufferColor->Release();
-
-	gbufferNormalTarget->Release();
-	gbufferNormalView->Release();
-	gbufferNormal->Release();
-
-	depthTarget->Release();
-	depthView->Release();
-	depthTexture->Release();
-
 	frontBufferTarget->Release();
 
 	diffuseSampler->Release();
@@ -2142,6 +1850,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	skyBoxView->Release();
 
+	delete gbuffer;
 	delete quad;
 
 	// Light probe shader uniforms

@@ -113,6 +113,7 @@ copy "$(SolutionDir)\..\..\ceng-core\lib\win32\Release\*.dll" "$(SolutionDir)\..
     <ClCompile Include="..\..\opengl-test\env-probe.cpp" />
     <ClCompile Include="..\..\opengl-test\exr-loader.cpp" />
     <ClCompile Include="..\..\opengl-test\fps-camera.cpp" />
+    <ClCompile Include="..\..\opengl-test\gbuffer.cpp" />
     <ClCompile Include="..\..\opengl-test\image-format-string.cpp" />
     <ClCompile Include="..\..\opengl-test\img-loader.cpp" />
     <ClCompile Include="..\..\opengl-test\json.cpp" />
@@ -162,6 +163,7 @@ copy "$(SolutionDir)\..\..\ceng-core\lib\win32\Release\*.dll" "$(SolutionDir)\..
     <ClInclude Include="..\..\opengl-test\env-probe-shader.h" />
     <ClInclude Include="..\..\opengl-test\env-probe.h" />
     <ClInclude Include="..\..\opengl-test\fps-camera.h" />
+    <ClInclude Include="..\..\opengl-test\gbuffer.h" />
     <ClInclude Include="..\..\opengl-test\json.h" />
     <ClInclude Include="..\..\opengl-test\manager.h" />
     <ClInclude Include="..\..\opengl-test\material-manager.h" />
