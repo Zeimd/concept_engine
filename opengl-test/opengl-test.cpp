@@ -430,18 +430,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	progVertexDecl.push_back(Ceng::VTX_DECL_END);
 
-	/*
-	Ceng::VertexFormat *vertexFormat;
-
-	cresult = renderDevice->CreateVertexFormat(progVertexDecl,
-		(Ceng::VertexFormat**)&vertexFormat);
-
-	if (cresult != Ceng::CE_OK)
-	{
-		return 0;
-	}
-	*/
-
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Initialize managers
 

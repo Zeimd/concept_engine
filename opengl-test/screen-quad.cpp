@@ -70,30 +70,6 @@ EngineResult::value FullScreenQuad::GetInstance(Ceng::RenderDevice* renderDevice
 		return EngineResult::fail;
 	}
 
-	/*
-	CEngine::QuadVertex fullScreenQuad[4];
-
-	fullScreenQuad[0].position.x = -1.0f;
-	fullScreenQuad[0].position.y = -1.0f;
-	fullScreenQuad[0].texCoord.u = 0.0f;
-	fullScreenQuad[0].texCoord.v = 0.0f;
-
-	fullScreenQuad[1].position.x = 1.0f;
-	fullScreenQuad[1].position.y = -1.0f;
-	fullScreenQuad[1].texCoord.u = 1.0f;
-	fullScreenQuad[1].texCoord.v = 0.0f;
-
-	fullScreenQuad[2].position.x = 1.0f;
-	fullScreenQuad[2].position.y = 1.0f;
-	fullScreenQuad[2].texCoord.u = 1.0f;
-	fullScreenQuad[2].texCoord.v = 1.0f;
-
-	fullScreenQuad[3].position.x = -1.0f;
-	fullScreenQuad[3].position.y = 1.0f;
-	fullScreenQuad[3].texCoord.u = 0.0f;
-	fullScreenQuad[3].texCoord.v = 1.0f;
-	*/
-
 	Ceng::VertexBuffer* quadVertexBuffer;
 
 	cresult = renderDevice->CreateVertexBuffer(sizeof(CEngine::QuadVertex), 4,
@@ -105,17 +81,6 @@ EngineResult::value FullScreenQuad::GetInstance(Ceng::RenderDevice* renderDevice
 	}
 
 	quadVertexBuffer->LoadData(fullScreenQuad);
-
-	/*
-	Ceng::UINT8 fullScreenIndices[6];
-
-	fullScreenIndices[0] = 0;
-	fullScreenIndices[1] = 1;
-	fullScreenIndices[2] = 2;
-	fullScreenIndices[3] = 0;
-	fullScreenIndices[4] = 2;
-	fullScreenIndices[5] = 3;
-	*/
 
 	Ceng::IndexBuffer* quadIndices;
 
