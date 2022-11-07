@@ -361,6 +361,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	Ceng::KeyboardDevice *keyboard;
 
 	cresult = Ceng_GetKeyboard(window, &keyboard);
+	if (cresult != Ceng::CE_OK)
+	{
+		Ceng::Log::Print("Failed to initialize keyboard");
+		return 0;
+	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Create mouse
@@ -370,6 +375,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	cresult = Ceng_CreateMouse(window, &mouse);
 	if (cresult != Ceng::CE_OK)
 	{
+		Ceng::Log::Print("Failed to initialize keyboard");
 		return 0;
 	}
 
