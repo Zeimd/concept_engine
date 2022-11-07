@@ -576,90 +576,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Vertex format for full screen quad
 
-	/*
-	struct Vec2
-	{
-		Ceng::FLOAT32 x;
-		Ceng::FLOAT32 y;
-	};
-	*/
-
-	/*
-	progVertexDecl.clear();
-
-	declVar = Ceng::VertexDeclData(0, 0, Ceng::VTX_DATATYPE::FLOAT2, sizeof(CEngine::QuadVertex), "position");
-	progVertexDecl.push_back(declVar);
-
-	declVar = Ceng::VertexDeclData(0, 12, Ceng::VTX_DATATYPE::FLOAT2, sizeof(CEngine::QuadVertex), "textureUV");
-	progVertexDecl.push_back(declVar);
-
-	progVertexDecl.push_back(Ceng::VTX_DECL_END);
-
-	Ceng::VertexFormat *quadVertexFormat;
-
-	cresult = renderDevice->CreateVertexFormat(progVertexDecl, (Ceng::VertexFormat**)&quadVertexFormat);
-	if (cresult != Ceng::CE_OK)
-	{
-		return 0;
-	}
-	*/
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Vertex buffer for drawing proxy buffer
-
-	/*
-	CEngine::QuadVertex fullScreenQuad[4];
-
-	fullScreenQuad[0].position.x = -1.0f;
-	fullScreenQuad[0].position.y = -1.0f;
-	fullScreenQuad[0].texCoord.u = 0.0f;
-	fullScreenQuad[0].texCoord.v = 0.0f;
-
-	fullScreenQuad[1].position.x = 1.0f;
-	fullScreenQuad[1].position.y = -1.0f;
-	fullScreenQuad[1].texCoord.u = 1.0f;
-	fullScreenQuad[1].texCoord.v = 0.0f;
-
-	fullScreenQuad[2].position.x = 1.0f;
-	fullScreenQuad[2].position.y = 1.0f;
-	fullScreenQuad[2].texCoord.u = 1.0f;
-	fullScreenQuad[2].texCoord.v = 1.0f;
-
-	fullScreenQuad[3].position.x = -1.0f;
-	fullScreenQuad[3].position.y = 1.0f;
-	fullScreenQuad[3].texCoord.u = 0.0f;
-	fullScreenQuad[3].texCoord.v = 1.0f;
-
-	Ceng::VertexBuffer *quadVertexBuffer;
-
-	cresult = renderDevice->CreateVertexBuffer(sizeof(CEngine::QuadVertex), 4,
-		Ceng::BufferUsage::gpu_read_only, (Ceng::VertexBuffer**)&quadVertexBuffer);
-	if (cresult != Ceng::CE_OK)
-	{
-		return 0;
-	}
-
-	quadVertexBuffer->LoadData(fullScreenQuad);
-
-	Ceng::UINT8 fullScreenIndices[6];
-
-	fullScreenIndices[0] = 0;
-	fullScreenIndices[1] = 1;
-	fullScreenIndices[2] = 2;
-	fullScreenIndices[3] = 0;
-	fullScreenIndices[4] = 2;
-	fullScreenIndices[5] = 3;
-
-	Ceng::IndexBuffer *quadIndices;
-
-	cresult = renderDevice->CreateIndexBuffer(1, 6, Ceng::BufferUsage::gpu_read_only,
-		fullScreenIndices, (Ceng::IndexBuffer**)&quadIndices);
-	if (cresult != Ceng::CE_OK)
-	{
-		return 0;
-	}
-	*/
-
 	CEngine::FullScreenQuad* quad;
 
 	eresult = CEngine::FullScreenQuad::GetInstance(renderDevice, &quad);
@@ -2190,7 +2106,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	//skyboxView->Release();
 
 	quadProgTex->Release();
-	//quadVertexFormat->Release();
 
 	nearestSampler->Release();
 
