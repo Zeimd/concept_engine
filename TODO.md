@@ -51,6 +51,8 @@ Bug fixes
 
 - [ ] Envmap produces odd results when viewing ceiling through a mirror rotated around Y-axis (vertical)
 
+      NOTE: This seems to be caused at least by room's -Y face texture getting mirrored around X-axis.
+
 ------------------------------------------
 Project structure
 
