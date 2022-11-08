@@ -162,6 +162,9 @@
     <ClCompile Include="..\..\opengl-test\gbuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\opengl-test\lighting-pass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\deps\upng\upng.h">
@@ -321,6 +324,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\opengl-test\gbuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\opengl-test\lighting-pass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -68,8 +68,11 @@ namespace CEngine
 			Ceng::ShaderResourceView** out_envMapView, Ceng::ShaderResourceView** out_irradianceView);
 
 	public:
+		EnvMapManager(Ceng::RenderDevice* renderDevice, TextureManager* textureManager, ShaderManager* shaderManager, Ceng::SamplerState* diffuseSampler);
+
+
 		static EngineResult::value GetInstance(Ceng::RenderDevice* renderDevice, TextureManager* textureManager, 
-			ShaderManager* shaderManager, EnvMapManager** output);
+			ShaderManager* shaderManager, std::shared_ptr<EnvMapManager>& output);
 
 		~EnvMapManager() override;
 

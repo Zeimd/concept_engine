@@ -610,12 +610,38 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	{
 		Ceng::Log::Print("G-buffer created succesfully");
 	}
-	
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// HDR render target
+	// Envmap manager
 
+	std::shared_ptr<CEngine::EnvMapManager> envMapManager;
 
+	eresult = CEngine::EnvMapManager::GetInstance(renderDevice, &textureManager, &shaderManager, envMapManager);
+
+	if (eresult != CEngine::EngineResult::ok)
+	{
+		Ceng::Log::Print("Failed to initialize environment map manager\n");
+		return 0;
+	}
+	
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Lighting pass
+
+	CEngine::LightingPass* lightingPass;
+
+	eresult = CEngine::LightingPass::GetInstance(renderDevice, envMapManager, &lightingPass);
+	if (eresult != CEngine::EngineResult::ok)
+	{
+		Ceng::Log::Print("Failed to initialize lighting pass");
+		return 0;
+	}
+	else
+	{
+		Ceng::Log::Print("Lighting pass initialized");
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Common samplers
 
 	Ceng::SamplerStateDesc nearestDesc;
 
@@ -672,15 +698,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	Ceng::Log::Print("Load environment probes\n");
 
-	CEngine::EnvMapManager* envMapManager;
-
-	eresult = CEngine::EnvMapManager::GetInstance(renderDevice, &textureManager, &shaderManager, &envMapManager);
-
-	if (eresult != CEngine::EngineResult::ok)
-	{
-		Ceng::Log::Print("Failed to initialize environment map manager\n");
-		return 0;
-	}
 
 	CEngine::Vec3 boundaryPos = { 0.0f, 1.5f, 0.0 };
 	CEngine::Vec3 boxSideHalf = { 4.0f, 2.5f, 4.0f };
@@ -792,6 +809,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	// Depth test for light drawing
 	// Pass only if depth buffer value != 1 (far plane)
 
+	/*
 	gbufferDepthDesc.depthEnable = true;
 	gbufferDepthDesc.depthWrite = false;
 	gbufferDepthDesc.depthTest = Ceng::TEST_TYPE::NOT_EQUAL;
@@ -803,6 +821,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	{
 		return 0;
 	}
+	*/
 
 	gbufferDepthDesc.depthEnable = false;
 
@@ -1547,41 +1566,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				//////////////////////////////////////////////////////////////
 				// Lighting pass setup				
 
-				// Disable depth writes
-				renderContext->SetDepthStencilState(lightDepthState);
-
-				// Render targets
-
-				renderContext->SetRenderTarget(0, hdrTarget);
-				renderContext->SetRenderTarget(1, nullptr);
-				renderContext->SetRenderTarget(2, nullptr);
-
-				//renderContext->ClearTarget(nullptr, Ceng::CE_Color(0.0f, 0.0f, 0.0f, 0.0f));
-
-				// Full screen quad vertex data
-				renderContext->SetVertexFormat(quadVertexFormat);
-				renderContext->SetIndexBuffer(quadIndices);
-				renderContext->SetVertexStream(0, quadVertexBuffer, sizeof(QuadVertex), 0);
-
-				// G-buffer inputs
-
-				renderContext->SetPixelShaderResource(0, gbufferColorView);
-				renderContext->SetPixelShaderSamplerState(0, nearestSampler);
-
-				renderContext->SetPixelShaderResource(1, gbufferNormalView);
-				renderContext->SetPixelShaderSamplerState(1, nearestSampler);
-
-				renderContext->SetPixelShaderResource(2, depthView);
-				renderContext->SetPixelShaderSamplerState(2, nearestSampler);
-
-				// Position reconstruction data
-
 				deferredParams.xDilationDiv = 1.0f / projectionMatrix.data[0][0];
 				deferredParams.yDilationDiv = 1.0f / projectionMatrix.data[1][1];
 
-				// Additive blend mode
+				lightingPass->Render(renderContext, gbuffer, quad, nearestSampler, &camera, &deferredParams, &envMapParams);
 
-				renderContext->SetBlendState(lightBlendState, nullptr);
+		
 			
 				//////////////////////////////////////////////////////////////
 				// Point lights
@@ -1681,37 +1671,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				*/
 
 				//////////////////////////////////////////////////////////////
-				// Environment probe pass
-
-				envMapParams.cameraReverseRotation = camera.GetReverseRotation();
-				camera.GetPosition(&envMapParams.cameraWorldPos);
-
-				envMapManager->Render(renderContext, &deferredParams, &envMapParams);
-
-				/////////////////////////////////////////////////////////////
-				// Environment map lighting pass
-
-				/*
-				renderContext->SetShaderProgram(lightProbeProg->GetProgram());
-
-				Ceng::BufferData2D data;
-
-				envMapHandle->AsCubemap()->GetBufferData2D(&data);
-
-				probe_maxEnvLOD->SetFloat(Ceng::FLOAT32(data.mipLevels));
-
-				renderContext->SetPixelShaderResource(3, envView);
-				renderContext->SetPixelShaderSamplerState(3, diffuseSampler);
-
-				renderContext->SetPixelShaderResource(4, diffuseEnvView);
-				renderContext->SetPixelShaderSamplerState(4, diffuseSampler);
-
-				probe_cameraReverse->SetMatrix_4x4(&reverseCameraRotation.data[0][0], true);
-				*/
-
-				//renderContext->DrawIndexed(Ceng::PRIMITIVE_TYPE::TRIANGLE_LIST, 0, 6);
-
-				//////////////////////////////////////////////////////////////
 				// Clean up after drawing lights
 
 				// Unmount depth texture
@@ -1802,8 +1761,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	//diffuseEnv->Release();
 
-	delete envMapManager;
-
 	ev_xDilationDiv->Release();
 	ev_yDilationDiv->Release();
 
@@ -1815,17 +1772,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	ev_windowWidth->Release();
 	ev_windowHeight->Release();
 
-	//skyboxView->Release();
-
 	quadProgTex->Release();
 
 	nearestSampler->Release();
 
 	postDepthState->Release();
 
-	lightBlendState->Release();
-
-	lightDepthState->Release();
+	//lightDepthState->Release();
 
 	gbufferDepthState->Release();
 
@@ -1840,10 +1793,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	delete gbuffer;
 	delete quad;
-
-	// Light probe shader uniforms
-
-	//probeView->Release();
+	delete lightingPass;
 
 	// Point light shader uniforms
 

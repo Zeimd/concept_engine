@@ -118,6 +118,7 @@ copy "$(SolutionDir)\..\..\ceng-core\lib\win32\Release\*.dll" "$(SolutionDir)\..
     <ClCompile Include="..\..\opengl-test\img-loader.cpp" />
     <ClCompile Include="..\..\opengl-test\json.cpp" />
     <ClCompile Include="..\..\opengl-test\ktx-loader.cpp" />
+    <ClCompile Include="..\..\opengl-test\lighting-pass.cpp" />
     <ClCompile Include="..\..\opengl-test\manager.cpp" />
     <ClCompile Include="..\..\opengl-test\material-change.cpp" />
     <ClCompile Include="..\..\opengl-test\material-manager.cpp" />
@@ -165,6 +166,7 @@ copy "$(SolutionDir)\..\..\ceng-core\lib\win32\Release\*.dll" "$(SolutionDir)\..
     <ClInclude Include="..\..\opengl-test\fps-camera.h" />
     <ClInclude Include="..\..\opengl-test\gbuffer.h" />
     <ClInclude Include="..\..\opengl-test\json.h" />
+    <ClInclude Include="..\..\opengl-test\lighting-pass.h" />
     <ClInclude Include="..\..\opengl-test\manager.h" />
     <ClInclude Include="..\..\opengl-test\material-manager.h" />
     <ClInclude Include="..\..\opengl-test\material-param.h" />

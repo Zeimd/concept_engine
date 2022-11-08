@@ -65,6 +65,7 @@
 #include "screen-quad.h"
 
 #include "gbuffer.h"
+#include "lighting-pass.h"
 
 namespace CEngine
 {

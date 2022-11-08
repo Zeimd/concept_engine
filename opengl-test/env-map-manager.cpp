@@ -23,10 +23,16 @@ EnvMapManager::EnvMapManager()
 
 }
 
-EngineResult::value EnvMapManager::GetInstance(Ceng::RenderDevice* renderDevice, TextureManager* textureManager, ShaderManager* shaderManager,
-	EnvMapManager** output)
+EnvMapManager::EnvMapManager(Ceng::RenderDevice* renderDevice, TextureManager* textureManager, ShaderManager* shaderManager, Ceng::SamplerState* diffuseSampler)
+	: renderDevice(renderDevice), textureManager(textureManager), shaderManager(shaderManager), diffuseSampler(diffuseSampler)
 {
-	*output = nullptr;
+
+}
+
+EngineResult::value EnvMapManager::GetInstance(Ceng::RenderDevice* renderDevice, TextureManager* textureManager, ShaderManager* shaderManager,
+	std::shared_ptr<EnvMapManager>& output)
+{
+	output = nullptr;
 
 	Ceng::SamplerState* diffuseSampler;
 
@@ -47,15 +53,7 @@ EngineResult::value EnvMapManager::GetInstance(Ceng::RenderDevice* renderDevice,
 		return EngineResult::fail;
 	}
 
-	EnvMapManager* manager = new EnvMapManager();
-
-	manager->renderDevice = renderDevice;
-	manager->textureManager = textureManager;
-	manager->shaderManager = shaderManager;
-
-	manager->diffuseSampler = diffuseSampler;
-
-	*output = manager;
+	output = std::make_shared<EnvMapManager>(renderDevice, textureManager, shaderManager, diffuseSampler);
 
 	return EngineResult::ok;
 }
