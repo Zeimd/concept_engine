@@ -135,9 +135,6 @@ void LightingPass::Render(Ceng::RenderContext* renderContext, Gbuffer* gbuffer, 
 
 	// Environment probes
 
-	envMapParams->cameraReverseRotation = camera->GetReverseRotation();
-	camera->GetPosition(&envMapParams->cameraWorldPos);
-
 	envMapManager->Render(renderContext, deferredParams, envMapParams);
 
 }

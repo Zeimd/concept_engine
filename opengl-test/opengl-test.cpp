@@ -1471,6 +1471,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					window->SetCaptionExtra(captionInfo);
 				}
 
+				// Update render parameters
+
+				envMapParams.cameraReverseRotation = camera.GetReverseRotation();
+				camera.GetPosition(&envMapParams.cameraWorldPos);
+
 				// Draw scene if application is visible
 
 				frameStart = Ceng_HighPrecisionTimer();
