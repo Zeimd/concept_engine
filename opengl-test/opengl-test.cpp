@@ -648,9 +648,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Shader program for tone mapping
 
-	std::shared_ptr<CEngine::ShaderProgram> quadProgram;
+	std::shared_ptr<CEngine::ShaderProgram> toneMapProgram;
 
-	eresult = shaderManager.CreateProgramFromFile("quad.vs", "quad-tone-test.fs", quadProgram);
+	eresult = shaderManager.CreateProgramFromFile("quad.vs", "quad-tone-test.fs", toneMapProgram);
 	if (eresult != CEngine::EngineResult::ok)
 	{
 		return 0;
@@ -658,7 +658,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	Ceng::ShaderConstant* quadProgTex;
 
-	cresult = quadProgram->GetProgram()->GetConstant("texture", &quadProgTex);
+	cresult = toneMapProgram->GetProgram()->GetConstant("texture", &quadProgTex);
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Environment (background) drawing pass
@@ -1681,7 +1681,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				renderContext->SetIndexBuffer(quad->quadIndices);
 				renderContext->SetVertexStream(0, quad->quadVertexBuffer, sizeof(CEngine::QuadVertex), 0);
 			
-				renderContext->SetShaderProgram(quadProgram->GetProgram());
+				renderContext->SetShaderProgram(toneMapProgram->GetProgram());
 
 				quadProgTex->SetInt(0);
 
