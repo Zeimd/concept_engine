@@ -69,8 +69,7 @@ void main()
     vec3 reflectDir_world = (cameraReverseRotation * vec4(reflectDir_eye,1.0)).xyz;
 
     vec4 cubeDir = ParallaxCorrection(f_eyePos, reflectDir_world);
-    //vec3 cubeDir = reflectDir_world;
-
+  
     float lod = maxEnvLOD*roughness;
 
     // Direction vectors point away from the surface
