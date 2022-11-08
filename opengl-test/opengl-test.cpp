@@ -407,6 +407,178 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Front buffer target
+
+	Ceng::RenderTargetView* frontBufferTarget;
+
+	cresult = renderContext->GetFrontBufferTarget(&frontBufferTarget);
+	if (cresult != Ceng::CE_OK)
+	{
+		return 0;
+	}
+
+	
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Return type for concept engine functions
+
+	CEngine::EngineResult::value eresult;
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// G-buffer
+
+	CEngine::Gbuffer* gbuffer;
+
+	eresult = CEngine::Gbuffer::GetInstance(renderDevice, resX, resY, &gbuffer);
+	if (eresult != CEngine::EngineResult::ok)
+	{
+		Ceng::Log::Print("Failed to create G-buffer");
+		return 0;
+	}
+	else
+	{
+		Ceng::Log::Print("G-buffer created succesfully");
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Static render settings
+
+	renderContext->SetViewport(0, 0, 640, 480);
+
+	Ceng::DepthStencilDesc gbufferDepthDesc;
+
+	gbufferDepthDesc.depthEnable = true;
+	gbufferDepthDesc.depthTest = Ceng::TEST_TYPE::LESS;
+	gbufferDepthDesc.depthWrite = true;
+	gbufferDepthDesc.stencilEnable = false;
+
+	Ceng::DepthStencilState* gbufferDepthState;
+
+	cresult = renderDevice->CreateDepthStencilState(gbufferDepthDesc, &gbufferDepthState);
+	if (cresult != Ceng::CE_OK)
+	{
+		return 0;
+	}
+
+	// Depth test for environment drawing
+	// Pass only if depth buffer value = 1 (far plane)
+
+	gbufferDepthDesc.depthEnable = true;
+	gbufferDepthDesc.depthWrite = false;
+	gbufferDepthDesc.depthTest = Ceng::TEST_TYPE::EQUAL;
+
+	Ceng::DepthStencilState* envDrawDepthState;
+
+	cresult = renderDevice->CreateDepthStencilState(gbufferDepthDesc, &envDrawDepthState);
+	if (cresult != Ceng::CE_OK)
+	{
+		return 0;
+	}
+
+	// Depth test for light drawing
+	// Pass only if depth buffer value != 1 (far plane)
+
+	/*
+	gbufferDepthDesc.depthEnable = true;
+	gbufferDepthDesc.depthWrite = false;
+	gbufferDepthDesc.depthTest = Ceng::TEST_TYPE::NOT_EQUAL;
+
+	Ceng::DepthStencilState *lightDepthState;
+
+	cresult = renderDevice->CreateDepthStencilState(gbufferDepthDesc, &lightDepthState);
+	if (cresult != Ceng::CE_OK)
+	{
+		return 0;
+	}
+	*/
+
+	gbufferDepthDesc.depthEnable = false;
+
+	Ceng::DepthStencilState* postDepthState;
+
+	cresult = renderDevice->CreateDepthStencilState(gbufferDepthDesc, &postDepthState);
+	if (cresult != Ceng::CE_OK)
+	{
+		return 0;
+	}
+
+	Ceng::RasterizerState rasterizerState;
+
+	rasterizerState.cullingMode = Ceng::CULLING_MODE::BACK;
+	//rasterizerState.cullingMode = Ceng::CULLING_MODE::NONE;
+	rasterizerState.frontClockwise = false;
+	rasterizerState.scissorEnable = false;
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Samplers
+
+	Ceng::ShaderResourceViewDesc diffuseViewDesc;
+
+	diffuseViewDesc.format = Ceng::IMAGE_FORMAT::C24_BGR;
+	diffuseViewDesc.tex2d.baseMipLevel = 0;
+	diffuseViewDesc.tex2d.maxMipLevel = -1;
+
+	CEngine::TextureOptions defaultTexOptions;
+
+	defaultTexOptions.usage = Ceng::BufferUsage::gpu_read_only;
+	defaultTexOptions.cpuAccessFlags = 0;
+	defaultTexOptions.sRGB = true;
+	defaultTexOptions.mipLevels = 0;
+	defaultTexOptions.options = 0;
+	defaultTexOptions.bindFlags = Ceng::BufferBinding::shader_resource;
+
+	Ceng::SamplerState* diffuseSampler, * lightmapSampler;
+
+	Ceng::SamplerStateDesc samplerDesc;
+
+	samplerDesc.addressU = Ceng::TextureAddressMode::wrap;
+	samplerDesc.addressV = Ceng::TextureAddressMode::wrap;
+	samplerDesc.addressW = Ceng::TextureAddressMode::wrap;
+
+	samplerDesc.minFilter = Ceng::TextureMinFilter::linear_mip_linear;
+	samplerDesc.magFilter = Ceng::TextureMagFilter::linear;
+
+	cresult = renderDevice->CreateSamplerState(samplerDesc, &diffuseSampler);
+	if (cresult != Ceng::CE_OK)
+	{
+		Ceng::Log::Print("Failed to create diffuse sampler");
+		return 0;
+	}
+
+	samplerDesc.addressU = Ceng::TextureAddressMode::clamp;
+	samplerDesc.addressV = Ceng::TextureAddressMode::clamp;
+	samplerDesc.addressW = Ceng::TextureAddressMode::clamp;
+
+	cresult = renderDevice->CreateSamplerState(samplerDesc, &lightmapSampler);
+	if (cresult != Ceng::CE_OK)
+	{
+		Ceng::Log::Print("Failed to create light map sampler");
+		return 0;
+	}
+
+	Ceng::SamplerStateDesc nearestDesc;
+
+	nearestDesc.addressU = Ceng::TextureAddressMode::clamp;
+	nearestDesc.addressV = Ceng::TextureAddressMode::clamp;
+	nearestDesc.addressW = Ceng::TextureAddressMode::clamp;
+
+	nearestDesc.minFilter = Ceng::TextureMinFilter::nearest;
+	nearestDesc.magFilter = Ceng::TextureMagFilter::nearest;
+
+	nearestDesc.minLod = 0.0f;
+	nearestDesc.maxLod = 0.0f;
+	nearestDesc.mipLodBias = 0.0f;
+	nearestDesc.maxAnisotrophy = 0;
+
+	Ceng::SamplerState* nearestSampler;
+
+	cresult = renderDevice->CreateSamplerState(nearestDesc, &nearestSampler);
+	if (cresult != Ceng::CE_OK)
+	{
+		Ceng::Log::Print("Failed to create nearest sampler");
+		return 0;
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Create vertex format
 
 	std::vector<Ceng::VertexDeclData> progVertexDecl;
@@ -433,8 +605,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Initialize managers
 
-	CEngine::EngineResult::value eresult;
-
 	CEngine::TextureManager textureManager(renderDevice);
 
 	textureManager.AddPath(assetPath + "textures/");
@@ -453,50 +623,42 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	meshManager.AddPath(assetPath + "mesh/");
 
+	std::shared_ptr<CEngine::EnvMapManager> envMapManager;
+
+	eresult = CEngine::EnvMapManager::GetInstance(renderDevice, &textureManager, &shaderManager, envMapManager);
+
+	if (eresult != CEngine::EngineResult::ok)
+	{
+		Ceng::Log::Print("Failed to initialize environment map manager\n");
+		return 0;
+	}
+
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Load textures
+	// Vertex format for full screen quad
 
-	Ceng::ShaderResourceViewDesc diffuseViewDesc;
+	CEngine::FullScreenQuad* quad;
 
-	diffuseViewDesc.format = Ceng::IMAGE_FORMAT::C24_BGR;
-	diffuseViewDesc.tex2d.baseMipLevel = 0;
-	diffuseViewDesc.tex2d.maxMipLevel = -1;
+	eresult = CEngine::FullScreenQuad::GetInstance(renderDevice, &quad);
+	if (eresult != CEngine::EngineResult::ok)
+	{
+		Ceng::Log::Print("Failed to create full screen quad");
+		return 0;
+	}
 
-	CEngine::TextureOptions defaultTexOptions;
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Shader program for tone mapping
 
-	defaultTexOptions.usage = Ceng::BufferUsage::gpu_read_only;
-	defaultTexOptions.cpuAccessFlags = 0;
-	defaultTexOptions.sRGB = true;
-	defaultTexOptions.mipLevels = 0;
-	defaultTexOptions.options = 0;
-	defaultTexOptions.bindFlags = Ceng::BufferBinding::shader_resource;
+	std::shared_ptr<CEngine::ShaderProgram> quadProgram;
 
-	Ceng::SamplerState *diffuseSampler,*lightmapSampler;
-
-	Ceng::SamplerStateDesc samplerDesc;
-
-	samplerDesc.addressU = Ceng::TextureAddressMode::wrap;
-	samplerDesc.addressV = Ceng::TextureAddressMode::wrap;
-	samplerDesc.addressW = Ceng::TextureAddressMode::wrap;
-
-	samplerDesc.minFilter = Ceng::TextureMinFilter::linear_mip_linear;
-	samplerDesc.magFilter = Ceng::TextureMagFilter::linear;
-
-	cresult = renderDevice->CreateSamplerState(samplerDesc, &diffuseSampler);
-	if (cresult != Ceng::CE_OK)
+	eresult = shaderManager.CreateProgramFromFile("quad.vs", "quad-tone-test.fs", quadProgram);
+	if (eresult != CEngine::EngineResult::ok)
 	{
 		return 0;
 	}
 
-	samplerDesc.addressU = Ceng::TextureAddressMode::clamp;
-	samplerDesc.addressV = Ceng::TextureAddressMode::clamp;
-	samplerDesc.addressW = Ceng::TextureAddressMode::clamp;
+	Ceng::ShaderConstant* quadProgTex;
 
-	cresult = renderDevice->CreateSamplerState(samplerDesc, &lightmapSampler);
-	if (cresult != Ceng::CE_OK)
-	{
-		return 0;
-	}
+	cresult = quadProgram->GetProgram()->GetConstant("texture", &quadProgTex);
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Environment (background) drawing pass
@@ -560,69 +722,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	Ceng::ShaderConstant *ev_cameraReverse;
 	cresult = shaderProgram->GetConstant("cameraReverseRotation", &ev_cameraReverse);
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Vertex format for full screen quad
-
-	CEngine::FullScreenQuad* quad;
-
-	eresult = CEngine::FullScreenQuad::GetInstance(renderDevice, &quad);
-	if (eresult != CEngine::EngineResult::ok)
-	{
-		Ceng::Log::Print("Failed to create full screen quad");
-		return 0;
-	}
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Shader program for a full screen quad
-
-	std::shared_ptr<CEngine::ShaderProgram> quadProgram;
-
-	//eresult = shaderManager.CreateProgramFromFile("quad.vs", "quad.fs", quadProgram);
-	eresult = shaderManager.CreateProgramFromFile("quad.vs", "quad-tone-test.fs", quadProgram);
-	if (eresult != CEngine::EngineResult::ok)
-	{
-		return 0;
-	}
-
-	Ceng::ShaderConstant *quadProgTex;
-
-	cresult = quadProgram->GetProgram()->GetConstant("texture", &quadProgTex);
-	/*
-	if (cresult != Ceng::CE_OK)
-	{
-	return 0;
-	}
-	*/
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// G-buffer
-
-	CEngine::Gbuffer* gbuffer;
-
-	eresult = CEngine::Gbuffer::GetInstance(renderDevice, resX, resY, &gbuffer);
-	if (eresult != CEngine::EngineResult::ok)
-	{
-		Ceng::Log::Print("Failed to create G-buffer");
-		return 0;
-	}
-	else
-	{
-		Ceng::Log::Print("G-buffer created succesfully");
-	}
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Envmap manager
-
-	std::shared_ptr<CEngine::EnvMapManager> envMapManager;
-
-	eresult = CEngine::EnvMapManager::GetInstance(renderDevice, &textureManager, &shaderManager, envMapManager);
-
-	if (eresult != CEngine::EngineResult::ok)
-	{
-		Ceng::Log::Print("Failed to initialize environment map manager\n");
-		return 0;
-	}
 	
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Lighting pass
@@ -639,59 +738,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	{
 		Ceng::Log::Print("Lighting pass initialized");
 	}
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Common samplers
-
-	Ceng::SamplerStateDesc nearestDesc;
-
-	nearestDesc.addressU = Ceng::TextureAddressMode::clamp;
-	nearestDesc.addressV = Ceng::TextureAddressMode::clamp;
-	nearestDesc.addressW = Ceng::TextureAddressMode::clamp;
-
-	nearestDesc.minFilter = Ceng::TextureMinFilter::nearest;
-	nearestDesc.magFilter = Ceng::TextureMagFilter::nearest;
-
-	nearestDesc.minLod = 0.0f;
-	nearestDesc.maxLod = 0.0f;
-	nearestDesc.mipLodBias = 0.0f;
-	nearestDesc.maxAnisotrophy = 0;
-
-	Ceng::SamplerState *nearestSampler;
-
-	cresult = renderDevice->CreateSamplerState(nearestDesc, &nearestSampler);
-	if (cresult != Ceng::CE_OK)
-	{
-		return 0;
-	}
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Diffuse irradiance map descriptor
-
-	Ceng::Texture2dDesc diffuseEnvDesc;
-
-	diffuseEnvDesc.width = 16;
-	diffuseEnvDesc.height = 16;
-
-	diffuseEnvDesc.format = Ceng::IMAGE_FORMAT::CF16_ABGR;
-
-	diffuseEnvDesc.mipLevels = 0;
-	diffuseEnvDesc.arraySize = 1;
-
-	diffuseEnvDesc.bindFlags = Ceng::BufferBinding::shader_resource;
-	diffuseEnvDesc.sRGB = false;
-	diffuseEnvDesc.usage = Ceng::BufferUsage::gpu_read_only;
-	diffuseEnvDesc.cpuAccessFlags = Ceng::Buffer_CPU_Access::read | Ceng::Buffer_CPU_Access::write;
-
-	diffuseEnvDesc.optionFlags = 0;
-	diffuseEnvDesc.multisampleDesc.count = 0;
-	diffuseEnvDesc.multisampleDesc.quality = 0;
-
-	Ceng::ShaderResourceViewDesc diffuseEnvViewDesc;
-
-	diffuseEnvViewDesc.dimensions = Ceng::BufferType::cube_map;
-	diffuseEnvViewDesc.cubeMap.baseMipLevel = 0;
-	diffuseEnvViewDesc.cubeMap.maxMipLevel = 1;
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Enviroment probes
@@ -752,93 +798,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		return 0;
 	}
 
-
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Object data
 
 	Ceng::Matrix4 objectFullTransform;
 
 	Ceng::Matrix4 normalTransform;
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Front buffer target
-
-	Ceng::RenderTargetView *frontBufferTarget;
-
-	cresult = renderContext->GetFrontBufferTarget(&frontBufferTarget);
-	if (cresult != Ceng::CE_OK)
-	{
-		return 0;
-	}
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Static render settings
-
-	renderContext->SetViewport(0, 0, 640, 480);
-
-	Ceng::DepthStencilDesc gbufferDepthDesc;
-
-	gbufferDepthDesc.depthEnable = true;
-	gbufferDepthDesc.depthTest = Ceng::TEST_TYPE::LESS;
-	gbufferDepthDesc.depthWrite = true;
-	gbufferDepthDesc.stencilEnable = false;
-
-	Ceng::DepthStencilState *gbufferDepthState;
-
-	cresult = renderDevice->CreateDepthStencilState(gbufferDepthDesc, &gbufferDepthState);
-	if (cresult != Ceng::CE_OK)
-	{
-		return 0;
-	}
-
-	// Depth test for environment drawing
-	// Pass only if depth buffer value = 1 (far plane)
-
-	gbufferDepthDesc.depthEnable = true;
-	gbufferDepthDesc.depthWrite = false;
-	gbufferDepthDesc.depthTest = Ceng::TEST_TYPE::EQUAL;
-
-	Ceng::DepthStencilState *envDrawDepthState;
-
-	cresult = renderDevice->CreateDepthStencilState(gbufferDepthDesc, &envDrawDepthState);
-	if (cresult != Ceng::CE_OK)
-	{
-		return 0;
-	}
-
-	// Depth test for light drawing
-	// Pass only if depth buffer value != 1 (far plane)
-
-	/*
-	gbufferDepthDesc.depthEnable = true;
-	gbufferDepthDesc.depthWrite = false;
-	gbufferDepthDesc.depthTest = Ceng::TEST_TYPE::NOT_EQUAL;
-
-	Ceng::DepthStencilState *lightDepthState;
-
-	cresult = renderDevice->CreateDepthStencilState(gbufferDepthDesc, &lightDepthState);
-	if (cresult != Ceng::CE_OK)
-	{
-		return 0;
-	}
-	*/
-
-	gbufferDepthDesc.depthEnable = false;
-
-	Ceng::DepthStencilState *postDepthState;
-
-	cresult = renderDevice->CreateDepthStencilState(gbufferDepthDesc, &postDepthState);
-	if (cresult != Ceng::CE_OK)
-	{
-		return 0;
-	}
-
-	Ceng::RasterizerState rasterizerState;
-
-	rasterizerState.cullingMode = Ceng::CULLING_MODE::BACK;
-	//rasterizerState.cullingMode = Ceng::CULLING_MODE::NONE;
-	rasterizerState.frontClockwise = false;
-	rasterizerState.scissorEnable = false;
+	
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Lighting pass shader programs
@@ -991,7 +957,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	initJSON["position"] = { 0.0f, 1.0f, 0.0f };
 
 	rotJSON["rotMode"] = "EULER_XYZ";
-	rotJSON["angles"] = { 0.0f, 0.0f, 0.0f };
+	rotJSON["angles"] = { 0.0f, 45.0f, 0.0f };
 
 	initJSON["rotation"] = rotJSON;
 
@@ -1564,7 +1530,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				}
 				
 				//////////////////////////////////////////////////////////////
-				// Lighting pass setup				
+				// Lighting pass 			
 
 				deferredParams.xDilationDiv = 1.0f / projectionMatrix.data[0][0];
 				deferredParams.yDilationDiv = 1.0f / projectionMatrix.data[1][1];
