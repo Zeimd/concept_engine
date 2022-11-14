@@ -207,13 +207,38 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	Ceng::Log::Print(out);
 
+	for (int k = 0; k < adapterCount; k++)
+	{
+		renderCore->EnumAdapter(k, &adapter);
+
+		adapter->GetDesc(adapterDesc);
+
+		out = "Display adapter: ";
+
+		out += adapterDesc.deviceName;
+
+		out += "\n";
+
+		out += "description: ";
+
+		out += adapterDesc.description;
+
+		out += "\n";
+
+		if (adapterDesc.stateFlags & Ceng::GraphicsAdapterState::active)
+		{
+			out += "active\n";
+		}
+
+		adapter->Release();
+
+		Ceng::Log::Print(out);
+		Ceng::Log::Print("\n");
+	}
+
 	renderCore->EnumAdapter(0, &adapter);
 
-	out = "Display adapter:";
-
-	adapter->GetDesc(adapterDesc);
-
-	Ceng::Log::Print(out);
+	Ceng::Log::Print("Using adapter:");
 	Ceng::Log::Print(adapterDesc.description);
 	Ceng::Log::Print("\n");
 
