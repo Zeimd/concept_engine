@@ -17,6 +17,10 @@ Automation
 
 - [ ] Use a configuration file to determine which scene to load
 
+- [ ] Store compiled shaders into files instead of compiling from scratch on every startup
+      NOTE: Needs ability to determine when precompiled shader is out of date. Need to check against shader source date,
+            selected GPU (and its driver version)
+
 ------------------------------------------
 Toolchain
 
