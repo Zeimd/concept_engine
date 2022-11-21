@@ -2,6 +2,17 @@ concept_engine
 
 TODO
 ------------------------------------------
+Unsorted
+
+Error code to text
+
+C++ how to iterate enum entries?
+
+Entity definitions:
+
+Entity component factory virtualization with arbitrary param list
+
+------------------------------------------
 General
 
 - [ ] Move EulerAngleType enum to ceng-core
@@ -20,6 +31,8 @@ Automation
 - [ ] Store compiled shaders into files instead of compiling from scratch on every startup
       NOTE: Needs ability to determine when precompiled shader is out of date. Need to check against shader source date,
             selected GPU (and its driver version)
+
+- [ ] Dynamic loader with its own thread and unload capability.
 
 ------------------------------------------
 Toolchain
@@ -126,12 +139,26 @@ Skybox
 ------------------------------------------
 2d overlay
 
-- [ ] Add 2d overlay
+- [ ] Add 2d overlay (with multiple layers). This overlay is drawn after post effects
+
+- [ ] UI elements, such as: window, text box (both passive and writable), toggle button, button, radio button group, scroll bar,
+      drop-down list.
+
+------------------------------------------
+Text system
 
 - [ ] FreeType support for text printing
 
+- [ ] Conversion of keyboard inputs to locale characters (via C++ STL or winapi?)
+
+- [ ] Conversation system (tree based?) with actual text coming from locale files
+
+- [ ] Animated and timed conversation text field fill
+
 ------------------------------------------
 Controls
+
+- [ ] Combo system. Reuse from python game engine project?
 
 ------------------------------------------
 Texture mapping
