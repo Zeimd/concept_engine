@@ -125,11 +125,15 @@ EngineResult::value SceneManager::LoadStaticGeometry(json& data)
 
 EngineResult::value SceneManager::LoadEnvProbes(json& data)
 {
+	/*
+	EngineResult::value eresult;
+
 	for (auto iter = data.begin(); iter != data.end(); ++iter)
 	{
 
 
 	}
+	*/
 
 	return EngineResult::ok;
 }
