@@ -83,6 +83,7 @@ namespace CEngine
 		EngineResult::value AddEnvMapParallaxAABB(const Ceng::StringUtf8& cubemapFile, const Vec3& world_cubeGenPos, 
 			const Vec3& boxSideHalf);
 
+		// Assumes that deferred lighting pass setup has been made by caller
 		void Render(Ceng::RenderContext* renderContext, DeferredPassCommonParams* deferredParams, EnvMapCommonParams* envMapParams);
 	};
 
