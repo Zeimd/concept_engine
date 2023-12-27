@@ -49,7 +49,7 @@ namespace CEngine
 		const EngineResult::value LoadMesh(const Ceng::StringUtf8 &file,const Ceng::StringUtf8 &objectName,
 			std::shared_ptr<Mesh> &out);
 
-		const ObjectError::value MeshManager::LoadMesh_OBJ(const Ceng::StringUtf8 &filename, 
+		const ObjectError::value LoadMesh_OBJ(const Ceng::StringUtf8 &filename, 
 			const Ceng::StringUtf8 &materialFile,const Ceng::StringUtf8 &objectName,
 			std::shared_ptr<Mesh> &out);
 

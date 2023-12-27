@@ -60,7 +60,7 @@ namespace CEngine
 		const EngineResult::value GetMaterial(const Ceng::StringUtf8 &file,const Ceng::StringUtf8 &name, 
 			std::shared_ptr<Material> &out);
 
-		const EngineResult::value MaterialManager::CreateMaterial(MaterialFile &materialFile,
+		const EngineResult::value CreateMaterial(MaterialFile &materialFile,
 			const Ceng::StringUtf8 &name, json &data, std::shared_ptr<Material> &out);
 
 	protected:

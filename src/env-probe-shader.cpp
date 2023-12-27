@@ -268,7 +268,7 @@ EngineResult::value EnvProbeShaderParallax::Init()
 	cresult = shaderProgram->GetConstant("world_cubeGenPos", &fs_world_cubeGenPos);
 	if (cresult != Ceng::CE_OK)
 	{
-		Ceng::Log::Print("EnvProbeShaderParallax::Init: Failed to get shader constant: boundaryCenterWorldPos\n");
+		Ceng::Log::Print("EnvProbeShaderParallax::Init: Failed to get shader constant: world_cubeGenPos\n");
 		return EngineResult::fail;
 	}
 

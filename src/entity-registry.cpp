@@ -33,7 +33,7 @@ EngineResult::value EntityRegistry::GetEntityInstanceCommon(const Ceng::StringUt
 
 	output = nullptr;
 
-	auto& typeIter = entityTypes.find(name);
+	const auto typeIter = entityTypes.find(name);
 
 	if (typeIter == entityTypes.end())
 	{
@@ -76,7 +76,7 @@ EngineResult::value EntityRegistry::GetEntityInstance(const Ceng::StringUtf8& na
 	}
 
 	// Guaranteed to exist at this point
-	auto& typeIter = entityTypes.find(name);
+	const auto typeIter = entityTypes.find(name);
 
 	for (auto& requiredCompName : typeIter->second->requiredComponents)
 	{
@@ -121,11 +121,11 @@ EngineResult::value EntityRegistry::GetEntityInstance(const Ceng::StringUtf8& na
 	}
 	
 	// Guaranteed to exist at this point
-	auto& typeIter = entityTypes.find(name);
+	const auto typeIter = entityTypes.find(name);
 
 	for (auto& requiredCompName : typeIter->second->requiredComponents)
 	{
-		auto& factory = componentFactories.find(requiredCompName);
+		auto factory = componentFactories.find(requiredCompName);
 
 		if (factory == componentFactories.end())
 		{
@@ -137,7 +137,7 @@ EngineResult::value EntityRegistry::GetEntityInstance(const Ceng::StringUtf8& na
 		bool found = false;
 
 		// Add required components
-		for (auto& iter = initialValues.begin(); iter != initialValues.end(); ++iter)
+		for (auto iter = initialValues.begin(); iter != initialValues.end(); ++iter)
 		{
 			if (iter.key() != requiredCompName.ToCString())
 			{
@@ -193,7 +193,7 @@ EngineResult::value EntityRegistry::AddComponentFactory(const Ceng::StringUtf8& 
 
 EngineResult::value EntityRegistry::RemoveComponentFactory(const Ceng::StringUtf8& name)
 {
-	auto& iter = componentFactories.find(name);
+	auto iter = componentFactories.find(name);
 
 	if (iter == componentFactories.end())
 	{
@@ -225,7 +225,7 @@ EngineResult::value EntityRegistry::RemoveComponentFactory(std::shared_ptr<Compo
 EngineResult::value EntityRegistry::ReplaceComponentFactory(const Ceng::StringUtf8& name,
 	std::shared_ptr<ComponentFactory>& factory)
 {
-	auto& iter = componentFactories.find(name);
+	auto iter = componentFactories.find(name);
 
 	if (iter == componentFactories.end())
 	{
@@ -252,7 +252,7 @@ EngineResult::value EntityRegistry::AddEntityType(const Ceng::StringUtf8& name,
 
 EngineResult::value EntityRegistry::RemoveEntityType(const Ceng::StringUtf8& name)
 {
-	auto& iter = entityTypes.find(name);
+	auto iter = entityTypes.find(name);
 
 	if (iter == entityTypes.end())
 	{
@@ -284,7 +284,7 @@ EngineResult::value EntityRegistry::RemoveEntityType(std::shared_ptr<EntityType>
 EngineResult::value EntityRegistry::ReplaceEntityType(const Ceng::StringUtf8& name, 
 	std::shared_ptr<EntityType>& type)
 {
-	auto& iter = entityTypes.find(name);
+	auto iter = entityTypes.find(name);
 
 	if (iter == entityTypes.end())
 	{

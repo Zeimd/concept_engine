@@ -81,7 +81,10 @@ const EngineResult::value CEngine::CreateIrradianceMap(Ceng::Cubemap *envMap, Ce
 	start = Ceng_HighPrecisionTimer();
 
 	// Precalculate solid angles per texel
-	std::vector<Ceng::FLOAT32> solidAngleRayDir(4 * sourceWidthInt*sourceWidthInt);
+	
+	//std::vector<Ceng::FLOAT32> solidAngleRayDir(4 * sourceWidthInt*sourceWidthInt);
+
+	Ceng::FLOAT32* solidAngleRayDir = (Ceng::FLOAT32*)malloc(4 * sourceWidthInt * sourceWidthInt * sizeof(sizeof(Ceng::FLOAT32)));
 
 	for (Ceng::UINT32 sourceV = 0; sourceV < sourceWidthInt; ++sourceV)
 	{
@@ -180,8 +183,9 @@ const EngineResult::value CEngine::CreateIrradianceMap(Ceng::Cubemap *envMap, Ce
 
 	Ceng::UINT32 faceSize = 4 * sourceWidthInt*sourceWidthInt;
 
-	std::vector<Ceng::FLOAT32> sourceMap(6*faceSize);
+	//std::vector<Ceng::FLOAT32> sourceMap(6*faceSize);
 
+	Ceng::FLOAT32* sourceMap = (Ceng::FLOAT32*)malloc(6 * faceSize * sizeof(Ceng::FLOAT32));
 
 	// Copy source maps to RAM
 
@@ -194,6 +198,8 @@ const EngineResult::value CEngine::CreateIrradianceMap(Ceng::Cubemap *envMap, Ce
 		cresult = envMap->GetSubResourceData(faceArray[sourceFace], 0, Ceng::IMAGE_FORMAT::CF32_ABGR, &sourceMap[sourceFace*faceSize]);
 		if (cresult != Ceng::CE_OK)
 		{
+			free(solidAngleRayDir);
+			free(sourceMap);
 			return EngineResult::fail;
 		}
 	}
@@ -204,7 +210,9 @@ const EngineResult::value CEngine::CreateIrradianceMap(Ceng::Cubemap *envMap, Ce
 	text += end - start;
 	Ceng::Log::Print(text);
 
-	std::vector<Ceng::FLOAT32> destMap(4 * destWidthInt*destWidthInt);
+	//std::vector<Ceng::FLOAT32> destMap(4 * destWidthInt*destWidthInt);
+
+	Ceng::FLOAT32* destMap = (Ceng::FLOAT32*)malloc(4 * destWidthInt * destWidthInt * sizeof(Ceng::FLOAT32));
 
 	// Convolve irradiance map from env map
 
@@ -271,6 +279,9 @@ const EngineResult::value CEngine::CreateIrradianceMap(Ceng::Cubemap *envMap, Ce
 		cresult = irradianceMap->SetSubResourceData(faceArray[destFace], 0, Ceng::IMAGE_FORMAT::CF32_ABGR, &destMap[0]);
 		if (cresult != Ceng::CE_OK)
 		{
+			free(solidAngleRayDir);
+			free(sourceMap);
+			free(destMap);
 			return EngineResult::fail;
 		}
 
@@ -283,6 +294,11 @@ const EngineResult::value CEngine::CreateIrradianceMap(Ceng::Cubemap *envMap, Ce
 		Ceng::Log::Print(text);
 		
 	}
+
+	free(solidAngleRayDir);
+	free(sourceMap);
+	free(destMap);
+
 	return EngineResult::ok;
 }
 

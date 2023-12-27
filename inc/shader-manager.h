@@ -55,12 +55,12 @@ namespace CEngine
 		const std::shared_ptr<Shader> FindShader(const ShaderType::value type, const Ceng::StringUtf8 &file,
 			const std::vector<Ceng::StringUtf8> *flags);
 
-		const EngineResult::value ShaderManager::CreateProgramFromFile(const Ceng::StringUtf8 &vshaderFile,
+		const EngineResult::value CreateProgramFromFile(const Ceng::StringUtf8 &vshaderFile,
 			const std::vector<Ceng::StringUtf8> *vsFlags,
 			const Ceng::StringUtf8 &pshaderFile, const std::vector<Ceng::StringUtf8> *psFlags,
 			std::shared_ptr<CEngine::ShaderProgram> &program);
 
-		const EngineResult::value ShaderManager::CreateProgramFromFile(const Ceng::StringUtf8 &vshaderFile,
+		const EngineResult::value CreateProgramFromFile(const Ceng::StringUtf8 &vshaderFile,
 			const Ceng::StringUtf8 &pshaderFile,
 			std::shared_ptr<CEngine::ShaderProgram> &program);
 

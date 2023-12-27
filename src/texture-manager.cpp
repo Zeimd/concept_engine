@@ -235,7 +235,7 @@ const EngineResult::value TextureManager::LoadTexture2D(const Ceng::StringUtf8 &
 
 	//Ceng::Log::Print(extension);
 
-	Ceng::Texture2D *texture;
+	Ceng::Texture2D *texture = nullptr;
 
 	EngineResult::value eresult = EngineResult::fail;
 
@@ -419,7 +419,7 @@ const EngineResult::value TextureManager::LoadCubemapFromSequence(const Ceng::St
 	Ceng::StringUtf8 name = filename.SubString(filename.ConstBeginIterator(), iter);
 
 	const EngineResult::value(TextureManager::* loadFunction)(const Ceng::StringUtf8&,
-		const TextureOptions &options, Bitmap&);
+		const TextureOptions &options, Bitmap&) = nullptr;
 
 	Ceng::BOOL forceLinear = false;
 
@@ -431,6 +431,10 @@ const EngineResult::value TextureManager::LoadCubemapFromSequence(const Ceng::St
 	{
 		loadFunction = &TextureManager::LoadBitmap_EXR;
 		forceLinear = true;
+	}
+	else
+	{
+		return EngineResult::not_supported;
 	}
 
 	EngineResult::value eresult;
