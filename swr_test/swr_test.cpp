@@ -461,7 +461,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	// Needed for d3d9 back-end
 	//swapChainDesc.displayMode.format = Ceng::IMAGE_FORMAT::C32_ARGB;
-	swapChainDesc.displayMode.format = Ceng::IMAGE_FORMAT::C32_ABGR;
+	swapChainDesc.displayMode.format = Ceng::IMAGE_FORMAT::C32_ARGB;
 	swapChainDesc.displayMode.refreshHz = 60;
 
 	swapChainDesc.windowed = !fullScreenMode;
@@ -508,9 +508,24 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	Ceng::RenderTargetView* frontBufferTarget;
 
-	cresult = renderContext->GetFrontBufferTarget(&frontBufferTarget);
+	cresult = swapChain->GetFrameBufferTarget(&frontBufferTarget);
 	if (cresult != Ceng::CE_OK)
 	{
+		Ceng::Log::Print("Failed to get front buffer target");
+		Ceng::Log::Print(cresult);
+
+		swapChain->Release();
+		renderDevice->Release();
+		renderContext->Release();
+
+		keyboard->Release();
+		mouse->Release();
+
+		adapter->Release();
+		renderCore->Release();
+
+		window->Release();
+
 		return 0;
 	}
 
@@ -523,21 +538,38 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// G-buffer
 
+	/*
 	CEngine::Gbuffer* gbuffer;
 
 	eresult = CEngine::Gbuffer::GetInstance(renderDevice, resX, resY, &gbuffer);
 	if (eresult != CEngine::EngineResult::ok)
 	{
 		Ceng::Log::Print("Failed to create G-buffer");
+
+		frontBufferTarget->Release();
+
+		swapChain->Release();
+		renderDevice->Release();
+		renderContext->Release();
+
+		keyboard->Release();
+		mouse->Release();
+
+		adapter->Release();
+		renderCore->Release();
+
+		window->Release();
+
 		return 0;
 	}
 	else
 	{
 		Ceng::Log::Print("G-buffer created succesfully");
 	}
+	*/
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Static render settings
+	// Static render settings
 
 	renderContext->SetViewport(0, 0, 640, 480);
 
@@ -553,6 +585,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	cresult = renderDevice->CreateDepthStencilState(gbufferDepthDesc, &gbufferDepthState);
 	if (cresult != Ceng::CE_OK)
 	{
+		Ceng::Log::Print("Failed to create g-buffer depth stencil state");
 		return 0;
 	}
 
@@ -568,6 +601,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	cresult = renderDevice->CreateDepthStencilState(gbufferDepthDesc, &envDrawDepthState);
 	if (cresult != Ceng::CE_OK)
 	{
+		Ceng::Log::Print("Failed to create environment depth stencil state");
 		return 0;
 	}
 
@@ -595,6 +629,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	cresult = renderDevice->CreateDepthStencilState(gbufferDepthDesc, &postDepthState);
 	if (cresult != Ceng::CE_OK)
 	{
+		Ceng::Log::Print("Failed to create post depth-stencil state");
 		return 0;
 	}
 
@@ -1589,11 +1624,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 				CEngine::PointLightComponent* pointLightComp;
 
-				depthPass.Render(renderContext, entityDict);
+				//depthPass.Render(renderContext, entityDict);
 
 				//////////////////////////////////////////////////////////////
 				// Construct g-buffer
 
+				/*
 				renderContext->SetDepthStencilState(gbufferDepthState);
 
 				renderContext->SetRasterizerState(&rasterizerState);
@@ -1613,6 +1649,25 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				renderContext->SetRenderTarget(2, gbuffer->hdrTarget);
 
 				renderContext->SetDepth(gbuffer->depthTarget);
+
+				renderContext->ClearTarget(nullptr, Ceng::CE_Color(0.0f, 0.0f, 0.0f, 0.0f));
+				renderContext->ClearDepth(1.0);
+				*/
+
+				//////////////////////////////////////////////////////////////
+				// Forward rendering init
+
+				renderContext->SetDepthStencilState(gbufferDepthState);
+
+				renderContext->SetRasterizerState(&rasterizerState);
+				renderContext->SetViewport(0, 0, deferredParams.windowWidth, deferredParams.windowHeight);
+
+				cameraFullTransform = camera.GetFullTransformation();
+				normalTransform = camera.GetRotationMatrix();
+
+				renderContext->SetBlendState(nullptr, nullptr);
+
+				renderContext->SetRenderTarget(0, frontBufferTarget);
 
 				renderContext->ClearTarget(nullptr, Ceng::CE_Color(0.0f, 0.0f, 0.0f, 0.0f));
 				renderContext->ClearDepth(1.0);
@@ -1636,11 +1691,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				//////////////////////////////////////////////////////////////
 				// Lighting pass 			
 
+				/*
 				deferredParams.xDilationDiv = 1.0f / projectionMatrix.data[0][0];
 				deferredParams.yDilationDiv = 1.0f / projectionMatrix.data[1][1];
 
 				lightingPass->Render(renderContext, gbuffer, quad, nearestSampler, &camera, &deferredParams, &envMapParams);
-
+				*/
 
 
 				//////////////////////////////////////////////////////////////
@@ -1670,6 +1726,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					0, 1, 2);
 					*/
 
+				/*
 				spotShadowShader.Configure(renderContext, deferredParams.windowWidth,
 					deferredParams.windowHeight,
 					deferredParams.xDilationDiv, deferredParams.yDilationDiv,
@@ -1705,10 +1762,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 					if (shadowComp == nullptr)
 					{
-						/*
-						spotLightShader.Render(renderContext, &cameraFullTransform, &normalTransform,
-							pointLightComp, rotComp, spotComp, posComp);
-							*/
+						
+						//spotLightShader.Render(renderContext, &cameraFullTransform, &normalTransform,
+							//pointLightComp, rotComp, spotComp, posComp);
+							
 					}
 					else
 					{
@@ -1716,6 +1773,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 							pointLightComp, rotComp, spotComp, posComp, shadowComp, nearestSampler);
 					}
 				}
+				*/
 
 				//////////////////////////////////////////////////////////////
 				// Directional lights
@@ -1744,11 +1802,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				// Clean up after drawing lights
 
 				// Unmount depth texture
-				renderContext->SetPixelShaderResource(2, nullptr);
+				//renderContext->SetPixelShaderResource(2, nullptr);
 
 				///////////////////////////////////////////////////
 				// Draw skybox
 
+				/*
 				renderContext->SetShaderProgram(envProgLink->GetProgram());
 
 				ev_cameraReverse->SetMatrix_4x4(&envMapParams.cameraReverseRotation.data[0][0], true);
@@ -1773,10 +1832,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				renderContext->SetDepthStencilState(envDrawDepthState);
 
 				renderContext->DrawIndexed(Ceng::PRIMITIVE_TYPE::TRIANGLE_LIST, 0, 6);
+				*/
 
 				///////////////////////////////////////////////////
 				// Post process hdr backbuffer	
 
+				/*
 				// Disable depth tests
 				renderContext->SetDepthStencilState(nullptr);
 
@@ -1790,10 +1851,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				quadProgTex->SetInt(0);
 
 
-				/*
-				shadowComp =
-					static_cast<CEngine::ShadowmapComponent*>(entityDict["test_light"]->components["shadowmap"].get());
-					*/
+				
+				//shadowComp =
+					//static_cast<CEngine::ShadowmapComponent*>(entityDict["test_light"]->components["shadowmap"].get());
+					
 
 				renderContext->SetPixelShaderResource(0, gbuffer->hdrView);
 
@@ -1807,6 +1868,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				renderContext->SetBlendState(nullptr, nullptr);
 
 				renderContext->DrawIndexed(Ceng::PRIMITIVE_TYPE::TRIANGLE_LIST, 0, 6);
+
+				*/
 
 				renderContext->EndScene();
 
@@ -1861,7 +1924,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	skyBoxView->Release();
 
-	delete gbuffer;
+	//delete gbuffer;
 	delete quad;
 	delete lightingPass;
 
