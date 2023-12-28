@@ -717,19 +717,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	Ceng::VertexDeclData declVar;
 
-	declVar = Ceng::VertexDeclData(0, 0, Ceng::VTX_DATATYPE::FLOAT3, 52, "position");
+	declVar = Ceng::VertexDeclData(0, 0, Ceng::VTX_DATATYPE::FLOAT3, 52, Ceng::SHADER_SEMANTIC::POSITION,"position");
 	progVertexDecl.push_back(declVar);
 
-	declVar = Ceng::VertexDeclData(0, 12, Ceng::VTX_DATATYPE::FLOAT3, 52, "normal");
+	declVar = Ceng::VertexDeclData(0, 12, Ceng::VTX_DATATYPE::FLOAT3, 52, Ceng::SHADER_SEMANTIC::NORMAL,"normal");
 	progVertexDecl.push_back(declVar);
 
-	declVar = Ceng::VertexDeclData(0, 24, Ceng::VTX_DATATYPE::FLOAT3, 52, "tangent");
+	declVar = Ceng::VertexDeclData(0, 24, Ceng::VTX_DATATYPE::FLOAT3, 52, Ceng::SHADER_SEMANTIC::TANGENT,"tangent");
 	progVertexDecl.push_back(declVar);
 
-	declVar = Ceng::VertexDeclData(0, 36, Ceng::VTX_DATATYPE::FLOAT2, 52, "textureUV");
+	declVar = Ceng::VertexDeclData(0, 36, Ceng::VTX_DATATYPE::FLOAT2, 52, Ceng::SHADER_SEMANTIC::TEXCOORD_0, "textureUV");
 	progVertexDecl.push_back(declVar);
 
-	declVar = Ceng::VertexDeclData(0, 44, Ceng::VTX_DATATYPE::FLOAT2, 52, "lightmapUV");
+	declVar = Ceng::VertexDeclData(0, 44, Ceng::VTX_DATATYPE::FLOAT2, 52, Ceng::SHADER_SEMANTIC::TEXCOORD_1, "lightmapUV");
 	progVertexDecl.push_back(declVar);
 
 	progVertexDecl.push_back(Ceng::VTX_DECL_END);
@@ -811,6 +811,35 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	if (cresult != Ceng::CE_OK)
 	{
 		Ceng::Log::Print("Failed to set vertex buffer data");
+		Ceng::Log::Print(cresult);
+		return 0;
+	}
+
+	Ceng::VertexShader* vShader;
+
+	cresult = renderDevice->CreateVertexShader("", &vShader);
+	if (cresult != Ceng::CE_OK)
+	{
+		Ceng::Log::Print("Failed to create vertex shader");
+		Ceng::Log::Print(cresult);
+		return 0;
+	}
+
+	Ceng::PixelShader* pShader;
+
+	cresult = renderDevice->CreatePixelShader("", &pShader);
+	if (cresult != Ceng::CE_OK)
+	{
+		Ceng::Log::Print("Failed to create pixel shader");
+		Ceng::Log::Print(cresult);
+		return 0;
+	}
+
+	Ceng::ShaderProgram* shaderProg;
+	cresult = renderDevice->CreateShaderProgram(vShader, pShader, &shaderProg);
+	if (cresult != Ceng::CE_OK)
+	{
+		Ceng::Log::Print("Failed to create shader program");
 		Ceng::Log::Print(cresult);
 		return 0;
 	}
@@ -1791,6 +1820,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				renderContext->ClearTarget(frontBufferTarget, Ceng::CE_Color(0.0f, 0.0f, 0.0f, 0.0f));
 				renderContext->ClearDepth(1.0);
 
+				renderContext->SetVertexStream(0, wallVertexBuffer, 52, 0);
+
+				renderContext->SetVertexFormat(vertexFormat);
+
+				renderContext->SetShaderProgram(shaderProg);
+
+				renderContext->DrawPrimitive(Ceng::PRIMITIVE_TYPE::TRIANGLE_FAN, 0, 4);
+
 				//////////////////////////////////////////////////////////////
 				// Render objects
 
@@ -2052,6 +2089,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	// Point light shader uniforms
 
 	//vertexFormat->Release();
+
+	shaderProg->Release();
+	pShader->Release();
+	vShader->Release();
+
+	wallVertexBuffer->Release();
+	vertexFormat->Release();
 
 	swapChain->Release();
 	renderContext->Release();
