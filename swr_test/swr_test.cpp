@@ -737,6 +737,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Initialize managers
 
+	/*
 	CEngine::TextureManager textureManager(renderDevice);
 
 	textureManager.AddPath(assetPath + "textures/");
@@ -764,10 +765,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		Ceng::Log::Print("Failed to initialize environment map manager\n");
 		return 0;
 	}
+	*/
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Vertex format for full screen quad
 
+	/*
 	CEngine::FullScreenQuad* quad;
 
 	eresult = CEngine::FullScreenQuad::GetInstance(renderDevice, &quad);
@@ -776,10 +779,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		Ceng::Log::Print("Failed to create full screen quad");
 		return 0;
 	}
+	*/
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Shader program for tone mapping
 
+	/*
 	std::shared_ptr<CEngine::ShaderProgram> toneMapProgram;
 
 	eresult = shaderManager.CreateProgramFromFile("quad.vs", "quad-tone-test.fs", toneMapProgram);
@@ -791,10 +796,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	Ceng::ShaderConstant* quadProgTex;
 
 	cresult = toneMapProgram->GetProgram()->GetConstant("texture", &quadProgTex);
+	*/
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Environment (background) drawing pass
 
+	/*
 	Ceng::ShaderProgram* shaderProgram;
 
 	std::shared_ptr<CEngine::ShaderProgram> envProgLink;
@@ -854,10 +861,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	Ceng::ShaderConstant* ev_cameraReverse;
 	cresult = shaderProgram->GetConstant("cameraReverseRotation", &ev_cameraReverse);
+	*/
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Lighting pass
 
+	/*
 	CEngine::LightingPass* lightingPass;
 
 	eresult = CEngine::LightingPass::GetInstance(renderDevice, envMapManager, &lightingPass);
@@ -870,10 +879,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	{
 		Ceng::Log::Print("Lighting pass initialized");
 	}
+	*/
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Enviroment probes
 
+	/*
 	Ceng::Log::Print("Load environment probes\n");
 
 
@@ -888,10 +899,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		Ceng::Log::Print("Failed to create envmap from file\n");
 		return 0;
 	}
+	*/
 
 	///////////////////////////////////////////////////////////////////////////77
 	// Skybox
 
+	/*
 	std::shared_ptr<CEngine::Texture> skybox, skyboxIrradiance;
 
 	CEngine::TextureOptions skyboxOptions;
@@ -931,6 +944,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	{
 		return 0;
 	}
+	*/
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Object data
@@ -948,18 +962,21 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	//CEngine::DirectionLightShader dirLightShader(shaderManager);
 
 	//CEngine::SpotLightShader spotLightShader(shaderManager);
-	CEngine::SpotShadowShader spotShadowShader(shaderManager);
+	//CEngine::SpotShadowShader spotShadowShader(shaderManager);
 
-	CEngine::DepthPass depthPass(renderDevice, shaderManager);
+	//CEngine::DepthPass depthPass(renderDevice, shaderManager);
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Entity dictionary
 
 	std::unordered_map<Ceng::StringUtf8, std::shared_ptr<CEngine::Entity>> entityDict;
+	std::shared_ptr<CEngine::Entity> entity;
+
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Load test meshes
 
+	/*
 	Ceng::Log::Print("testing");
 
 	std::shared_ptr<CEngine::Mesh> cubeMesh;
@@ -982,12 +999,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	eresult = meshManager.LoadMesh("lightmap-test.cme", "Room", roomMesh);
 
+	*/
+
 	//////////////////////////////////////////////////////////////////////////
 	// Entity registry
 
+	/*
 	CEngine::EntityRegistry entityRegistry;
-
-	std::shared_ptr<CEngine::Entity> entity;
 
 	std::shared_ptr<CEngine::ComponentFactory> comp = std::make_shared<CEngine::PositionFactory>();
 
@@ -1007,10 +1025,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		Ceng::Log::Print("rotation");
 		return 0;
 	}
+	*/
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Room
 
+	/*
 	auto roomType = std::make_shared<CEngine::EntityType>();
 
 	roomType->defaultComponents.emplace_back("mesh", std::make_shared<CEngine::MeshComponent>(roomMesh));
@@ -1025,6 +1045,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		Ceng::Log::Print("room");
 		return 0;
 	}
+	*/
 	/*
 	std::unordered_map<Ceng::StringUtf8, std::shared_ptr<CEngine::Component>> initMap;
 
@@ -1032,6 +1053,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	initMap["rotation"] = std::make_shared<CEngine::RotationComponent>();
 	*/
 
+	/*
 	json initJSON, rotJSON;
 
 	initJSON["position"] = { 0.0f, 0.0f, 0.0f };
@@ -1054,10 +1076,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	}
 
 	entityDict["room"] = roomEntity;
+	*/
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Terrain
 
+	/*
 	entity = std::make_shared<CEngine::Entity>();
 
 	entity->AddComponent("position", std::make_shared<CEngine::PositionComponent>(0.0f, 0.0f, 0.0f));
@@ -1067,11 +1091,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	entity->AddComponent("mesh", std::make_shared<CEngine::MeshComponent>(terrainMesh));
 
 	entityDict["terrain"] = entity;
-
+	*/
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Cubes
 
+	/*
 	auto cubeType = std::make_shared<CEngine::EntityType>();
 
 	cubeType->defaultComponents.emplace_back("mesh", std::make_shared<CEngine::MeshComponent>(cubeMesh));
@@ -1123,10 +1148,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	}
 
 	entityDict["cube2"] = cubeEntity;
+	*/
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Sphere
 
+	/*
 	entity = std::make_shared<CEngine::Entity>();
 
 	entity->AddComponent("position", std::make_shared<CEngine::PositionComponent>(-200 + 4.0f, 2.0f, 150.0f));
@@ -1137,9 +1164,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	entityDict["sphere"] = entity;
 
+	*/
+
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Wall
 
+	/*
 	entity = std::make_shared<CEngine::Entity>();
 
 	entity->AddComponent("position", std::make_shared<CEngine::PositionComponent>(-200.0f, 2.0f, 150 - 16.0f));
@@ -1149,6 +1179,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	entity->AddComponent("rotation", std::make_shared<CEngine::RotationComponent>());
 
 	entity->AddComponent("mesh", std::make_shared<CEngine::MeshComponent>(wallMesh));
+	*/
 
 	//entityDict["wall"] = entity;
 
@@ -1177,6 +1208,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Sun test
 
+	/*
 	auto rotComp = std::make_shared<CEngine::RotationComponent>();
 
 	entity = std::make_shared<CEngine::Entity>();
@@ -1190,26 +1222,27 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	entity->AddComponent("rotation", rotComp);
 	//entity->AddComponent("rotation", std::make_shared<CEngine::RotationComponent>());
 
-	/*
-	entity->AddComponent("spot_light",
-		std::make_shared<CEngine::PointLightComponent>(Ceng::VectorF4(1.0f, 1.0f, 1.0f), 1000.0f, 10000.0f));
-		*/
+	
+	//entity->AddComponent("spot_light",
+		//std::make_shared<CEngine::PointLightComponent>(Ceng::VectorF4(1.0f, 1.0f, 1.0f), 1000.0f, 10000.0f));
+		
 
 	entity->AddComponent("spot_light",
 		std::make_shared<CEngine::PointLightComponent>(Ceng::VectorF4(1.0f, 1.0f, 1.0f), 0.0f, 10000.0f));
 
 	entity->AddComponent("spot_data", std::make_shared<CEngine::SpotLightComponent>(90.0f, 0.0f));
 
-	/*
-	entity->AddComponent("shadowmap",
-		std::make_shared<CEngine::ShadowmapComponent>(renderDevice,512,10.0f,0.001f));
-		*/
+	
+	//entity->AddComponent("shadowmap",
+		//std::make_shared<CEngine::ShadowmapComponent>(renderDevice,512,10.0f,0.001f));
+		
 
 		//entityDict["sun_spot"] = entity;
-
+		*/
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Test spot light
 
+	/*
 	entity = std::make_shared<CEngine::Entity>();
 
 	//entity->AddComponent("position", std::make_shared<CEngine::PositionComponent>(-200+4.0f, 0.0f, 150+8.0f));
@@ -1228,16 +1261,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	entity->AddComponent("spot_data", std::make_shared<CEngine::SpotLightComponent>(90.0f, 0.0f));
 
-	/*
-	entity->AddComponent("shadowmap",
-		std::make_shared<CEngine::ShadowmapComponent>(renderDevice,512,0.01,0.0001));
-		*/
+	
+	//entity->AddComponent("shadowmap",
+		//std::make_shared<CEngine::ShadowmapComponent>(renderDevice,512,0.01,0.0001));
+		
 
 		//entityDict["test_light"] = entity;	
+*/
 
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Test spot light
-
+	/*
 	entity = std::make_shared<CEngine::Entity>();
 
 	entity->AddComponent("position", std::make_shared<CEngine::PositionComponent>(-200 + 4.0f, 0.0f, 150 + 8.0f));
@@ -1256,12 +1290,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	entity->AddComponent("spot_data", std::make_shared<CEngine::SpotLightComponent>(45.0f, 0.0f));
 
-	/*
-	entity->AddComponent("shadowmap",
-		std::make_shared<CEngine::ShadowmapComponent>(renderDevice, 512, 0.01, 0.0001));
-		*/
+	
+	//entity->AddComponent("shadowmap",
+		//std::make_shared<CEngine::ShadowmapComponent>(renderDevice, 512, 0.01, 0.0001));
+		
 
 		//entityDict["test_light2"] = entity;
+	*/
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Camera data
 
@@ -1509,6 +1544,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 						camera.RotateByDeltas(0.0f, 0.0f, -cameraRotateSpeed * physDeltaTime);
 					}
 
+					/*
 					auto iter = entityDict["cube"];
 
 					CEngine::RotationComponent* rotation;
@@ -1542,6 +1578,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 						rotation->AddRotation(CEngine::EulerMode::xyz,
 							0.0f, 0.0f, -cameraRotateSpeed * physDeltaTime);
 					}
+					*/
 
 					/*
 
@@ -1675,6 +1712,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				//////////////////////////////////////////////////////////////
 				// Render objects
 
+				/*
 				CEngine::MeshComponent* meshComp;
 
 				for (auto& iter : entityDict)
@@ -1687,6 +1725,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 					meshComp->Render(renderContext, &cameraFullTransform, &normalTransform, &projectionMatrix, diffuseSampler);
 				}
+				*/
 
 				//////////////////////////////////////////////////////////////
 				// Lighting pass 			
@@ -1894,18 +1933,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	//diffuseEnv->Release();
 
-	ev_xDilationDiv->Release();
-	ev_yDilationDiv->Release();
+	//ev_xDilationDiv->Release();
+	//ev_yDilationDiv->Release();
 
-	ev_cameraReverse->Release();
-	ev_envMap->Release();
+	//ev_cameraReverse->Release();
+	//ev_envMap->Release();
 
-	ev_zNear->Release();
+	//ev_zNear->Release();
 
-	ev_windowWidth->Release();
-	ev_windowHeight->Release();
+	//ev_windowWidth->Release();
+	//ev_windowHeight->Release();
 
-	quadProgTex->Release();
+	//quadProgTex->Release();
 
 	nearestSampler->Release();
 
@@ -1922,11 +1961,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	diffuseSampler->Release();
 	lightmapSampler->Release();
 
-	skyBoxView->Release();
+	//skyBoxView->Release();
 
 	//delete gbuffer;
-	delete quad;
-	delete lightingPass;
+	//delete quad;
+	//delete lightingPass;
 
 	// Point light shader uniforms
 
