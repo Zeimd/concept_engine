@@ -67,6 +67,8 @@ EngineResult::value FullScreenQuad::GetInstance(Ceng::RenderDevice* renderDevice
 	cresult = renderDevice->CreateVertexFormat(progVertexDecl, (Ceng::VertexFormat**)&quadVertexFormat);
 	if (cresult != Ceng::CE_OK)
 	{
+		Ceng::Log::Print("FullScreenQuad::GetInstance : failed to create vertex format");
+		Ceng::Log::Print(cresult);
 		return EngineResult::fail;
 	}
 
@@ -76,6 +78,8 @@ EngineResult::value FullScreenQuad::GetInstance(Ceng::RenderDevice* renderDevice
 		Ceng::BufferUsage::gpu_read_only, (Ceng::VertexBuffer**)&quadVertexBuffer);
 	if (cresult != Ceng::CE_OK)
 	{
+		Ceng::Log::Print("FullScreenQuad::GetInstance : failed to create vertex buffer");
+		Ceng::Log::Print(cresult);
 		quadVertexFormat->Release();
 		return EngineResult::fail;
 	}
@@ -88,6 +92,8 @@ EngineResult::value FullScreenQuad::GetInstance(Ceng::RenderDevice* renderDevice
 		fullScreenIndices, (Ceng::IndexBuffer**)&quadIndices);
 	if (cresult != Ceng::CE_OK)
 	{
+		Ceng::Log::Print("FullScreenQuad::GetInstance : failed to create index buffer");
+		Ceng::Log::Print(cresult);
 		quadVertexBuffer->Release();
 		quadVertexFormat->Release();
 
@@ -102,6 +108,7 @@ EngineResult::value FullScreenQuad::GetInstance(Ceng::RenderDevice* renderDevice
 	}
 	catch (std::bad_alloc&)
 	{
+		Ceng::Log::Print("FullScreenQuad::GetInstance : failed to create object");
 		quadVertexBuffer->Release();
 		quadVertexFormat->Release();
 		quadIndices->Release();
