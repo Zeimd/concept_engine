@@ -734,6 +734,88 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	progVertexDecl.push_back(Ceng::VTX_DECL_END);
 
+	Ceng::VertexFormat* vertexFormat;
+
+	cresult = renderDevice->CreateVertexFormat(progVertexDecl, &vertexFormat);
+	if (cresult != Ceng::CE_OK)
+	{
+		Ceng::Log::Print("Failed to create vertex format");
+		Ceng::Log::Print(cresult);
+		return 0;
+	}
+
+	struct Vertex
+	{
+		CEngine::Vec3 position;
+		CEngine::Vec3 normal;
+		CEngine::Vec3 tangent;
+		CEngine::Vec2 textureUV;
+		CEngine::Vec2 lightmapUV;
+	};
+
+	Ceng::VertexBuffer* wallVertexBuffer;
+
+	cresult = renderDevice->CreateVertexBuffer(sizeof(Vertex), 4, Ceng::BufferUsage::gpu_read_only, &wallVertexBuffer);
+	if (cresult != Ceng::CE_OK)
+	{
+		Ceng::Log::Print("Failed to create vertex buffer");
+		Ceng::Log::Print(cresult);
+		return 0;
+	}
+
+	std::vector<Vertex> wallData;
+
+	Vertex buildVertex;
+
+	buildVertex.position.x = -1.0f;
+	buildVertex.position.y = -1.0f;
+	buildVertex.position.z = -10.0f;
+	buildVertex.normal.x = 0.0f;
+	buildVertex.normal.y = 0.0f;
+	buildVertex.normal.z = 1.0f;
+	buildVertex.tangent.x = 1.0f;
+	buildVertex.tangent.y = 0.0f;
+	buildVertex.tangent.z = 0.0f;
+	buildVertex.textureUV.x = 0.0f;
+	buildVertex.textureUV.y = 0.0f;
+	buildVertex.lightmapUV.x = 0.0f;
+	buildVertex.lightmapUV.y = 0.0f;
+
+	wallData.push_back(buildVertex);
+
+	buildVertex.position.x = -1.0f;
+	buildVertex.position.y = 1.0f;
+	buildVertex.position.z = -10.0f;
+	buildVertex.textureUV.x = 0.0f;
+	buildVertex.textureUV.y = 1.0f;
+
+	wallData.push_back(buildVertex);
+
+	buildVertex.position.x = 1.0f;
+	buildVertex.position.y = 1.0f;
+	buildVertex.position.z = -10.0f;
+	buildVertex.textureUV.x = 1.0f;
+	buildVertex.textureUV.y = 1.0f;
+
+	wallData.push_back(buildVertex);
+
+	buildVertex.position.x = 1.0f;
+	buildVertex.position.y = -1.0f;
+	buildVertex.position.z = -10.0f;
+	buildVertex.textureUV.x = 1.0f;
+	buildVertex.textureUV.y = 0.0f;
+
+	wallData.push_back(buildVertex);
+
+	cresult = wallVertexBuffer->LoadData(&wallData[0]);
+	if (cresult != Ceng::CE_OK)
+	{
+		Ceng::Log::Print("Failed to set vertex buffer data");
+		Ceng::Log::Print(cresult);
+		return 0;
+	}
+
+
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Initialize managers
 
