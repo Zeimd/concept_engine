@@ -10,6 +10,58 @@
 
 const Ceng::String ImageFormatToString(const Ceng::IMAGE_FORMAT::value format);
 
+const Ceng::CRESULT EnumBackbufferFormats(Ceng::GraphicsSystem* renderCore, Ceng::GraphicsAdapter* adapter, Ceng::IMAGE_FORMAT::value format)
+{
+	Ceng::StringUtf8 out;
+
+	out = "Checking back buffer format : ";
+	out += ImageFormatToString(format);
+	out += "\n";
+
+	Ceng::UINT32 modeCount = renderCore->DisplayModeCount(adapter, format);
+
+	out += "modeCount = ";
+	out += modeCount;
+	out += "\n";
+	Ceng::Log::Print(out);
+
+	std::vector<Ceng::DisplayMode> modeList;
+
+	Ceng::DisplayMode displayMode;
+
+	for (int k = 0; k < modeCount; ++k)
+	{
+		renderCore->EnumDisplayMode(adapter, k, format, displayMode);
+
+		if (displayMode.refreshHz < 59)
+		{
+			++k;
+			continue;
+		}
+
+		modeList.push_back(displayMode);
+
+		out = "display mode ";
+		out += modeList.size() - 1;
+		out += " :\n";
+		out += "format = ";
+		out += ImageFormatToString(displayMode.format);
+		out += "\n";
+		out += "width = ";
+		out += displayMode.width;
+		out += "\n";
+		out += "height = ";
+		out += displayMode.height;
+		out += "\n";
+		out += "hz = ";
+		out += displayMode.refreshHz;
+		Ceng::Log::Print(out);
+		Ceng::Log::Print("\n");
+	}
+
+	return Ceng::CE_OK;
+}
+
 
 // Debug information
 #ifdef _MSC_VER
@@ -55,7 +107,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	std::stringstream writer;
 
 	Ceng::String logFile = appPath;
-	logFile += "opengl-test-log.txt";
+	logFile += "swr-test-log.txt";
 
 	cresult = engineLog.OpenFile(logFile.ToCString());
 	if (cresult != Ceng::CE_OK)
@@ -117,7 +169,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	Ceng::String programName;
 	Ceng::String captionInfo;
 
-	programName = "Ceng-gl32 v ";
+	programName = "Ceng-swr v ";
 	programName += CEngine::majorVersion;
 	programName += ".";
 	programName += CEngine::minorVersion;
@@ -148,6 +200,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	if (window == nullptr)
 	{
+		Ceng::Log::Print("Could not open window\n");
 		return 0;
 	}
 
@@ -175,11 +228,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	Ceng::GraphicsSystem* renderCore = nullptr;
 
-	cresult = Ceng_CreateGraphics3D(Ceng::RENDERER_TYPE::opengl_32, &renderCore, &engineLog);
+	cresult = Ceng_CreateGraphics3D(Ceng::RENDERER_TYPE::SOFTWARE, &renderCore, &engineLog);
 
 	if (cresult != Ceng::CE_OK)
 	{
-		Ceng_MessageWindow(window, "Error", "Failed to initialize OpenGL 3.2");
+		Ceng_MessageWindow(window, "Error", "Failed to initialize SWR");
 
 		window->Release();
 		return 0;
@@ -233,66 +286,62 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	Ceng::Log::Print(adapterDesc.description);
 	Ceng::Log::Print("\n");
 
-
-
-
 	//**************************************************************************
-	// Enumerate display modes for C32_ARGB
+	// Current display mode
 
-	/*
-	Ceng::IMAGE_FORMAT::value format = Ceng::IMAGE_FORMAT::C32_XRGB;
+	Ceng::DisplayMode currentDisplayMode;
 
-	out = "Checking back buffer format : ";
-	out += ImageFormatToString(format);
-	out += "\n";
+	cresult = (Ceng::CRESULT)renderCore->CurrentDisplayMode(adapter, currentDisplayMode);
 
-	Ceng::UINT32 modeCount = renderCore->DisplayModeCount(adapter, format);
-
-	out += "modeCount = ";
-	out += modeCount;
-	out += "\n";
-	Ceng::Log::Print(out);
-
-	std::vector<Ceng::DisplayMode> modeList;
-
-	Ceng::DisplayMode displayMode;
-
-	for(k=0;k<modeCount;++k)
+	if (cresult != Ceng::CE_OK)
 	{
-	renderCore->EnumDisplayMode(adapter, k, format, displayMode);
-
-	if (displayMode.refreshHz < 59)
-	{
-	++k;
-	continue;
+		Ceng::Log::Print("Failed to get current display mode\n");
+		return 0;
 	}
 
-	modeList.push_back(displayMode);
 
-	out = "display mode ";
-	out += modeList.size() - 1;
-	out += " :\n";
+	out = "Current display mode:\n";
 	out += "format = ";
-	out += ImageFormatToString(displayMode.format);
+	out += ImageFormatToString(currentDisplayMode.format);
 	out += "\n";
 	out += "width = ";
-	out += displayMode.width;
+	out += currentDisplayMode.width;
 	out += "\n";
 	out += "height = ";
-	out += displayMode.height;
+	out += currentDisplayMode.height;
 	out += "\n";
 	out += "hz = ";
-	out += displayMode.refreshHz;
+	out += currentDisplayMode.refreshHz;
 	Ceng::Log::Print(out);
 	Ceng::Log::Print("\n");
+
+	//**************************************************************************
+	// Find supported backbuffer formats
+
+	const Ceng::IMAGE_FORMAT::value formats[] =
+	{
+		Ceng::IMAGE_FORMAT::C32_ABGR,
+		Ceng::IMAGE_FORMAT::C32_XBGR,
+
+		Ceng::IMAGE_FORMAT::C32_ARGB,
+		Ceng::IMAGE_FORMAT::C32_XRGB,
+	};
+
+	int iters = sizeof(formats) / sizeof(Ceng::IMAGE_FORMAT::value);
+
+	for (int k = 0; k < iters; k++)
+	{
+		EnumBackbufferFormats(renderCore, adapter, formats[k]);
 	}
-	*/
+	
 
 	//**************************************************************************
 	// Test framebuffer format support
 
+	/*
 	Ceng::IMAGE_FORMAT::value displayFormat = Ceng::IMAGE_FORMAT::C32_XBGR;
-	Ceng::IMAGE_FORMAT::value backBufferFormat = Ceng::IMAGE_FORMAT::C32_ABGR;
+	//Ceng::IMAGE_FORMAT::value backBufferFormat = Ceng::IMAGE_FORMAT::C32_ABGR;
+	Ceng::IMAGE_FORMAT::value backBufferFormat = Ceng::IMAGE_FORMAT::C32_XBGR;
 
 	cresult = renderCore->CheckFramebufferSupport(adapter, displayFormat, backBufferFormat, true);
 
@@ -309,12 +358,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	}
 	else
 	{
-		out += "FAIL";
+		out += "FAIL: ";
+		out += cresult;
 	}
 
 	out += "\n";
 
 	Ceng::Log::Print(out);
+	*/
 
 	/*
 	//**************************************************************************
@@ -403,9 +454,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	Ceng::SwapChainDesc swapChainDesc;
 
+	memset(&swapChainDesc, 0, sizeof(Ceng::SwapChainDesc));
+
 	swapChainDesc.displayMode.width = resX;
 	swapChainDesc.displayMode.height = resY;
-	swapChainDesc.displayMode.format = Ceng::IMAGE_FORMAT::C32_XBGR;
+
+	// Needed for d3d9 back-end
+	//swapChainDesc.displayMode.format = Ceng::IMAGE_FORMAT::C32_ARGB;
+	swapChainDesc.displayMode.format = Ceng::IMAGE_FORMAT::C32_ABGR;
 	swapChainDesc.displayMode.refreshHz = 60;
 
 	swapChainDesc.windowed = !fullScreenMode;
@@ -415,13 +471,35 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	swapChainDesc.autoDepthStencil = true;
 	swapChainDesc.autoDepthStencilFormat = Ceng::IMAGE_FORMAT::D24_S8;
 
+	swapChainDesc.multisampleDesc.count = 0;
+	swapChainDesc.multisampleDesc.quality = 0;
+
+	swapChainDesc.swapEffect = Ceng::SwapEffect::flip;
+
+	swapChainDesc.presentInterval = 0;
+
+	// NOTE: Do not remove multi_threaded. Single-threaded library is
+	//       currently not among build dependencies.
+	Ceng::UINT64 deviceOptions = Ceng::E_DeviceOption::multi_threaded;
+
 	Ceng::SwapChain* swapChain;
 	Ceng::RenderDevice* renderDevice;
 	Ceng::RenderContext* renderContext;
 
-	cresult = renderCore->GetRenderDevice(adapter, 0, &swapChainDesc, &swapChain, &renderDevice, &renderContext);
+	cresult = renderCore->GetRenderDevice(adapter, deviceOptions, &swapChainDesc, &swapChain, &renderDevice, &renderContext);
 	if (cresult != Ceng::CE_OK)
 	{
+		Ceng::Log::Print("Failed to create render device");
+		Ceng::Log::Print(cresult);
+
+		keyboard->Release();
+		mouse->Release();
+
+		adapter->Release();
+		renderCore->Release();
+
+		window->Release();
+
 		return 0;
 	}
 
