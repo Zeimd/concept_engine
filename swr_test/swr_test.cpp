@@ -1706,7 +1706,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 				renderContext->SetRenderTarget(0, frontBufferTarget);
 
-				renderContext->ClearTarget(nullptr, Ceng::CE_Color(0.0f, 0.0f, 0.0f, 0.0f));
+				renderContext->ClearTarget(frontBufferTarget, Ceng::CE_Color(0.0f, 0.0f, 0.0f, 0.0f));
 				renderContext->ClearDepth(1.0);
 
 				//////////////////////////////////////////////////////////////
