@@ -844,6 +844,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		return 0;
 	}
 
+	Ceng::ShaderConstant* vs_fullVertexTransform;
+
+	cresult = shaderProg->GetConstant("fullVertexTransform", &vs_fullVertexTransform);
+	if (cresult != Ceng::CE_OK)
+	{
+		Ceng::Log::Print("Failed to get fullVertexTransform handle");
+		Ceng::Log::Print(cresult);
+		return 0;
+	}
+
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Initialize managers
