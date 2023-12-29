@@ -32,6 +32,14 @@ namespace CEngine
 		Ceng::FLOAT32 z;
 	};
 
+	struct Vec4
+	{
+		Ceng::FLOAT32 x;
+		Ceng::FLOAT32 y;
+		Ceng::FLOAT32 z;
+		Ceng::FLOAT32 w;
+	};
+
 }
 
 #endif
