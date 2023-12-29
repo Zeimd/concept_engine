@@ -1836,6 +1836,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 				renderContext->SetShaderProgram(shaderProg);
 
+				vs_fullVertexTransform->SetMatrix_4x4(&cameraFullTransform.data[0][0], false);
+
 				renderContext->DrawPrimitive(Ceng::PRIMITIVE_TYPE::TRIANGLE_FAN, 0, 4);
 
 				//////////////////////////////////////////////////////////////
@@ -2099,6 +2101,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	// Point light shader uniforms
 
 	//vertexFormat->Release();
+
+	vs_fullVertexTransform->Release();
 
 	shaderProg->Release();
 	pShader->Release();
