@@ -769,8 +769,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	Vertex buildVertex;
 
-	buildVertex.position.x = -1.0f;
-	buildVertex.position.y = -1.0f;
+	Ceng::FLOAT32 halfWidth = 5.0f;
+	Ceng::FLOAT32 halfHeight = 2.5f;
+
+	buildVertex.position.x = -halfWidth;
+	buildVertex.position.y = -halfHeight;
 	buildVertex.position.z = -10.0f;
 	buildVertex.position.w =  0.0f;
 	buildVertex.normal.x = 0.0f;
@@ -788,24 +791,24 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	wallData.push_back(buildVertex);
 
-	buildVertex.position.x = -1.0f;
-	buildVertex.position.y = 1.0f;
+	buildVertex.position.x = -halfWidth;
+	buildVertex.position.y = halfHeight;
 	buildVertex.position.z = -10.0f;
 	buildVertex.textureUV.x = 0.0f;
 	buildVertex.textureUV.y = 1.0f;
 
 	wallData.push_back(buildVertex);
 
-	buildVertex.position.x = 1.0f;
-	buildVertex.position.y = 1.0f;
+	buildVertex.position.x = halfWidth;
+	buildVertex.position.y = halfHeight;
 	buildVertex.position.z = -10.0f;
 	buildVertex.textureUV.x = 1.0f;
 	buildVertex.textureUV.y = 1.0f;
 
 	wallData.push_back(buildVertex);
 
-	buildVertex.position.x = 1.0f;
-	buildVertex.position.y = -1.0f;
+	buildVertex.position.x = halfWidth;
+	buildVertex.position.y = -halfHeight;
 	buildVertex.position.z = -10.0f;
 	buildVertex.textureUV.x = 1.0f;
 	buildVertex.textureUV.y = 0.0f;
@@ -1043,7 +1046,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	CEngine::FPSCamera camera;
 
-	camera.SetWorldPosition(Ceng::VectorF4(0.0f, 1.7f, 10.0f));
+	camera.SetWorldPosition(Ceng::VectorF4(0.0f, 1.7f, 0.0f));
 	//camera.SetWorldPosition(Ceng::VectorF4(-200.0f, 2.0f, 158.0f));
 
 	//camera.RotateByDeltas(0, -90, 0);
