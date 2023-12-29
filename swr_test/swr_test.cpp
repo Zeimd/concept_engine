@@ -635,9 +635,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	Ceng::RasterizerState rasterizerState;
 
-	rasterizerState.cullingMode = Ceng::CULLING_MODE::BACK;
-	//rasterizerState.cullingMode = Ceng::CULLING_MODE::NONE;
-	rasterizerState.frontClockwise = false;
+	//rasterizerState.cullingMode = Ceng::CULLING_MODE::BACK;
+	rasterizerState.cullingMode = Ceng::CULLING_MODE::NONE;
+	rasterizerState.frontClockwise = true;
 	rasterizerState.scissorEnable = false;
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -717,19 +717,21 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	Ceng::VertexDeclData declVar;
 
-	declVar = Ceng::VertexDeclData(0, 0, Ceng::VTX_DATATYPE::FLOAT3, 52, Ceng::SHADER_SEMANTIC::POSITION,"position");
+	const int vertexStride = 64;
+
+	declVar = Ceng::VertexDeclData(0, 0, Ceng::VTX_DATATYPE::FLOAT4, vertexStride, Ceng::SHADER_SEMANTIC::POSITION,"position");
 	progVertexDecl.push_back(declVar);
 
-	declVar = Ceng::VertexDeclData(0, 12, Ceng::VTX_DATATYPE::FLOAT3, 52, Ceng::SHADER_SEMANTIC::NORMAL,"normal");
+	declVar = Ceng::VertexDeclData(0, 16, Ceng::VTX_DATATYPE::FLOAT4, vertexStride, Ceng::SHADER_SEMANTIC::NORMAL,"normal");
 	progVertexDecl.push_back(declVar);
 
-	declVar = Ceng::VertexDeclData(0, 24, Ceng::VTX_DATATYPE::FLOAT3, 52, Ceng::SHADER_SEMANTIC::TANGENT,"tangent");
+	declVar = Ceng::VertexDeclData(0, 32, Ceng::VTX_DATATYPE::FLOAT4, vertexStride, Ceng::SHADER_SEMANTIC::TANGENT,"tangent");
 	progVertexDecl.push_back(declVar);
 
-	declVar = Ceng::VertexDeclData(0, 36, Ceng::VTX_DATATYPE::FLOAT2, 52, Ceng::SHADER_SEMANTIC::TEXCOORD_0, "textureUV");
+	declVar = Ceng::VertexDeclData(0, 48, Ceng::VTX_DATATYPE::FLOAT2, vertexStride, Ceng::SHADER_SEMANTIC::TEXCOORD_0, "textureUV");
 	progVertexDecl.push_back(declVar);
 
-	declVar = Ceng::VertexDeclData(0, 44, Ceng::VTX_DATATYPE::FLOAT2, 52, Ceng::SHADER_SEMANTIC::TEXCOORD_1, "lightmapUV");
+	declVar = Ceng::VertexDeclData(0, 56, Ceng::VTX_DATATYPE::FLOAT2, vertexStride, Ceng::SHADER_SEMANTIC::TEXCOORD_1, "lightmapUV");
 	progVertexDecl.push_back(declVar);
 
 	progVertexDecl.push_back(Ceng::VTX_DECL_END);
@@ -746,9 +748,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	struct Vertex
 	{
-		CEngine::Vec3 position;
-		CEngine::Vec3 normal;
-		CEngine::Vec3 tangent;
+		CEngine::Vec4 position;
+		CEngine::Vec4 normal;
+		CEngine::Vec4 tangent;
 		CEngine::Vec2 textureUV;
 		CEngine::Vec2 lightmapUV;
 	};
@@ -770,12 +772,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	buildVertex.position.x = -1.0f;
 	buildVertex.position.y = -1.0f;
 	buildVertex.position.z = -10.0f;
+	buildVertex.position.w =  0.0f;
 	buildVertex.normal.x = 0.0f;
 	buildVertex.normal.y = 0.0f;
 	buildVertex.normal.z = 1.0f;
+	buildVertex.normal.w = 0.0f;
 	buildVertex.tangent.x = 1.0f;
 	buildVertex.tangent.y = 0.0f;
 	buildVertex.tangent.z = 0.0f;
+	buildVertex.tangent.w = 0.0f;
 	buildVertex.textureUV.x = 0.0f;
 	buildVertex.textureUV.y = 0.0f;
 	buildVertex.lightmapUV.x = 0.0f;
@@ -854,218 +859,177 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		return 0;
 	}
 
+	Ceng::ShaderConstant* ps_diffuseTextureUnit;
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Initialize managers
-
-	/*
-	CEngine::TextureManager textureManager(renderDevice);
-
-	textureManager.AddPath(assetPath + "textures/");
-
-	auto shaderManager = CEngine::ShaderManager(renderDevice);
-
-	shaderManager.AddPath(assetPath + "shaders/");
-
-	CEngine::MaterialManager materialManager(&textureManager, &shaderManager);
-
-	materialManager.AddPath(assetPath + "mesh/");
-
-	Ceng::StringUtf8 materialLog;
-
-	CEngine::MeshManager meshManager(&materialManager, renderDevice, 2, progVertexDecl);
-
-	meshManager.AddPath(assetPath + "mesh/");
-
-	std::shared_ptr<CEngine::EnvMapManager> envMapManager;
-
-	eresult = CEngine::EnvMapManager::GetInstance(renderDevice, &textureManager, &shaderManager, envMapManager);
-
-	if (eresult != CEngine::EngineResult::ok)
-	{
-		Ceng::Log::Print("Failed to initialize environment map manager\n");
-		return 0;
-	}
-	*/
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Vertex format for full screen quad
-
-	/*
-	CEngine::FullScreenQuad* quad;
-
-	eresult = CEngine::FullScreenQuad::GetInstance(renderDevice, &quad);
-	if (eresult != CEngine::EngineResult::ok)
-	{
-		Ceng::Log::Print("Failed to create full screen quad");
-		return 0;
-	}
-	*/
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Shader program for tone mapping
-
-	/*
-	std::shared_ptr<CEngine::ShaderProgram> toneMapProgram;
-
-	eresult = shaderManager.CreateProgramFromFile("quad.vs", "quad-tone-test.fs", toneMapProgram);
-	if (eresult != CEngine::EngineResult::ok)
-	{
-		return 0;
-	}
-
-	Ceng::ShaderConstant* quadProgTex;
-
-	cresult = toneMapProgram->GetProgram()->GetConstant("texture", &quadProgTex);
-	*/
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Environment (background) drawing pass
-
-	/*
-	Ceng::ShaderProgram* shaderProgram;
-
-	std::shared_ptr<CEngine::ShaderProgram> envProgLink;
-
-	eresult = shaderManager.CreateProgramFromFile("quad-env.vs", "draw-env.fs", envProgLink);
-	if (eresult != CEngine::EngineResult::ok)
-	{
-		Ceng::Log::Print("CreateProgram failed:");
-
-		Ceng::Log::Print(envProgLink->managerLog);
-
-		return 0;
-	}
-
-	shaderProgram = envProgLink->GetProgram();
-
-	if (shaderProgram == nullptr)
-	{
-		Ceng::Log::Print("CreateProgram failed:");
-
-		Ceng::Log::Print(envProgLink->managerLog);
-
-		return 0;
-	}
-
-	if (!shaderProgram->Linked())
-	{
-		Ceng::Log::Print("Shader Program Log:\n");
-
-		Ceng::StringUtf8* errorLog;
-
-		shaderProgram->GetLog(&errorLog);
-		Ceng::Log::Print(*errorLog);
-
-		delete errorLog;
-
-		return 0;
-	}
-
-	Ceng::ShaderConstant* ev_windowWidth;
-	cresult = shaderProgram->GetConstant("windowWidth", &ev_windowWidth);
-
-	Ceng::ShaderConstant* ev_windowHeight;
-	cresult = shaderProgram->GetConstant("windowHeight", &ev_windowHeight);
-
-	Ceng::ShaderConstant* ev_zNear;
-	cresult = shaderProgram->GetConstant("zNear", &ev_zNear);
-
-	Ceng::ShaderConstant* ev_xDilationDiv;
-	cresult = shaderProgram->GetConstant("xDilationDiv", &ev_xDilationDiv);
-
-	Ceng::ShaderConstant* ev_yDilationDiv;
-	cresult = shaderProgram->GetConstant("yDilationDiv", &ev_yDilationDiv);
-
-	Ceng::ShaderConstant* ev_envMap;
-	cresult = shaderProgram->GetConstant("envMap", &ev_envMap);
-
-	Ceng::ShaderConstant* ev_cameraReverse;
-	cresult = shaderProgram->GetConstant("cameraReverseRotation", &ev_cameraReverse);
-	*/
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Lighting pass
-
-	/*
-	CEngine::LightingPass* lightingPass;
-
-	eresult = CEngine::LightingPass::GetInstance(renderDevice, envMapManager, &lightingPass);
-	if (eresult != CEngine::EngineResult::ok)
-	{
-		Ceng::Log::Print("Failed to initialize lighting pass");
-		return 0;
-	}
-	else
-	{
-		Ceng::Log::Print("Lighting pass initialized");
-	}
-	*/
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Enviroment probes
-
-	/*
-	Ceng::Log::Print("Load environment probes\n");
-
-
-	CEngine::Vec3 boundaryPos = { 0.0f, 1.5f, 0.0 };
-	CEngine::Vec3 boxSideHalf = { 4.0f, 2.5f, 4.0f };
-
-	eresult = envMapManager->AddEnvMapParallaxAABB("EnvProbe_1.exr", boundaryPos, boxSideHalf);
-	//eresult = envMapManager->AddEnvMap("EnvProbe_1.exr");
-
-	if (eresult != CEngine::EngineResult::ok)
-	{
-		Ceng::Log::Print("Failed to create envmap from file\n");
-		return 0;
-	}
-	*/
-
-	///////////////////////////////////////////////////////////////////////////77
-	// Skybox
-
-	/*
-	std::shared_ptr<CEngine::Texture> skybox, skyboxIrradiance;
-
-	CEngine::TextureOptions skyboxOptions;
-
-	skyboxOptions.bindFlags = Ceng::BufferBinding::shader_resource;
-	skyboxOptions.usage = Ceng::BufferUsage::gpu_read_only;
-	skyboxOptions.cpuAccessFlags = 0;
-
-	skyboxOptions.sRGB = false;
-
-	skyboxOptions.firstMip = 0;
-	skyboxOptions.mipLevels = 0;
-
-	skyboxOptions.options = Ceng::BufferOptions::generate_mip_maps;
-
-	skyboxOptions.generateIrradianceMap = true;
-	skyboxOptions.irradianceSize = 16;
-
-	//eresult = textureManager.LoadCubemap("envmap.bmp", skyboxOptions, skybox, skyboxIrradiance);
-	eresult = textureManager.LoadCubemap("EnvProbe_1.exr", skyboxOptions, skybox, skyboxIrradiance);
-
-	if (eresult != CEngine::EngineResult::ok)
-	{
-		Ceng::Log::Print("Failed to load skybox\n");
-		return 0;
-	}
-
-	Ceng::ShaderResourceViewDesc envViewDesc;
-
-	envViewDesc.cubeMap.baseMipLevel = 0;
-	envViewDesc.cubeMap.maxMipLevel = 1;
-
-	Ceng::ShaderResourceView* skyBoxView;
-
-	cresult = skybox->AsCubemap()->GetShaderViewCubemap(envViewDesc, &skyBoxView);
+	cresult = shaderProg->GetConstant("diffuseTexture", &ps_diffuseTextureUnit);
 	if (cresult != Ceng::CE_OK)
 	{
+		Ceng::Log::Print("Failed to get diffuseTexture handle");
+		Ceng::Log::Print(cresult);
 		return 0;
 	}
+
+	//**********************************************************
+	// Create texture
+
+	Ceng::Texture2D* texture = nullptr;
+
+	Ceng::Texture2dDesc textureDesc;
+
+	textureDesc.width = 8;
+	textureDesc.height = 8;
+	textureDesc.format = Ceng::IMAGE_FORMAT::C32_ARGB;
+	//textureDesc.format = Ceng::IMAGE_FORMAT::C24_RGB;
+
+	textureDesc.multisampleDesc.count = 0;
+	textureDesc.multisampleDesc.quality = 0;
+	textureDesc.sRGB = false;
+	textureDesc.usage = Ceng::BufferUsage::gpu_read_only;
+	textureDesc.bindFlags = Ceng::BufferBinding::shader_resource;
+	textureDesc.cpuAccessFlags = Ceng::Buffer_CPU_Access::write;
+	
+
+	textureDesc.arraySize = 1;
+	textureDesc.mipLevels = 1;// 8;
+	textureDesc.optionFlags = Ceng::BufferOptions::generate_mip_maps;
+
+	// Initial data
+
+	struct Color32
+	{
+		Ceng::UINT8 blue;
+		Ceng::UINT8 green;
+		Ceng::UINT8 red;
+		Ceng::UINT8 alpha;
+	};
+
+	Color32 textureData[8][8];
+
+	Color32 white = { 255, 255, 255, 0 };
+	Color32 orange = { 0, 69, 255, 0 };
+
+	Ceng::UINT32 k, j;
+
+	for (k = 0; k < 8; ++k)
+	{
+		for (j = 0; j < 8; ++j)
+		{
+			textureData[k][j] = white;
+		}
+	}
+
+	textureData[0][0] = orange;
+	textureData[1][1] = orange;
+	textureData[2][2] = orange;
+	textureData[3][3] = orange;
+	textureData[4][4] = orange;
+	textureData[5][5] = orange;
+	textureData[6][6] = orange;
+	textureData[7][7] = orange;
+
+	textureData[0][7] = orange;
+	textureData[1][6] = orange;
+	textureData[2][5] = orange;
+	textureData[3][4] = orange;
+	textureData[4][3] = orange;
+	textureData[5][2] = orange;
+	textureData[6][1] = orange;
+	textureData[7][0] = orange;
+
+	/*
+	for (j = 0; j < 8; j++)
+	{
+		textureData[0][j] = orange;
+		textureData[7][j] = orange;
+
+		textureData[3][j] = orange;
+		textureData[4][j] = orange;
+
+		textureData[j][3] = orange;
+		textureData[j][4] = orange;
+
+		textureData[j][0] = orange;
+		textureData[j][7] = orange;
+	}
 	*/
+
+	Ceng::SubResourceData textureFill;
+
+	textureFill.sourcePtr = &textureData[0][0];
+	textureFill.rowPitch = 4 * 8;
+	textureFill.depthPitch = 4 * 8 * 8;
+
+	bool imgLoaded = false;
+
+	/*
+	if (strlen(lpCmdLine) > 0)
+	{
+		textureDesc.miscFlags = Ceng::BufferOptions::generate_mip_maps;
+
+		cresult = CreateTexture2dFromFile(lpCmdLine, textureDesc, renderer, &texture);
+
+		if (cresult == Ceng::CE_OK)
+		{
+			imgLoaded = true;
+		}
+		else
+		{
+			Ceng::Log::Print("Error : Failed to load texture file from command line\n");
+		}
+	}
+	*/
+
+	/*
+	if (!imgLoaded)
+	{
+		textureDesc.miscFlags = Ceng::BufferOptions::generate_mip_maps;
+
+		cresult = CreateTexture2dFromFile("texture.bmp", textureDesc, renderer, &texture);
+
+		if (cresult == Ceng::CE_OK)
+		{
+			imgLoaded = true;
+		}
+		else
+		{
+			Ceng::Log::Print("Error : Failed to load texture.bmp\n");
+		}
+	}
+	*/
+
+	//if (!imgLoaded)
+	//{
+		textureDesc.optionFlags = 0;
+
+		cresult = renderDevice->CreateTexture2D(textureDesc, &textureFill, &texture);
+
+		if (cresult != Ceng::CE_OK)
+		{
+			Ceng::Log::Print("Error : Built-in fallback texture creation failed\n");
+			Ceng::Log::Print(cresult);
+			return 0;
+		}
+	//}
+
+	Ceng::ShaderResourceView* texView;
+
+	Ceng::ShaderResourceViewDesc texViewDesc;
+
+	texViewDesc.dimensions = Ceng::BufferType::texture_2d;
+	texViewDesc.format = textureDesc.format;
+	texViewDesc.tex2d.baseMipLevel = 0;
+	texViewDesc.tex2d.maxMipLevel = 8;
+
+	cresult = renderDevice->CreateShaderResourceView(texture, texViewDesc, &texView);
+
+	if (cresult != Ceng::CE_OK)
+	{
+		Ceng::Log::Print("Error : Failed to create shader resource view\n");
+		Ceng::Log::Print(cresult);
+		return 0;
+	}
+
+
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Object data
@@ -1074,352 +1038,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	Ceng::Matrix4 normalTransform;
 
-
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Lighting pass shader programs
-
-	//CEngine::PointLightShader pointLightShader(shaderManager);
-
-	//CEngine::DirectionLightShader dirLightShader(shaderManager);
-
-	//CEngine::SpotLightShader spotLightShader(shaderManager);
-	//CEngine::SpotShadowShader spotShadowShader(shaderManager);
-
-	//CEngine::DepthPass depthPass(renderDevice, shaderManager);
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Entity dictionary
-
-	std::unordered_map<Ceng::StringUtf8, std::shared_ptr<CEngine::Entity>> entityDict;
-	std::shared_ptr<CEngine::Entity> entity;
-
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Load test meshes
-
-	/*
-	Ceng::Log::Print("testing");
-
-	std::shared_ptr<CEngine::Mesh> cubeMesh;
-
-	eresult = meshManager.LoadMesh("cube.cme", "Cube", cubeMesh);
-
-	std::shared_ptr<CEngine::Mesh> wallMesh;
-
-	//eresult = meshManager.LoadMesh("wall.obj", "Wall", wallMesh);
-
-	std::shared_ptr<CEngine::Mesh> sphereMesh;
-
-	//eresult = meshManager.LoadMesh("sphere.obj", "Sphere", sphereMesh);
-
-	std::shared_ptr<CEngine::Mesh> terrainMesh;
-
-	//eresult = meshManager.LoadMesh("terrain.obj", "Plane", terrainMesh);
-
-	std::shared_ptr<CEngine::Mesh> roomMesh;
-
-	eresult = meshManager.LoadMesh("lightmap-test.cme", "Room", roomMesh);
-
-	*/
-
-	//////////////////////////////////////////////////////////////////////////
-	// Entity registry
-
-	/*
-	CEngine::EntityRegistry entityRegistry;
-
-	std::shared_ptr<CEngine::ComponentFactory> comp = std::make_shared<CEngine::PositionFactory>();
-
-	eresult = entityRegistry.AddComponentFactory("position", comp);
-	if (eresult != CEngine::EngineResult::ok)
-	{
-		Ceng::Log::Print("Failed to add component factory");
-		return 0;
-	}
-
-	comp = std::make_shared<CEngine::RotationFactory>();
-
-	eresult = entityRegistry.AddComponentFactory("rotation", comp);
-	if (eresult != CEngine::EngineResult::ok)
-	{
-		Ceng::Log::Print("Failed to add component factory: ");
-		Ceng::Log::Print("rotation");
-		return 0;
-	}
-	*/
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Room
-
-	/*
-	auto roomType = std::make_shared<CEngine::EntityType>();
-
-	roomType->defaultComponents.emplace_back("mesh", std::make_shared<CEngine::MeshComponent>(roomMesh));
-
-	roomType->requiredComponents.push_back("position");
-	roomType->requiredComponents.push_back("rotation");
-
-	eresult = entityRegistry.AddEntityType("room", roomType);
-	if (eresult != CEngine::EngineResult::ok)
-	{
-		Ceng::Log::Print("Failed to add entity type");
-		Ceng::Log::Print("room");
-		return 0;
-	}
-	*/
-	/*
-	std::unordered_map<Ceng::StringUtf8, std::shared_ptr<CEngine::Component>> initMap;
-
-	initMap["position"] = std::make_shared<CEngine::PositionComponent>(0.0f, 0.0f, 0.0f);
-	initMap["rotation"] = std::make_shared<CEngine::RotationComponent>();
-	*/
-
-	/*
-	json initJSON, rotJSON;
-
-	initJSON["position"] = { 0.0f, 0.0f, 0.0f };
-
-	rotJSON["rotMode"] = "EULER_XYZ";
-	rotJSON["angles"] = { 0.0f, 0.0f, 0.0f };
-
-	initJSON["rotation"] = rotJSON;
-
-	std::shared_ptr<CEngine::Entity> roomEntity;
-
-	eresult = entityRegistry.GetEntityInstance("room", initJSON, roomEntity);
-	//eresult = entityRegistry.GetEntityInstance("room", initMap, roomEntity);
-
-	if (eresult != CEngine::EngineResult::ok)
-	{
-		Ceng::Log::Print("Error: failed to get instance of:");
-		Ceng::Log::Print("room");
-		return 0;
-	}
-
-	entityDict["room"] = roomEntity;
-	*/
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Terrain
-
-	/*
-	entity = std::make_shared<CEngine::Entity>();
-
-	entity->AddComponent("position", std::make_shared<CEngine::PositionComponent>(0.0f, 0.0f, 0.0f));
-
-	entity->AddComponent("rotation", std::make_shared<CEngine::RotationComponent>());
-
-	entity->AddComponent("mesh", std::make_shared<CEngine::MeshComponent>(terrainMesh));
-
-	entityDict["terrain"] = entity;
-	*/
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Cubes
-
-	/*
-	auto cubeType = std::make_shared<CEngine::EntityType>();
-
-	cubeType->defaultComponents.emplace_back("mesh", std::make_shared<CEngine::MeshComponent>(cubeMesh));
-
-	cubeType->requiredComponents.push_back("position");
-	cubeType->requiredComponents.push_back("rotation");
-
-	eresult = entityRegistry.AddEntityType("cube", cubeType);
-	if (eresult != CEngine::EngineResult::ok)
-	{
-		Ceng::Log::Print("Failed to add entity type");
-		Ceng::Log::Print("cube");
-		return 0;
-	}
-	std::shared_ptr<CEngine::Entity> cubeEntity;
-
-	initJSON["position"] = { 0.0f, 2.0f, 0.0f };
-
-	rotJSON["rotMode"] = "EULER_XYZ";
-	rotJSON["angles"] = { 0.0f, 45.0f, 0.0f };
-
-	initJSON["rotation"] = rotJSON;
-
-	eresult = entityRegistry.GetEntityInstance("cube", initJSON, cubeEntity);
-
-	if (eresult != CEngine::EngineResult::ok)
-	{
-		Ceng::Log::Print("Error: failed to get instance of:");
-		Ceng::Log::Print("cube");
-		return 0;
-	}
-
-	entityDict["cube"] = cubeEntity;
-
-	initJSON["position"] = { 8.0f, 1.0f, 2.0f };
-
-	rotJSON["rotMode"] = "EULER_XYZ";
-	rotJSON["angles"] = { 0.0f, 0.0f, 0.0f };
-
-	initJSON["rotation"] = rotJSON;
-
-	eresult = entityRegistry.GetEntityInstance("cube", initJSON, cubeEntity);
-
-	if (eresult != CEngine::EngineResult::ok)
-	{
-		Ceng::Log::Print("Error: failed to get instance of:");
-		Ceng::Log::Print("cube2");
-		return 0;
-	}
-
-	entityDict["cube2"] = cubeEntity;
-	*/
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Sphere
-
-	/*
-	entity = std::make_shared<CEngine::Entity>();
-
-	entity->AddComponent("position", std::make_shared<CEngine::PositionComponent>(-200 + 4.0f, 2.0f, 150.0f));
-
-	entity->AddComponent("rotation", std::make_shared<CEngine::RotationComponent>());
-
-	entity->AddComponent("mesh", std::make_shared<CEngine::MeshComponent>(sphereMesh));
-
-	entityDict["sphere"] = entity;
-
-	*/
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Wall
-
-	/*
-	entity = std::make_shared<CEngine::Entity>();
-
-	entity->AddComponent("position", std::make_shared<CEngine::PositionComponent>(-200.0f, 2.0f, 150 - 16.0f));
-
-	//entity->AddComponent("position", std::make_shared<CEngine::PositionComponent>(-200.0f, 2.0f, 150-32.0f));
-
-	entity->AddComponent("rotation", std::make_shared<CEngine::RotationComponent>());
-
-	entity->AddComponent("mesh", std::make_shared<CEngine::MeshComponent>(wallMesh));
-	*/
-
-	//entityDict["wall"] = entity;
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Test directional light
-
-	/*
-	entity = std::make_shared<CEngine::Entity>();
-
-	entity->AddComponent("position", std::make_shared<CEngine::PositionComponent>(0.0f, 0.0f, 8.0f));
-
-	auto rotComp = std::make_shared<CEngine::RotationComponent>();
-
-	rotComp->RotateByDeltas(45, -30, 0);
-
-	entity->AddComponent("rotation", rotComp);
-
-	entity->AddComponent("dir_light",
-		std::make_shared<CEngine::PointLightComponent>(Ceng::VectorF4(1.0f, 1.0f, 1.0f), 5.0f, 1000.0f));
-
-	entity->AddComponent("shadowmap",
-		std::make_shared<CEngine::ShadowmapComponent>());
-
-	entityDict["sun"] = entity;
-	*/
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Sun test
-
-	/*
-	auto rotComp = std::make_shared<CEngine::RotationComponent>();
-
-	entity = std::make_shared<CEngine::Entity>();
-
-	entity->AddComponent("position", std::make_shared<CEngine::PositionComponent>(400.0f, 200.0f, -300.0f));
-
-	rotComp = std::make_shared<CEngine::RotationComponent>();
-
-	rotComp->AddRotation(CEngine::EulerMode::xyx, 45, 90 + 45, 0);
-
-	entity->AddComponent("rotation", rotComp);
-	//entity->AddComponent("rotation", std::make_shared<CEngine::RotationComponent>());
-
-	
-	//entity->AddComponent("spot_light",
-		//std::make_shared<CEngine::PointLightComponent>(Ceng::VectorF4(1.0f, 1.0f, 1.0f), 1000.0f, 10000.0f));
-		
-
-	entity->AddComponent("spot_light",
-		std::make_shared<CEngine::PointLightComponent>(Ceng::VectorF4(1.0f, 1.0f, 1.0f), 0.0f, 10000.0f));
-
-	entity->AddComponent("spot_data", std::make_shared<CEngine::SpotLightComponent>(90.0f, 0.0f));
-
-	
-	//entity->AddComponent("shadowmap",
-		//std::make_shared<CEngine::ShadowmapComponent>(renderDevice,512,10.0f,0.001f));
-		
-
-		//entityDict["sun_spot"] = entity;
-		*/
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Test spot light
-
-	/*
-	entity = std::make_shared<CEngine::Entity>();
-
-	//entity->AddComponent("position", std::make_shared<CEngine::PositionComponent>(-200+4.0f, 0.0f, 150+8.0f));
-	entity->AddComponent("position", std::make_shared<CEngine::PositionComponent>(-180.0f, 4.0f, 165.0f));
-
-	rotComp = std::make_shared<CEngine::RotationComponent>();
-
-	//rotComp->RotateByDeltas(0, 90, 0);
-	//rotComp->RotateByDeltas(0, 15, 0);
-
-	entity->AddComponent("rotation", rotComp);
-	//entity->AddComponent("rotation", std::make_shared<CEngine::RotationComponent>());
-
-	entity->AddComponent("spot_light",
-		std::make_shared<CEngine::PointLightComponent>(Ceng::VectorF4(1.0f, 1.0f, 1.0f), 5.0f, 1000.0f));
-
-	entity->AddComponent("spot_data", std::make_shared<CEngine::SpotLightComponent>(90.0f, 0.0f));
-
-	
-	//entity->AddComponent("shadowmap",
-		//std::make_shared<CEngine::ShadowmapComponent>(renderDevice,512,0.01,0.0001));
-		
-
-		//entityDict["test_light"] = entity;	
-*/
-
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Test spot light
-	/*
-	entity = std::make_shared<CEngine::Entity>();
-
-	entity->AddComponent("position", std::make_shared<CEngine::PositionComponent>(-200 + 4.0f, 0.0f, 150 + 8.0f));
-	//entity->AddComponent("position", std::make_shared<CEngine::PositionComponent>(-180.0f, 4.0f, 160.0f));
-
-	rotComp = std::make_shared<CEngine::RotationComponent>();
-
-	//rotComp->RotateByDeltas(0, 90, 0);
-	rotComp->AddRotation(CEngine::EulerMode::xyz, 0, 15, 0);
-
-	entity->AddComponent("rotation", rotComp);
-	//entity->AddComponent("rotation", std::make_shared<CEngine::RotationComponent>());
-
-	entity->AddComponent("spot_light",
-		std::make_shared<CEngine::PointLightComponent>(Ceng::VectorF4(1.0f, 1.0f, 1.0f), 20.0f, 1000.0f));
-
-	entity->AddComponent("spot_data", std::make_shared<CEngine::SpotLightComponent>(45.0f, 0.0f));
-
-	
-	//entity->AddComponent("shadowmap",
-		//std::make_shared<CEngine::ShadowmapComponent>(renderDevice, 512, 0.01, 0.0001));
-		
-
-		//entityDict["test_light2"] = entity;
-	*/
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Camera data
+	// Camera data
 
 	CEngine::FPSCamera camera;
 
@@ -1778,42 +1398,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				renderContext->StartScene();
 
 				//////////////////////////////////////////////////////////////
-				// Shadow map generation
-
-				CEngine::PointLightComponent* pointLightComp;
-
-				//depthPass.Render(renderContext, entityDict);
-
-				//////////////////////////////////////////////////////////////
-				// Construct g-buffer
-
-				/*
-				renderContext->SetDepthStencilState(gbufferDepthState);
-
-				renderContext->SetRasterizerState(&rasterizerState);
-				renderContext->SetViewport(0, 0, deferredParams.windowWidth, deferredParams.windowHeight);
-
-				cameraFullTransform = camera.GetFullTransformation();
-				normalTransform = camera.GetRotationMatrix();
-
-				// Disable blending
-
-				renderContext->SetBlendState(nullptr, nullptr);
-
-				// Render targets
-
-				renderContext->SetRenderTarget(0, gbuffer->gbufferColorTarget);
-				renderContext->SetRenderTarget(1, gbuffer->gbufferNormalTarget);
-				renderContext->SetRenderTarget(2, gbuffer->hdrTarget);
-
-				renderContext->SetDepth(gbuffer->depthTarget);
-
-				renderContext->ClearTarget(nullptr, Ceng::CE_Color(0.0f, 0.0f, 0.0f, 0.0f));
-				renderContext->ClearDepth(1.0);
-				*/
-
-				//////////////////////////////////////////////////////////////
-				// Forward rendering init
+				// Forward rendering 
 
 				renderContext->SetDepthStencilState(gbufferDepthState);
 
@@ -1822,224 +1407,30 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 				cameraFullTransform = camera.GetFullTransformation();
 				normalTransform = camera.GetRotationMatrix();
+				fullVertexTransform = projectionMatrix * cameraFullTransform;
 
 				renderContext->SetBlendState(nullptr, nullptr);
 
 				renderContext->SetRenderTarget(0, frontBufferTarget);
 
-				renderContext->ClearTarget(frontBufferTarget, Ceng::CE_Color(0.0f, 0.0f, 0.0f, 0.0f));
+				renderContext->ClearTarget(frontBufferTarget, Ceng::CE_Color(0.2f, 0.2f, 0.2f, 0.0f));
 				renderContext->ClearDepth(1.0);
 
-				renderContext->SetVertexStream(0, wallVertexBuffer, 52, 0);
+				renderContext->SetVertexStream(0, wallVertexBuffer, vertexStride, 0);
 
 				renderContext->SetVertexFormat(vertexFormat);
 
 				renderContext->SetShaderProgram(shaderProg);
 
-				vs_fullVertexTransform->SetMatrix_4x4(&cameraFullTransform.data[0][0], false);
+				vs_fullVertexTransform->SetMatrix_4x4(&fullVertexTransform.data[0][0], false);
 
-				renderContext->DrawPrimitive(Ceng::PRIMITIVE_TYPE::TRIANGLE_FAN, 0, 4);
-
-				//////////////////////////////////////////////////////////////
-				// Render objects
-
-				/*
-				CEngine::MeshComponent* meshComp;
-
-				for (auto& iter : entityDict)
-				{
-					auto& entity = *iter.second;
-
-					meshComp = static_cast<CEngine::MeshComponent*>(entity["mesh"].get());
-
-					if (meshComp == nullptr) continue;
-
-					meshComp->Render(renderContext, &cameraFullTransform, &normalTransform, &projectionMatrix, diffuseSampler);
-				}
-				*/
-
-				//////////////////////////////////////////////////////////////
-				// Lighting pass 			
-
-				/*
-				deferredParams.xDilationDiv = 1.0f / projectionMatrix.data[0][0];
-				deferredParams.yDilationDiv = 1.0f / projectionMatrix.data[1][1];
-
-				lightingPass->Render(renderContext, gbuffer, quad, nearestSampler, &camera, &deferredParams, &envMapParams);
-				*/
-
-
-				//////////////////////////////////////////////////////////////
-				// Point lights
-
-				/*
-				pointLightShader.Configure(renderContext,displayWidth,displayHeight,xDilationDiv,yDilationDiv,zTermA,zTermB,
-					0,1,2);
-
-				for (auto &iter : entityDict)
-				{
-					auto &entity = *iter.second;
-
-					pointLightComp = static_cast<CEngine::PointLightComponent*>(entity["point_light"].get());
-
-					if (pointLightComp == nullptr) continue;
-
-					pointLightShader.Render(renderContext, &cameraFullTransform, pointLightComp);
-				}
-				*/
-
-				//////////////////////////////////////////////////////////////
-				// Spot lights
-
-				/*
-				spotLightShader.Configure(renderContext, displayWidth, displayHeight, xDilationDiv, yDilationDiv, zTermA, zTermB,
-					0, 1, 2);
-					*/
-
-				/*
-				spotShadowShader.Configure(renderContext, deferredParams.windowWidth,
-					deferredParams.windowHeight,
-					deferredParams.xDilationDiv, deferredParams.yDilationDiv,
-					deferredParams.zTermA, deferredParams.zTermB,
-					0, 1, 2);
-
-				CEngine::SpotLightComponent* spotComp;
-				CEngine::RotationComponent* rotComp;
-				CEngine::PositionComponent* posComp;
-				CEngine::ShadowmapComponent* shadowComp;
-
-				for (auto& iter : entityDict)
-				{
-					auto& entity = *iter.second;
-
-					pointLightComp = static_cast<CEngine::PointLightComponent*>(entity["spot_light"].get());
-
-					if (pointLightComp == nullptr) continue;
-
-					spotComp = static_cast<CEngine::SpotLightComponent*>(entity["spot_data"].get());
-
-					if (spotComp == nullptr) continue;
-
-					rotComp = static_cast<CEngine::RotationComponent*>(entity["rotation"].get());
-
-					if (rotComp == nullptr) continue;
-
-					posComp = static_cast<CEngine::PositionComponent*>(entity["position"].get());
-
-					if (posComp == nullptr) continue;
-
-					shadowComp = static_cast<CEngine::ShadowmapComponent*>(entity["shadowmap"].get());
-
-					if (shadowComp == nullptr)
-					{
-						
-						//spotLightShader.Render(renderContext, &cameraFullTransform, &normalTransform,
-							//pointLightComp, rotComp, spotComp, posComp);
-							
-					}
-					else
-					{
-						spotShadowShader.Render(renderContext, &cameraFullTransform, &normalTransform,
-							pointLightComp, rotComp, spotComp, posComp, shadowComp, nearestSampler);
-					}
-				}
-				*/
-
-				//////////////////////////////////////////////////////////////
-				// Directional lights
-
-				/*
-				dirLightShader.Configure(renderContext, displayWidth, displayHeight, xDilationDiv, yDilationDiv, zTermA, zTermB,
-					0, 1, 2);
-
-				for (auto &iter : entityDict)
-				{
-					auto &entity = *iter.second;
-
-					pointLightComp = static_cast<CEngine::PointLightComponent*>(entity["dir_light"].get());
-
-					if (pointLightComp == nullptr) continue;
-
-					rotComp = static_cast<CEngine::RotationComponent*>(entity["rotation"].get());
-
-					if (rotComp == nullptr) continue;
-
-					dirLightShader.Render(renderContext, &normalTransform, pointLightComp,rotComp);
-				}
-				*/
-
-				//////////////////////////////////////////////////////////////
-				// Clean up after drawing lights
-
-				// Unmount depth texture
-				//renderContext->SetPixelShaderResource(2, nullptr);
-
-				///////////////////////////////////////////////////
-				// Draw skybox
-
-				/*
-				renderContext->SetShaderProgram(envProgLink->GetProgram());
-
-				ev_cameraReverse->SetMatrix_4x4(&envMapParams.cameraReverseRotation.data[0][0], true);
-
-				ev_zNear->SetFloat(zNear);
-
-				ev_xDilationDiv->SetFloat(deferredParams.xDilationDiv);
-				ev_yDilationDiv->SetFloat(deferredParams.yDilationDiv);
-
-				ev_windowWidth->SetFloat((Ceng::FLOAT32)deferredParams.windowWidth);
-				ev_windowHeight->SetFloat((Ceng::FLOAT32)deferredParams.windowHeight);
-
-				ev_envMap->SetInt(0);
-
-				renderContext->SetPixelShaderResource(0, skyBoxView);
-
-
-				//renderContext->SetPixelShaderResource(0, diffuseEnvView);
-				renderContext->SetPixelShaderSamplerState(0, diffuseSampler);
-				renderContext->SetPixelShaderSamplerState(0, nearestSampler);
-
-				renderContext->SetDepthStencilState(envDrawDepthState);
-
-				renderContext->DrawIndexed(Ceng::PRIMITIVE_TYPE::TRIANGLE_LIST, 0, 6);
-				*/
-
-				///////////////////////////////////////////////////
-				// Post process hdr backbuffer	
-
-				/*
-				// Disable depth tests
-				renderContext->SetDepthStencilState(nullptr);
-
-				// Full screen quad vertex data
-				renderContext->SetVertexFormat(quad->quadVertexFormat);
-				renderContext->SetIndexBuffer(quad->quadIndices);
-				renderContext->SetVertexStream(0, quad->quadVertexBuffer, sizeof(CEngine::QuadVertex), 0);
-
-				renderContext->SetShaderProgram(toneMapProgram->GetProgram());
-
-				quadProgTex->SetInt(0);
-
-
-				
-				//shadowComp =
-					//static_cast<CEngine::ShadowmapComponent*>(entityDict["test_light"]->components["shadowmap"].get());
-					
-
-				renderContext->SetPixelShaderResource(0, gbuffer->hdrView);
-
-				//renderContext->SetPixelShaderResource(0, depthView);
-				//renderContext->SetPixelShaderResource(0, shadowComp->depthView);
+				ps_diffuseTextureUnit->SetInt(0);
 
 				renderContext->SetPixelShaderSamplerState(0, nearestSampler);
 
-				renderContext->SetRenderTarget(0, frontBufferTarget);
+				renderContext->SetPixelShaderResource(0, texView);
 
-				renderContext->SetBlendState(nullptr, nullptr);
-
-				renderContext->DrawIndexed(Ceng::PRIMITIVE_TYPE::TRIANGLE_LIST, 0, 6);
-
-				*/
+				renderContext->DrawPrimitive(Ceng::PRIMITIVE_TYPE::TRIANGLE_FAN, 0, 2);
 
 				renderContext->EndScene();
 
@@ -2102,6 +1493,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	//vertexFormat->Release();
 
+	texView->Release();
+	texture->Release();
+
+	ps_diffuseTextureUnit->Release();
 	vs_fullVertexTransform->Release();
 
 	shaderProg->Release();
