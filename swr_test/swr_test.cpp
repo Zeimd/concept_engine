@@ -769,11 +769,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	Vertex buildVertex;
 
-	Ceng::FLOAT32 halfWidth = 5.0f;
-	Ceng::FLOAT32 halfHeight = 2.5f;
+	Ceng::FLOAT32 halfWidth = 4.0f;
+	Ceng::FLOAT32 height = 4.0f;
 
 	buildVertex.position.x = -halfWidth;
-	buildVertex.position.y = -halfHeight;
+	buildVertex.position.y = 0.0f;
 	buildVertex.position.z = -10.0f;
 	buildVertex.position.w =  0.0f;
 	buildVertex.normal.x = 0.0f;
@@ -792,7 +792,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	wallData.push_back(buildVertex);
 
 	buildVertex.position.x = -halfWidth;
-	buildVertex.position.y = halfHeight;
+	buildVertex.position.y = height;
 	buildVertex.position.z = -10.0f;
 	buildVertex.textureUV.x = 0.0f;
 	buildVertex.textureUV.y = 1.0f;
@@ -800,7 +800,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	wallData.push_back(buildVertex);
 
 	buildVertex.position.x = halfWidth;
-	buildVertex.position.y = halfHeight;
+	buildVertex.position.y = height;
 	buildVertex.position.z = -10.0f;
 	buildVertex.textureUV.x = 1.0f;
 	buildVertex.textureUV.y = 1.0f;
@@ -808,7 +808,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	wallData.push_back(buildVertex);
 
 	buildVertex.position.x = halfWidth;
-	buildVertex.position.y = -halfHeight;
+	buildVertex.position.y = 0.0f;
 	buildVertex.position.z = -10.0f;
 	buildVertex.textureUV.x = 1.0f;
 	buildVertex.textureUV.y = 0.0f;
