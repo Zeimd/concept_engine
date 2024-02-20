@@ -103,7 +103,7 @@ TextureManager::TextureManager(Ceng::RenderDevice *renderDevice)
 	desc.height = 8;
 	desc.format = Ceng::IMAGE_FORMAT::C24_BGR;
 	desc.sRGB = true;
-	desc.mipLevels = 0;
+	desc.mipLevels = 1;
 	desc.arraySize = 0;
 	desc.usage = Ceng::BufferUsage::gpu_read_only;
 	desc.bindFlags = Ceng::BufferBinding::shader_resource;
