@@ -635,8 +635,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	Ceng::RasterizerState rasterizerState;
 
-	//rasterizerState.cullingMode = Ceng::CULLING_MODE::BACK;
-	rasterizerState.cullingMode = Ceng::CULLING_MODE::NONE;
+	rasterizerState.cullingMode = Ceng::CULLING_MODE::BACK;
+	//rasterizerState.cullingMode = Ceng::CULLING_MODE::NONE;
 	rasterizerState.frontClockwise = true;
 	rasterizerState.scissorEnable = false;
 
@@ -960,80 +960,22 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	textureData[6][1] = orange;
 	textureData[7][0] = orange;
 
-	/*
-	for (j = 0; j < 8; j++)
-	{
-		textureData[0][j] = orange;
-		textureData[7][j] = orange;
-
-		textureData[3][j] = orange;
-		textureData[4][j] = orange;
-
-		textureData[j][3] = orange;
-		textureData[j][4] = orange;
-
-		textureData[j][0] = orange;
-		textureData[j][7] = orange;
-	}
-	*/
-
 	Ceng::SubResourceData textureFill;
 
 	textureFill.sourcePtr = &textureData[0][0];
 	textureFill.rowPitch = 4 * 8;
 	textureFill.depthPitch = 4 * 8 * 8;
 
-	bool imgLoaded = false;
+	textureDesc.optionFlags = 0;
 
-	/*
-	if (strlen(lpCmdLine) > 0)
+	cresult = renderDevice->CreateTexture2D(textureDesc, &textureFill, &fallBackTexture);
+
+	if (cresult != Ceng::CE_OK)
 	{
-		textureDesc.miscFlags = Ceng::BufferOptions::generate_mip_maps;
-
-		cresult = CreateTexture2dFromFile(lpCmdLine, textureDesc, renderer, &texture);
-
-		if (cresult == Ceng::CE_OK)
-		{
-			imgLoaded = true;
-		}
-		else
-		{
-			Ceng::Log::Print("Error : Failed to load texture file from command line\n");
-		}
+		Ceng::Log::Print("Error : Built-in fallback texture creation failed\n");
+		Ceng::Log::Print(cresult);
+		return 0;
 	}
-	*/
-
-	/*
-	if (!imgLoaded)
-	{
-		textureDesc.miscFlags = Ceng::BufferOptions::generate_mip_maps;
-
-		cresult = CreateTexture2dFromFile("texture.bmp", textureDesc, renderer, &texture);
-
-		if (cresult == Ceng::CE_OK)
-		{
-			imgLoaded = true;
-		}
-		else
-		{
-			Ceng::Log::Print("Error : Failed to load texture.bmp\n");
-		}
-	}
-	*/
-
-	//if (!imgLoaded)
-	//{
-		textureDesc.optionFlags = 0;
-
-		cresult = renderDevice->CreateTexture2D(textureDesc, &textureFill, &fallBackTexture);
-
-		if (cresult != Ceng::CE_OK)
-		{
-			Ceng::Log::Print("Error : Built-in fallback texture creation failed\n");
-			Ceng::Log::Print(cresult);
-			return 0;
-		}
-	//}
 
 	Ceng::ShaderResourceView* texView;
 
@@ -1053,6 +995,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		return 0;
 	}
 
+	
 	CEngine::TextureManager textureManager(renderDevice);
 
 	textureManager.AddPath(assetPath + "textures/");
@@ -1060,7 +1003,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	CEngine::TextureOptions texOptions;
 
 	texOptions.bindFlags = Ceng::BufferBinding::shader_resource;
-	texOptions.cpuAccessFlags = 0;// Ceng::Buffer_CPU_Access::write;
+	texOptions.cpuAccessFlags = Ceng::Buffer_CPU_Access::write;
 	texOptions.firstMip = 0;
 	texOptions.generateIrradianceMap = false;
 	texOptions.irradianceSize = 0;
@@ -1086,7 +1029,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	texViewDesc.dimensions = Ceng::BufferType::texture_2d;
 	texViewDesc.format = Ceng::IMAGE_FORMAT::C32_ARGB;
 	texViewDesc.tex2d.baseMipLevel = 0;
-	texViewDesc.tex2d.maxMipLevel = 8;
+	texViewDesc.tex2d.maxMipLevel = 11;
 
 	cresult = brickWallTex->AsTexture2D()->GetShaderViewTex2D(texViewDesc, &brickWallView);
 
@@ -1096,7 +1039,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		Ceng::Log::Print(cresult);
 		return 0;
 	}
-
+	
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Object data
@@ -1564,6 +1507,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	texView->Release();
 	fallBackTexture->Release();
+
+	brickWallView->Release();
 
 	ps_diffuseTextureUnit->Release();
 	vs_fullVertexTransform->Release();
