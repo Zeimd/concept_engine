@@ -687,28 +687,49 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		return 0;
 	}
 
-	Ceng::SamplerStateDesc nearestDesc;
+	samplerDesc.addressU = Ceng::TextureAddressMode::clamp;
+	samplerDesc.addressV = Ceng::TextureAddressMode::clamp;
+	samplerDesc.addressW = Ceng::TextureAddressMode::clamp;
 
-	nearestDesc.addressU = Ceng::TextureAddressMode::clamp;
-	nearestDesc.addressV = Ceng::TextureAddressMode::clamp;
-	nearestDesc.addressW = Ceng::TextureAddressMode::clamp;
+	samplerDesc.minFilter = Ceng::TextureMinFilter::nearest;
+	samplerDesc.magFilter = Ceng::TextureMagFilter::nearest;
 
-	nearestDesc.minFilter = Ceng::TextureMinFilter::nearest;
-	nearestDesc.magFilter = Ceng::TextureMagFilter::nearest;
-
-	nearestDesc.minLod = 0.0f;
-	nearestDesc.maxLod = 0.0f;
-	nearestDesc.mipLodBias = 0.0f;
-	nearestDesc.maxAnisotrophy = 0;
+	samplerDesc.minLod = 0.0f;
+	samplerDesc.maxLod = 0.0f;
+	samplerDesc.mipLodBias = 0.0f;
+	samplerDesc.maxAnisotrophy = 0;
 
 	Ceng::SamplerState* nearestSampler;
 
-	cresult = renderDevice->CreateSamplerState(nearestDesc, &nearestSampler);
+	cresult = renderDevice->CreateSamplerState(samplerDesc, &nearestSampler);
 	if (cresult != Ceng::CE_OK)
 	{
 		Ceng::Log::Print("Failed to create nearest sampler");
 		return 0;
 	}
+
+	samplerDesc.addressU = Ceng::TextureAddressMode::clamp;
+	samplerDesc.addressV = Ceng::TextureAddressMode::clamp;
+	samplerDesc.addressW = Ceng::TextureAddressMode::clamp;
+
+	samplerDesc.minFilter = Ceng::TextureMinFilter::linear;
+	samplerDesc.magFilter = Ceng::TextureMagFilter::linear;
+
+	samplerDesc.minLod = 0.0f;
+	samplerDesc.maxLod = 0.0f;
+	samplerDesc.mipLodBias = 0.0f;
+	samplerDesc.maxAnisotrophy = 0;
+
+	Ceng::SamplerState* linearSampler;
+
+	cresult = renderDevice->CreateSamplerState(samplerDesc, &linearSampler);
+	if (cresult != Ceng::CE_OK)
+	{
+		Ceng::Log::Print("Failed to create nearest sampler");
+		return 0;
+	}
+
+	Ceng::SamplerState* activeSampler = nearestSampler;
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Create vertex format
@@ -875,7 +896,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	//**********************************************************
 	// Create texture
 
-	Ceng::Texture2D* texture = nullptr;
+	Ceng::Texture2D* fallBackTexture = nullptr;
 
 	Ceng::Texture2dDesc textureDesc;
 
@@ -1004,7 +1025,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	//{
 		textureDesc.optionFlags = 0;
 
-		cresult = renderDevice->CreateTexture2D(textureDesc, &textureFill, &texture);
+		cresult = renderDevice->CreateTexture2D(textureDesc, &textureFill, &fallBackTexture);
 
 		if (cresult != Ceng::CE_OK)
 		{
@@ -1023,7 +1044,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	texViewDesc.tex2d.baseMipLevel = 0;
 	texViewDesc.tex2d.maxMipLevel = 8;
 
-	cresult = renderDevice->CreateShaderResourceView(texture, texViewDesc, &texView);
+	cresult = renderDevice->CreateShaderResourceView(fallBackTexture, texViewDesc, &texView);
 
 	if (cresult != Ceng::CE_OK)
 	{
@@ -1032,6 +1053,49 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		return 0;
 	}
 
+	CEngine::TextureManager textureManager(renderDevice);
+
+	textureManager.AddPath(assetPath + "textures/");
+
+	CEngine::TextureOptions texOptions;
+
+	texOptions.bindFlags = Ceng::BufferBinding::shader_resource;
+	texOptions.cpuAccessFlags = 0;// Ceng::Buffer_CPU_Access::write;
+	texOptions.firstMip = 0;
+	texOptions.generateIrradianceMap = false;
+	texOptions.irradianceSize = 0;
+	texOptions.mipLevels = 0;
+	texOptions.options = Ceng::BufferOptions::generate_mip_maps;
+	texOptions.sRGB = true;
+	texOptions.usage = Ceng::BufferUsage::gpu_read_only;
+
+	std::shared_ptr<CEngine::Texture> brickWallTex;
+
+	eresult = textureManager.LoadTexture2D("brickwall.png", texOptions, brickWallTex);
+
+	if (eresult != CEngine::EngineResult::ok)
+	{
+		Ceng::Log::Print("Error : Failed to load texture from file\n");
+		Ceng::Log::Print(brickWallTex->managerLog);
+		Ceng::Log::Print(eresult);
+		return 0;
+	}
+
+	Ceng::ShaderResourceView* brickWallView;
+
+	texViewDesc.dimensions = Ceng::BufferType::texture_2d;
+	texViewDesc.format = Ceng::IMAGE_FORMAT::C32_ARGB;
+	texViewDesc.tex2d.baseMipLevel = 0;
+	texViewDesc.tex2d.maxMipLevel = 8;
+
+	cresult = brickWallTex->AsTexture2D()->GetShaderViewTex2D(texViewDesc, &brickWallView);
+
+	if (cresult != Ceng::CE_OK)
+	{
+		Ceng::Log::Print("Error : Failed to create shader resource view\n");
+		Ceng::Log::Print(cresult);
+		return 0;
+	}
 
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1324,18 +1388,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					}
 					*/
 
-					/*
+					
 
 					if (keyboard->IsPressed(Ceng::KEYBOARD_KEY::F1))
 					{
-					renderContext->SetSamplerState(0, texSamplerNearest);
+						activeSampler = nearestSampler;
 					}
 
 					if (keyboard->IsPressed(Ceng::KEYBOARD_KEY::F2))
 					{
-					renderContext->SetSamplerState(0, texSamplerLinear);
+						activeSampler = linearSampler;
 					}
-					*/
+					
 				}
 
 				if (window->IsResized())
@@ -1429,9 +1493,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 				ps_diffuseTextureUnit->SetInt(0);
 
-				renderContext->SetPixelShaderSamplerState(0, nearestSampler);
+				renderContext->SetPixelShaderSamplerState(0, activeSampler);
 
-				renderContext->SetPixelShaderResource(0, texView);
+				//renderContext->SetPixelShaderResource(0, texView);
+				renderContext->SetPixelShaderResource(0, brickWallView);
 
 				renderContext->DrawPrimitive(Ceng::PRIMITIVE_TYPE::TRIANGLE_FAN, 0, 2);
 
@@ -1472,7 +1537,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	//quadProgTex->Release();
 
 	nearestSampler->Release();
-
+	linearSampler->Release();
+	
 	postDepthState->Release();
 
 	//lightDepthState->Release();
@@ -1497,7 +1563,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	//vertexFormat->Release();
 
 	texView->Release();
-	texture->Release();
+	fallBackTexture->Release();
 
 	ps_diffuseTextureUnit->Release();
 	vs_fullVertexTransform->Release();
