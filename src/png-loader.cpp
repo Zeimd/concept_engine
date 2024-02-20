@@ -17,14 +17,33 @@ const EngineResult::value TextureManager::LoadTexture2D_PNG(const Ceng::StringUt
 	const TextureOptions &options, Ceng::Texture2D **out_texture)
 {
 	upng_t *png;
+	upng_error pngError;
 
 	png = upng_new_from_file(filename.ToCString());
 	if (png != nullptr) {
-		upng_decode(png);
-		if (upng_get_error(png) != UPNG_EOK) 
+		pngError = upng_decode(png);
+		if (pngError != UPNG_EOK)
 		{
 			upng_free(png);
-			return EngineResult::fail;
+
+			switch (pngError)
+			{
+			case UPNG_ENOMEM:
+				return EngineResult::out_of_memory;
+			case UPNG_ENOTFOUND:
+				return EngineResult::file_not_found;
+			case UPNG_ENOTPNG :
+				return EngineResult::not_supported;
+			case UPNG_EMALFORMED:
+			case UPNG_EUNSUPPORTED:
+			case UPNG_EUNINTERLACED:
+			case UPNG_EUNFORMAT:
+				return EngineResult::not_supported;
+			case UPNG_EPARAM:
+				return EngineResult::invalid_param;
+			default:
+				return EngineResult::fail;
+			}
 		}
 	}
 	else
