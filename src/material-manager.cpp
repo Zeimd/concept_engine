@@ -379,7 +379,7 @@ const EngineResult::value MaterialManager::CreateMaterial(MaterialFile &material
 
 				Ceng::ShaderResourceViewDesc diffuseViewDesc;
 
-				diffuseViewDesc.format = Ceng::IMAGE_FORMAT::C32_ABGR;
+				diffuseViewDesc.format = Ceng::IMAGE_FORMAT::unorm_a8_b8_g8_r8;
 				diffuseViewDesc.dimensions = Ceng::BufferType::texture_2d;
 				diffuseViewDesc.tex2d.baseMipLevel = 0;
 				diffuseViewDesc.tex2d.maxMipLevel = -1;

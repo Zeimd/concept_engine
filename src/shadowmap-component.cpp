@@ -64,7 +64,7 @@ ShadowmapComponent::ShadowmapComponent(Ceng::RenderDevice *renderDevice, const C
 
 	Ceng::ShaderResourceViewDesc diffuseViewDesc;
 
-	diffuseViewDesc.format = Ceng::IMAGE_FORMAT::C24_BGR;
+	diffuseViewDesc.format = Ceng::IMAGE_FORMAT::unorm_b8_g8_r8;
 	diffuseViewDesc.tex2d.baseMipLevel = 0;
 	diffuseViewDesc.tex2d.maxMipLevel = -1;
 

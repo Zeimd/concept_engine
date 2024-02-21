@@ -116,14 +116,14 @@ const EngineResult::value TextureManager::LoadBitmap_BMP(const Ceng::StringUtf8 
 		fclose(stream);
 		return EngineResult::invalid_texture_type;
 	case 2:
-		output.format = Ceng::IMAGE_FORMAT::C16_A1;
+		output.format = Ceng::IMAGE_FORMAT::unorm_a1_r5_g5_b5;
 		//colorFormat = COLOR_A1R5G5B5;
 		break;
 	case 3:
-		output.format = Ceng::IMAGE_FORMAT::C24_RGB;
+		output.format = Ceng::IMAGE_FORMAT::unorm_r8_g8_b8;
 		break;
 	case 4:
-		output.format = Ceng::IMAGE_FORMAT::C32_ARGB;
+		output.format = Ceng::IMAGE_FORMAT::unorm_a8_r8_g8_b8;
 		break;
 	default:
 		fclose(stream);

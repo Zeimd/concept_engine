@@ -101,7 +101,7 @@ TextureManager::TextureManager(Ceng::RenderDevice *renderDevice)
 
 	desc.width = 8;
 	desc.height = 8;
-	desc.format = Ceng::IMAGE_FORMAT::C24_BGR;
+	desc.format = Ceng::IMAGE_FORMAT::unorm_b8_g8_r8;
 	desc.sRGB = true;
 	desc.mipLevels = 1;
 	desc.arraySize = 0;
@@ -511,7 +511,7 @@ const EngineResult::value TextureManager::GenerateIrradianceMapFromCube(const Ce
 	diffuseEnvDesc.width = options.irradianceSize;
 	diffuseEnvDesc.height = options.irradianceSize;
 
-	diffuseEnvDesc.format = Ceng::IMAGE_FORMAT::CF16_ABGR;
+	diffuseEnvDesc.format = Ceng::IMAGE_FORMAT::fp16_abgr;
 
 	diffuseEnvDesc.mipLevels = 0;
 	diffuseEnvDesc.arraySize = 1;

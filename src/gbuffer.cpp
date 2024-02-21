@@ -57,7 +57,7 @@ EngineResult::value Gbuffer::GetInstance(Ceng::RenderDevice* renderDevice, Ceng:
 	gbufferDesc.width = width;
 	gbufferDesc.height = height;
 
-	gbufferDesc.format = Ceng::IMAGE_FORMAT::C32_ABGR;
+	gbufferDesc.format = Ceng::IMAGE_FORMAT::unorm_a8_b8_g8_r8;
 
 	gbufferDesc.arraySize = 1;
 	gbufferDesc.mipLevels = 1;
@@ -81,7 +81,7 @@ EngineResult::value Gbuffer::GetInstance(Ceng::RenderDevice* renderDevice, Ceng:
 
 	Ceng::ShaderResourceViewDesc diffuseViewDesc;
 
-	diffuseViewDesc.format = Ceng::IMAGE_FORMAT::C24_BGR;
+	diffuseViewDesc.format = Ceng::IMAGE_FORMAT::unorm_b8_g8_r8;
 	diffuseViewDesc.tex2d.baseMipLevel = 0;
 	diffuseViewDesc.tex2d.maxMipLevel = -1;
 
@@ -161,7 +161,7 @@ EngineResult::value Gbuffer::GetInstance(Ceng::RenderDevice* renderDevice, Ceng:
 	}
 
 	// Use float16 format to store normals with high precision
-	gbufferDesc.format = Ceng::IMAGE_FORMAT::CF16_ABGR;
+	gbufferDesc.format = Ceng::IMAGE_FORMAT::fp16_abgr;
 
 	Ceng::Texture2D* gbufferNormal;
 	Ceng::ShaderResourceView* gbufferNormalView;
@@ -334,7 +334,7 @@ EngineResult::value Gbuffer::GetInstance(Ceng::RenderDevice* renderDevice, Ceng:
 	hdrDesc.width = width;
 	hdrDesc.height = height;
 
-	hdrDesc.format = Ceng::IMAGE_FORMAT::CF16_ABGR;
+	hdrDesc.format = Ceng::IMAGE_FORMAT::fp16_abgr;
 	//hdrDesc.format = Ceng::IMAGE_FORMAT::CF32_ABGR;
 	//hdrDesc.format = Ceng::IMAGE_FORMAT::C32_ABGR;
 

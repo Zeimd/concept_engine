@@ -158,10 +158,10 @@ const EngineResult::value TextureManager::LoadBitmap_EXR(const Ceng::StringUtf8 
 	// Determine format
 	if (redType == TINYEXR_PIXELTYPE_FLOAT)
 	{
-		format = Ceng::IMAGE_FORMAT::cf32_bgr;
+		format = Ceng::IMAGE_FORMAT::fp32_bgr;
 		if (alphaChannel != -1)
 		{
-			format = Ceng::IMAGE_FORMAT::CF32_ABGR;
+			format = Ceng::IMAGE_FORMAT::fp32_abgr;
 		}
 	}
 	else if (redType == TINYEXR_PIXELTYPE_HALF)
@@ -175,14 +175,14 @@ const EngineResult::value TextureManager::LoadBitmap_EXR(const Ceng::StringUtf8 
 			return EngineResult::not_supported;
 			*/
 		}
-		format = Ceng::IMAGE_FORMAT::CF16_ABGR;
+		format = Ceng::IMAGE_FORMAT::fp16_abgr;
 	}
 	else if (redType == TINYEXR_PIXELTYPE_UINT)
 	{
-		format = Ceng::IMAGE_FORMAT::uint_b32_g32_r32;
+		format = Ceng::IMAGE_FORMAT::unorm_b32_g32_r32;
 		if (alphaChannel != -1)
 		{
-			format = Ceng::IMAGE_FORMAT::uint_a32_b32_g32_r32;
+			format = Ceng::IMAGE_FORMAT::unorm_a32_b32_g32_r32;
 		}
 	}
 
@@ -240,7 +240,7 @@ const EngineResult::value TextureManager::LoadBitmap_EXR(const Ceng::StringUtf8 
 			}
 		}
 	}
-	else if (format == Ceng::IMAGE_FORMAT::CF16_ABGR)
+	else if (format == Ceng::IMAGE_FORMAT::fp16_abgr)
 	{
 		Ceng::UINT16 alphaValue = 0;
 

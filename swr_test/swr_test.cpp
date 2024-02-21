@@ -320,11 +320,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	const Ceng::IMAGE_FORMAT::value formats[] =
 	{
-		Ceng::IMAGE_FORMAT::C32_ABGR,
-		Ceng::IMAGE_FORMAT::C32_XBGR,
+		Ceng::IMAGE_FORMAT::unorm_a8_b8_g8_r8,
+		Ceng::IMAGE_FORMAT::unorm_x8_b8_g8_r8,
 
-		Ceng::IMAGE_FORMAT::C32_ARGB,
-		Ceng::IMAGE_FORMAT::C32_XRGB,
+		Ceng::IMAGE_FORMAT::unorm_a8_r8_g8_b8,
+		Ceng::IMAGE_FORMAT::unorm_x8_r8_g8_b8,
 	};
 
 	int iters = sizeof(formats) / sizeof(Ceng::IMAGE_FORMAT::value);
@@ -461,7 +461,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	// Needed for d3d9 back-end
 	//swapChainDesc.displayMode.format = Ceng::IMAGE_FORMAT::C32_ARGB;
-	swapChainDesc.displayMode.format = Ceng::IMAGE_FORMAT::C32_ARGB;
+	swapChainDesc.displayMode.format = Ceng::IMAGE_FORMAT::unorm_a8_r8_g8_b8;
 	swapChainDesc.displayMode.refreshHz = 60;
 
 	swapChainDesc.windowed = !fullScreenMode;
@@ -645,7 +645,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	Ceng::ShaderResourceViewDesc diffuseViewDesc;
 
-	diffuseViewDesc.format = Ceng::IMAGE_FORMAT::C24_BGR;
+	diffuseViewDesc.format = Ceng::IMAGE_FORMAT::unorm_b8_g8_r8;
 	diffuseViewDesc.tex2d.baseMipLevel = 0;
 	diffuseViewDesc.tex2d.maxMipLevel = -1;
 
@@ -902,7 +902,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	textureDesc.width = 8;
 	textureDesc.height = 8;
-	textureDesc.format = Ceng::IMAGE_FORMAT::C32_ARGB;
+	textureDesc.format = Ceng::IMAGE_FORMAT::unorm_a8_r8_g8_b8;
 	//textureDesc.format = Ceng::IMAGE_FORMAT::C24_RGB;
 
 	textureDesc.multisampleDesc.count = 0;
@@ -1027,7 +1027,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	Ceng::ShaderResourceView* brickWallView;
 
 	texViewDesc.dimensions = Ceng::BufferType::texture_2d;
-	texViewDesc.format = Ceng::IMAGE_FORMAT::C32_ARGB;
+	texViewDesc.format = Ceng::IMAGE_FORMAT::unorm_a8_r8_g8_b8;
 	texViewDesc.tex2d.baseMipLevel = 0;
 	texViewDesc.tex2d.maxMipLevel = 11;
 

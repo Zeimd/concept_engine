@@ -297,8 +297,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	//**************************************************************************
 	// Test framebuffer format support
 
-	Ceng::IMAGE_FORMAT::value displayFormat = Ceng::IMAGE_FORMAT::C32_XBGR;
-	Ceng::IMAGE_FORMAT::value backBufferFormat = Ceng::IMAGE_FORMAT::C32_ABGR;
+	Ceng::IMAGE_FORMAT::value displayFormat = Ceng::IMAGE_FORMAT::unorm_x8_b8_g8_r8;
+	Ceng::IMAGE_FORMAT::value backBufferFormat = Ceng::IMAGE_FORMAT::unorm_a8_b8_g8_r8;
 
 	cresult = renderCore->CheckFramebufferSupport(adapter, displayFormat, backBufferFormat, true);
 
@@ -411,7 +411,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	swapChainDesc.displayMode.width = resX;
 	swapChainDesc.displayMode.height = resY;
-	swapChainDesc.displayMode.format = Ceng::IMAGE_FORMAT::C32_XBGR;
+	swapChainDesc.displayMode.format = Ceng::IMAGE_FORMAT::unorm_x8_b8_g8_r8;
 	swapChainDesc.displayMode.refreshHz = 60;
 
 	swapChainDesc.windowed = !fullScreenMode;
@@ -538,7 +538,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	Ceng::ShaderResourceViewDesc diffuseViewDesc;
 
-	diffuseViewDesc.format = Ceng::IMAGE_FORMAT::C24_BGR;
+	diffuseViewDesc.format = Ceng::IMAGE_FORMAT::unorm_b8_g8_r8;
 	diffuseViewDesc.tex2d.baseMipLevel = 0;
 	diffuseViewDesc.tex2d.maxMipLevel = -1;
 

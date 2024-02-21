@@ -69,7 +69,7 @@ const EngineResult::value TextureManager::LoadTexture2D_PNG(const Ceng::StringUt
 	switch (format)
 	{
 	case UPNG_RGB8:
-		bitmap.format = Ceng::IMAGE_FORMAT::C24_BGR;
+		bitmap.format = Ceng::IMAGE_FORMAT::unorm_b8_g8_r8;
 		bitmap.bytesPerPixel = 3;
 		bitmap.pitch = bitmap.width*bitmap.bytesPerPixel;
 
@@ -93,7 +93,7 @@ const EngineResult::value TextureManager::LoadTexture2D_PNG(const Ceng::StringUt
 		*/
 		break;
 	case UPNG_RGBA8:
-		bitmap.format = Ceng::IMAGE_FORMAT::C32_ABGR;
+		bitmap.format = Ceng::IMAGE_FORMAT::unorm_a8_b8_g8_r8;
 		bitmap.bytesPerPixel = 4;
 		bitmap.pitch = bitmap.width*bitmap.bytesPerPixel;
 

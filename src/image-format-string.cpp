@@ -12,23 +12,23 @@ const Ceng::String ImageFormatToString(const Ceng::IMAGE_FORMAT::value format)
 {
 	switch (format)
 	{
-	case Ceng::IMAGE_FORMAT::C16:
-		return "C16_BGR";
-	case Ceng::IMAGE_FORMAT::C32_ABGR:
-		return "C32_ABGR";
-	case Ceng::IMAGE_FORMAT::C32_XBGR:
-		return "C32_XBGR";
+	case Ceng::IMAGE_FORMAT::unorm_r5_g6_b5:
+		return "unorm_r5_g6_b5";
+	case Ceng::IMAGE_FORMAT::unorm_a8_b8_g8_r8:
+		return "unorm_a8_b8_g8_r8";
+	case Ceng::IMAGE_FORMAT::unorm_x8_b8_g8_r8:
+		return "unorm_x8_b8_g8_r8";
 
-	case Ceng::IMAGE_FORMAT::C32_ARGB:
-		return "C32_ARGB";
-	case Ceng::IMAGE_FORMAT::C32_XRGB:
-		return "C32_XRGB";
+	case Ceng::IMAGE_FORMAT::unorm_a8_r8_g8_b8:
+		return "unorm_a8_r8_g8_b8";
+	case Ceng::IMAGE_FORMAT::unorm_x8_r8_g8_b8:
+		return "unorm_x8_r8_g8_b8";
 
-	case Ceng::IMAGE_FORMAT::C32_A2_BGR:
-		return "C32_A2_BGR";
-	case Ceng::IMAGE_FORMAT::C32_A2_RGB:
-		return "C32_A2_RGB";
+	case Ceng::IMAGE_FORMAT::unorm_a2_b10_g10_r10:
+		return "unorm_a2_b10_g10_r10";
+	case Ceng::IMAGE_FORMAT::unorm_a2_r10_g10_b10:
+		return "unorm_a2_r10_g10_b10";
 	}
 
-	return "UNKNOWN";
+	return "UNHANDLED";
 }
