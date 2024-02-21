@@ -63,7 +63,7 @@ struct IrradianceThreadCommon
 	Ceng::FLOAT32* sourceMap;
 };
 
-class IrradianceMapThread
+class IrradianceMapThread_v1
 {
 public:
 
@@ -73,7 +73,7 @@ public:
 
 	double& out_duration;
 
-	IrradianceMapThread(const IrradianceThreadCommon& _common, const Ceng::UINT32 _destFace, Ceng::FLOAT32* _out_map,
+	IrradianceMapThread_v1(const IrradianceThreadCommon& _common, const Ceng::UINT32 _destFace, Ceng::FLOAT32* _out_map,
 		double& _out_duration)
 		: common(_common), destFace(_destFace), out_map(_out_map),out_duration(_out_duration)
 	{
@@ -145,6 +145,98 @@ public:
 		out_duration = end - start;
 	}
 };
+
+EngineResult::value IrradianceConvolution_v1(const Ceng::UINT32 faceSize, const Ceng::UINT32 destWidthInt, const Ceng::UINT32 sourceWidthInt,
+	const Ceng::FLOAT32 invDestWidth, Ceng::Matrix4* faceMatrix, Ceng::FLOAT32* solidAngleRayDir, Ceng::FLOAT32* sourceMap, Ceng::Cubemap* irradianceMap)
+{
+	Ceng::Log::Print(__func__);
+	//std::vector<Ceng::FLOAT32> destMap(4 * destWidthInt*destWidthInt);
+
+	Ceng::FLOAT32* destMap[6];
+
+	for (int i = 0; i < 6; i++)
+	{
+		destMap[i] = (Ceng::FLOAT32*)malloc(4 * destWidthInt * destWidthInt * sizeof(Ceng::FLOAT32));
+	}
+
+	// Convolve irradiance map from env map
+
+	IrradianceThreadCommon common;
+
+	common.destWidthInt = destWidthInt;
+	common.sourceWidthInt = sourceWidthInt;
+	common.solidAngleRayDir = solidAngleRayDir;
+	common.faceMatrix = faceMatrix;
+	common.faceSize = faceSize;
+	common.invDestWidth = invDestWidth;
+	common.sourceMap = sourceMap;
+
+	double start = Ceng_HighPrecisionTimer();
+
+	double duration[6];
+
+	IrradianceMapThread_v1 tasks[6] =
+	{
+		{common, 0, destMap[0],duration[0]},
+		{common, 1, destMap[1],duration[1]},
+		{common, 2, destMap[2],duration[2]},
+		{common, 3, destMap[3],duration[3]},
+		{common, 4, destMap[4],duration[4]},
+		{common, 5, destMap[5],duration[5]},
+	};
+
+	std::thread t0(tasks[0]);
+	std::thread t1(tasks[1]);
+	std::thread t2(tasks[2]);
+	std::thread t3(tasks[3]);
+	std::thread t4(tasks[4]);
+	std::thread t5(tasks[5]);
+
+	t0.join();
+	t1.join();
+	t2.join();
+	t3.join();
+	t4.join();
+	t5.join();
+
+	double end = Ceng_HighPrecisionTimer();
+
+	Ceng::StringUtf8 text;
+
+	for (int i = 0; i < 6; i++)
+	{
+		text = "dest face ";
+		text += i;
+		text += ": Took ";
+		text += duration[i];
+		Ceng::Log::Print(text);
+	}
+
+	text = "total convolution time: ";
+	text += end - start;
+	Ceng::Log::Print(text);
+
+	// Copy results to GPU
+
+	EngineResult::value eresult = EngineResult::ok;
+
+	for (Ceng::UINT32 destFace = 0; destFace < 6; ++destFace)
+	{
+		Ceng::CRESULT cresult = irradianceMap->SetSubResourceData(faceArray[destFace], 0, Ceng::IMAGE_FORMAT::unorm_a8_b8_g8_r8, &destMap[destFace]);
+		if (cresult != Ceng::CE_OK)
+		{
+			eresult = EngineResult::fail;
+			break;
+		}
+	}
+
+	for (int i = 0; i < 6; i++)
+	{
+		free(destMap[i]);
+	}
+
+	return eresult;
+}
 
 const EngineResult::value CEngine::CreateIrradianceMap(Ceng::Cubemap *envMap, Ceng::Cubemap *irradianceMap)
 {
@@ -291,7 +383,7 @@ const EngineResult::value CEngine::CreateIrradianceMap(Ceng::Cubemap *envMap, Ce
 
 	for (Ceng::UINT32 sourceFace = 0; sourceFace < 6; ++sourceFace)
 	{
-		cresult = envMap->GetSubResourceData(faceArray[sourceFace], 0, Ceng::IMAGE_FORMAT::unorm_a8_b8_g8_r8, &sourceMap[sourceFace*faceSize]);
+		cresult = envMap->GetSubResourceData(faceArray[sourceFace], 0, Ceng::IMAGE_FORMAT::unorm_a8_b8_g8_r8, &sourceMap[sourceFace * faceSize]);
 		if (cresult != Ceng::CE_OK)
 		{
 			free(solidAngleRayDir);
@@ -306,93 +398,10 @@ const EngineResult::value CEngine::CreateIrradianceMap(Ceng::Cubemap *envMap, Ce
 	text += end - start;
 	Ceng::Log::Print(text);
 
-	//std::vector<Ceng::FLOAT32> destMap(4 * destWidthInt*destWidthInt);
-
-	Ceng::FLOAT32* destMap[6];
-
-	for (int i = 0; i < 6; i++)
-	{
-		destMap[i] = (Ceng::FLOAT32*)malloc(4 * destWidthInt * destWidthInt * sizeof(Ceng::FLOAT32));
-	}	
-
-	// Convolve irradiance map from env map
-
-	IrradianceThreadCommon common;
-
-	common.destWidthInt = destWidthInt;
-	common.sourceWidthInt = sourceWidthInt;
-	common.solidAngleRayDir = solidAngleRayDir;
-	common.faceMatrix = faceMatrix;
-	common.faceSize = faceSize;
-	common.invDestWidth = invDestWidth;
-	common.sourceMap = sourceMap;
-
-	start = Ceng_HighPrecisionTimer();
-
-	double duration[6];
-
-	IrradianceMapThread tasks[6] =
-	{
-		{common, 0, destMap[0],duration[0]},
-		{common, 1, destMap[1],duration[1]},
-		{common, 2, destMap[2],duration[2]},
-		{common, 3, destMap[3],duration[3]},
-		{common, 4, destMap[4],duration[4]},
-		{common, 5, destMap[5],duration[5]},
-	};
-
-	std::thread t0(tasks[0]);
-	std::thread t1(tasks[1]);
-	std::thread t2(tasks[2]);
-	std::thread t3(tasks[3]);
-	std::thread t4(tasks[4]);
-	std::thread t5(tasks[5]);
-
-	t0.join();
-	t1.join();
-	t2.join();
-	t3.join();
-	t4.join();
-	t5.join();
-
-	end = Ceng_HighPrecisionTimer();
-
-	for (int i = 0; i < 6; i++)
-	{
-		text = "dest face ";
-		text += i;
-		text += ": Took ";
-		text += duration[i];
-		Ceng::Log::Print(text);
-	}
-
-	text = "total convolution time: ";
-	text += end-start;
-	Ceng::Log::Print(text);
-
-	// Copy results to GPU
-
-	EngineResult::value eresult = EngineResult::ok;
-
-	for (Ceng::UINT32 destFace = 0; destFace < 6; ++destFace)
-	{
-		cresult = irradianceMap->SetSubResourceData(faceArray[destFace], 0, Ceng::IMAGE_FORMAT::unorm_a8_b8_g8_r8, &destMap[destFace]);
-		if (cresult != Ceng::CE_OK)
-		{
-			eresult = EngineResult::fail;
-			break;
-		}
-	}
+	EngineResult::value eresult = IrradianceConvolution_v1(faceSize,destWidthInt,sourceWidthInt,invDestWidth,faceMatrix,solidAngleRayDir,sourceMap,irradianceMap);
 
 	free(solidAngleRayDir);
 	free(sourceMap);
-
-	for (int i = 0; i < 6; i++)
-	{
-		free(destMap[i]);
-	}
-
-
 
 	return eresult;
 }
