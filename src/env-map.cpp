@@ -137,6 +137,7 @@ public:
 	}
 };
 
+// Compared to v2, eliminates the need to re-create threads between source face loops
 EngineResult::value IrradianceConvolution_v3(const Ceng::UINT32 faceSize, const Ceng::UINT32 destWidthInt, const Ceng::UINT32 sourceWidthInt,
 	const Ceng::FLOAT32 invDestWidth, Ceng::Matrix4* faceMatrix, Ceng::FLOAT32* solidAngleRayDir, Ceng::FLOAT32* sourceMap, Ceng::Cubemap* irradianceMap)
 {
