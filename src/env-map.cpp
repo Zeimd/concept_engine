@@ -101,7 +101,7 @@ public:
 			{
 				for (Ceng::UINT32 sourceU = 0; sourceU < common.sourceWidthInt; ++sourceU)
 				{
-					Vec4* cache = &common.solidAngleRayDir[4 * (sourceV * common.sourceWidthInt + sourceU)];
+					Vec4* cache = &common.solidAngleRayDir[sourceV * common.sourceWidthInt + sourceU];
 
 					// Get light source direction for +X face and rotate it for the current face
 					Ceng::VectorF4 dir;
@@ -297,7 +297,7 @@ public:
 		{
 			for (Ceng::UINT32 sourceU = 0; sourceU < common.sourceWidthInt; ++sourceU)
 			{
-				Vec4* cache = &common.solidAngleRayDir[4 * (sourceV * common.sourceWidthInt + sourceU)];
+				Vec4* cache = &common.solidAngleRayDir[sourceV * common.sourceWidthInt + sourceU];
 
 				// Get light source direction for +X face and rotate it for the current face
 				Ceng::VectorF4 dir;
@@ -485,7 +485,7 @@ public:
 					{
 						for (Ceng::UINT32 sourceU = 0; sourceU < common.sourceWidthInt; ++sourceU)
 						{
-							Vec4* cache = &common.solidAngleRayDir[4 * (sourceV * common.sourceWidthInt + sourceU)];
+							Vec4* cache = &common.solidAngleRayDir[sourceV * common.sourceWidthInt + sourceU];
 
 							// Get light source direction for +X face and rotate it for the current face
 							Ceng::VectorF4 dir;
@@ -641,13 +641,13 @@ const EngineResult::value CEngine::CreateIrradianceMap(Ceng::Cubemap *envMap, Ce
 	
 	//std::vector<Ceng::FLOAT32> solidAngleRayDir(4 * sourceWidthInt*sourceWidthInt);
 
-	Vec4* solidAngleRayDir = (Vec4*)malloc(4 * sourceWidthInt * sourceWidthInt * sizeof(Vec4));
+	Vec4* solidAngleRayDir = (Vec4*)malloc(sourceWidthInt * sourceWidthInt * sizeof(Vec4));
 
 	for (Ceng::UINT32 sourceV = 0; sourceV < sourceWidthInt; ++sourceV)
 	{
 		for (Ceng::UINT32 sourceU = 0; sourceU < sourceWidthInt; ++sourceU)
 		{
-			Vec4 *target = &solidAngleRayDir[4 * (sourceV*sourceWidthInt + sourceU)];
+			Vec4 *target = &solidAngleRayDir[sourceV*sourceWidthInt + sourceU];
 
 			Vec3 lightDir;
 
