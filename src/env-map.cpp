@@ -10,6 +10,9 @@
 
 #include <thread>
 
+#include <xmmintrin.h>
+#include <emmintrin.h>
+
 #include "math-vector.h"
 #include "env-map.h"
 
@@ -72,6 +75,96 @@ struct TaskData_v3
 	Ceng::FLOAT32* dest;
 	Ceng::UINT32 sourceFace;
 };
+
+class IrradianceTask_v4
+{
+public:
+
+	IrradianceThreadCommon& common;
+	TaskData_v3* taskData;
+	Ceng::UINT32 first;
+	Ceng::UINT32 amount;
+	double& out_duration;
+
+	IrradianceTask_v4(IrradianceThreadCommon& _common, TaskData_v3* _taskData, Ceng::UINT32 _first, Ceng::UINT32 _amount, double& _out_duration)
+		: common(_common), taskData(_taskData), first(_first), amount(_amount), out_duration(_out_duration)
+	{
+
+	}
+
+	void operator() ()
+	{
+		double start = Ceng_HighPrecisionTimer();
+
+		for (int k = 0; k < amount; k++)
+		{
+			TaskData_v3* params = &taskData[first + k];
+
+			__m128 col0 = _mm_loadu_ps(&common.faceTranspose->data[0][0]);
+			__m128 col1 = _mm_loadu_ps(&common.faceTranspose->data[1][0]);
+			__m128 col2 = _mm_loadu_ps(&common.faceTranspose->data[2][0]);
+			__m128 col3 = _mm_loadu_ps(&common.faceTranspose->data[3][0]);
+
+			for (Ceng::UINT32 sourceV = 0; sourceV < common.sourceWidthInt; ++sourceV)
+			{
+				for (Ceng::UINT32 sourceU = 0; sourceU < common.sourceWidthInt; ++sourceU)
+				{
+					Vec4* cache = &common.solidAngleRayDir[sourceV * common.sourceWidthInt + sourceU];
+
+					// Get light source direction for +X face and rotate it for the current face
+
+					__m128 dir = _mm_load_ss(&cache->x);
+					dir = _mm_loadh_pi(dir, (__m64*)&cache->y);
+
+					// Now dir = [z,y,0,x]
+
+					// We know that our matrix is a 3x3 rotation matrix, and we only need xyz of output
+					// vector, so we can skip the fourth dimension
+
+					__m128i allX = _mm_shuffle_epi32(*(__m128i*) &dir, 0b0);
+					__m128i allY = _mm_shuffle_epi32(*(__m128i*) & dir, 0b10101010);
+					__m128i allZ = _mm_shuffle_epi32(*(__m128i*) & dir, 0b11111111);
+					//__m128i wVec = _mm_shuffle_epi32(*(__m128i*) & dir, 0b11111111);
+
+					__m128 prod0 = _mm_mul_ps(col0, *(__m128*) & allX);
+					__m128 prod1 = _mm_mul_ps(col1, *(__m128*) & allY);
+					__m128 prod2 = _mm_mul_ps(col2, *(__m128*) & allZ);
+					//__m128 prod3 = _mm_mul_ps(col3, *(__m128*) & wVec);
+
+					__m128 resA = _mm_add_ps(prod0, prod1);
+					__m128 result = _mm_add_ps(resA, prod2);
+
+					Vec4 rotatedDir;
+
+					_mm_storeu_ps(&rotatedDir.x, result);
+
+					// Dot product between surface normal and light direction
+					Ceng::FLOAT32 dot = params->normal->x * rotatedDir.x + 
+						params->normal->y * rotatedDir.y + params->normal->z * rotatedDir.z;
+
+					// Adjust by solid angle
+
+					dot *= cache->w;
+
+					if (dot > 0.0f)
+					{
+						Ceng::FLOAT32* source = 
+							&common.sourceMap[params->sourceFace * common.faceSize + 4 * (sourceV * common.sourceWidthInt + sourceU)];
+
+						params->output.x += dot * source[0];
+						params->output.y += dot * source[1];
+						params->output.z += dot * source[2];
+					}
+				}
+			}
+		}
+
+		double end = Ceng_HighPrecisionTimer();
+
+		out_duration = end - start;
+	}
+};
+
 
 class IrradianceTask_v3
 {
@@ -210,12 +303,14 @@ EngineResult::value IrradianceConvolution_v3(IrradianceThreadCommon& common, Cen
 
 	for (int i = 0; i < threadCount-1; i++)
 	{
-		threads.emplace_back(IrradianceTask_v3(common, taskData, firstTask, taskPerThread, durations[i]));
+		//threads.emplace_back(IrradianceTask_v3(common, taskData, firstTask, taskPerThread, durations[i]));
+		threads.emplace_back(IrradianceTask_v4(common, taskData, firstTask, taskPerThread, durations[i]));
 
 		firstTask += taskPerThread;
 	}
 
-	threads.emplace_back(IrradianceTask_v3(common, taskData, firstTask, taskPerThread + taskRemainder, durations[threadCount-1]));
+	//threads.emplace_back(IrradianceTask_v3(common, taskData, firstTask, taskPerThread + taskRemainder, durations[threadCount-1]));
+	threads.emplace_back(IrradianceTask_v4(common, taskData, firstTask, taskPerThread + taskRemainder, durations[threadCount - 1]));
 
 	for (auto& x : threads)
 	{
