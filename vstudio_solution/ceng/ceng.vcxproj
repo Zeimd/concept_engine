@@ -191,6 +191,7 @@
     <ClInclude Include="..\..\inc\env-probe.h" />
     <ClInclude Include="..\..\inc\fps-camera.h" />
     <ClInclude Include="..\..\inc\gbuffer.h" />
+    <ClInclude Include="..\..\inc\image-format-string.h" />
     <ClInclude Include="..\..\inc\json.h" />
     <ClInclude Include="..\..\inc\lighting-pass.h" />
     <ClInclude Include="..\..\inc\manager.h" />

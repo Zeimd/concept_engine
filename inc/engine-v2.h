@@ -94,7 +94,7 @@ struct SurfaceData
 	Ceng::INT32 vertexIndices[8];
 };
 
-const Ceng::String ImageFormatToString(const Ceng::IMAGE_FORMAT::value format);
+#include "image-format-string.h"
 
 #include "object-error.h"
 

@@ -195,6 +195,9 @@
     <ClInclude Include="..\..\inc\vertex-formats.h">
       <Filter>Header Files\inc</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\inc\image-format-string.h">
+      <Filter>Header Files\inc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

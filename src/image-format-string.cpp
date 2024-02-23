@@ -8,7 +8,9 @@
 
 #include <ceng.h>
 
-const Ceng::String ImageFormatToString(const Ceng::IMAGE_FORMAT::value format)
+#include "image-format-string.h"
+
+const Ceng::String CEngine::ImageFormatToString(const Ceng::IMAGE_FORMAT::value format)
 {
 	switch (format)
 	{

@@ -16,9 +16,6 @@
 
 #include <upng.h>
 
-const Ceng::String ImageFormatToString(const Ceng::IMAGE_FORMAT::value format);
-
-
 // Debug information
 #ifdef _MSC_VER
 
@@ -304,9 +301,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	out = "Testing frame buffer format with:\n";
 	out += "display format = ";
-	out += ImageFormatToString(displayFormat);
+	out += CEngine::ImageFormatToString(displayFormat);
 	out += "\nback buffer format = ";
-	out += ImageFormatToString(backBufferFormat);
+	out += CEngine::ImageFormatToString(backBufferFormat);
 	out += "\nresult = ";
 
 	if (cresult == Ceng::CE_OK)
