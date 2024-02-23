@@ -755,7 +755,7 @@ EngineResult::value IrradianceConvolution_v0(IrradianceThreadCommon& common, Cen
 
 		double faceEnd = Ceng_HighPrecisionTimer();
 
-		duration[destFace] = faceEnd;
+		duration[destFace] = faceEnd - faceStart;
 	}
 
 	double end = Ceng_HighPrecisionTimer();
