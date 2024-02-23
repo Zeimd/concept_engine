@@ -58,7 +58,7 @@ const Ceng::CubemapFace::value faceArray[6] = { Ceng::CubemapFace::positive_x,
 Ceng::CubemapFace::negative_x, Ceng::CubemapFace::positive_y,
 Ceng::CubemapFace::negative_y, Ceng::CubemapFace::positive_z, Ceng::CubemapFace::negative_z };
 
-/*
+
 class IrradianceTask_v4
 {
 public:
@@ -88,11 +88,11 @@ public:
 			__m128 col2 = _mm_loadu_ps(&common.faceTranspose->data[2][0]);
 			__m128 col3 = _mm_loadu_ps(&common.faceTranspose->data[3][0]);
 
-			for (Ceng::UINT32 sourceV = 0; sourceV < common.sourceWidthInt; ++sourceV)
+			for (Ceng::UINT32 sourceV = 0; sourceV < common.sourceMap->width; ++sourceV)
 			{
-				for (Ceng::UINT32 sourceU = 0; sourceU < common.sourceWidthInt; ++sourceU)
+				for (Ceng::UINT32 sourceU = 0; sourceU < common.sourceMap->width; ++sourceU)
 				{
-					Vec4* cache = &common.solidAngleRayDir[sourceV * common.sourceWidthInt + sourceU];
+					Vec4* cache = &common.solidAngleRayDir[sourceV * common.sourceMap->width + sourceU];
 
 					// Get light source direction for +X face and rotate it for the current face
 
@@ -128,12 +128,12 @@ public:
 
 					if (dot > 0.0f)
 					{
-						Ceng::FLOAT32* source = 
-							&common.sourceMap[params->sourceFace * common.faceSize + 4 * (sourceV * common.sourceWidthInt + sourceU)];
+						Vec4* source = 
+							&common.sourceMap->faceData[params->sourceFace][sourceV * common.sourceMap->width + sourceU];
 
-						params->output.x += dot * source[0];
-						params->output.y += dot * source[1];
-						params->output.z += dot * source[2];
+						params->output.x += dot * source->x;
+						params->output.y += dot * source->y;
+						params->output.z += dot * source->z;
 					}
 				}
 			}
@@ -145,84 +145,10 @@ public:
 	}
 };
 
-
-class IrradianceTask_v3
-{
-public:
-
-	IrradianceThreadCommon& common;
-	TaskData_v3* taskData;
-	Ceng::UINT32 first;
-	Ceng::UINT32 amount;
-	double& out_duration;
-
-	IrradianceTask_v3(IrradianceThreadCommon& _common, TaskData_v3* _taskData, Ceng::UINT32 _first, Ceng::UINT32 _amount, double& _out_duration)
-		: common(_common), taskData(_taskData), first(_first),amount(_amount), out_duration(_out_duration)
-	{
-
-	}
-
-	void operator() ()
-	{
-		double start = Ceng_HighPrecisionTimer();
-
-		for (int k = 0; k < amount; k++)
-		{
-			TaskData_v3* params = &taskData[first + k];
-
-			for (Ceng::UINT32 sourceV = 0; sourceV < common.sourceWidthInt; ++sourceV)
-			{
-				for (Ceng::UINT32 sourceU = 0; sourceU < common.sourceWidthInt; ++sourceU)
-				{
-					Vec4* cache = &common.solidAngleRayDir[sourceV * common.sourceWidthInt + sourceU];
-
-					// Get light source direction for +X face and rotate it for the current face
-					Ceng::VectorF4 dir;
-
-					dir.x = cache->x;
-					dir.y = cache->y;
-					dir.z = cache->z;
-					dir.w = 1.0f;
-
-					dir = common.faceMatrix[params->sourceFace] * dir;
-
-					// Dot product between surface normal and light direction
-					Ceng::FLOAT32 dot = params->normal->x * dir.x + params->normal->y * dir.y + params->normal->z * dir.z;
-
-					// Adjust by solid angle
-
-					dot *= cache->w;
-
-					if (dot > 0.0f)
-					{
-						Ceng::FLOAT32* source = &common.sourceMap[params->sourceFace * common.faceSize + 4 * (sourceV * common.sourceWidthInt + sourceU)];
-
-						params->output.x += dot * source[0];
-						params->output.y += dot * source[1];
-						params->output.z += dot * source[2];
-					}
-				}
-			}
-		}
-
-		double end = Ceng_HighPrecisionTimer();
-
-		out_duration = end - start;
-	}
-};
-
-// Compared to v2, eliminates the need to re-create threads between source face loops
-EngineResult::value IrradianceConvolution_v3(IrradianceThreadCommon& common, Ceng::Cubemap* irradianceMap)
+// Compared to v3, uses custom vector code in task
+EngineResult::value IrradianceConvolution_v4(IrradianceThreadCommon& common, Ceng::Cubemap* irradianceMap)
 {
 	Ceng::Log::Print(__func__);
-	//std::vector<Ceng::FLOAT32> destMap(4 * destWidthInt*destWidthInt);
-
-	Ceng::FLOAT32* destMap[6];
-
-	for (int i = 0; i < 6; i++)
-	{
-		destMap[i] = (Ceng::FLOAT32*)malloc(4 * common.destWidthInt * common.destWidthInt * sizeof(Ceng::FLOAT32));
-	}
 
 	// Convolve irradiance map from env map
 
@@ -230,33 +156,35 @@ EngineResult::value IrradianceConvolution_v3(IrradianceThreadCommon& common, Cen
 
 	Ceng::StringUtf8 text;
 
-	Ceng::UINT32 taskCount = 6 * 6 * common.destWidthInt * common.destWidthInt;
+	Ceng::UINT32 taskCount = 6 * 6 * common.destMap->width * common.destMap->width;
 
 	TaskData_v3* taskData = (TaskData_v3*)malloc(taskCount * sizeof(TaskData_v3));
 
-	Ceng::UINT32 normalCount = 6 * common.destWidthInt * common.destWidthInt;
+	Ceng::UINT32 normalCount = 6 * common.destMap->width * common.destMap->width;
 
 	Vec3* normals = (Vec3*)malloc(normalCount * sizeof(Vec3));
 
 	int taskIndex = 0;
 
+	// Precalculate normals
+
 	for (int destFace = 0; destFace < 6; destFace++)
 	{
-		for (Ceng::UINT32 destV = 0; destV < common.destWidthInt; ++destV)
+		for (Ceng::UINT32 destV = 0; destV < common.destMap->width; ++destV)
 		{
-			for (Ceng::UINT32 destU = 0; destU < common.destWidthInt; ++destU)
+			for (Ceng::UINT32 destU = 0; destU < common.destMap->width; ++destU)
 			{
 				// Destination vector (surface normal)
-				Vec3* normal = &normals[6*destFace + destV * common.destWidthInt + destU];
+				Vec3* normal = &normals[6*destFace + destV * common.destMap->width + destU];
 
 				CEngine::RayDir(destU, destV, faceArray[destFace], common.invDestWidth, normal);
 
-				Ceng::FLOAT32* dest = &destMap[destFace][4 * (destV * common.destWidthInt + destU)];
+				Vec4* dest = &common.destMap->faceData[destFace][destV * common.destMap->width + destU];
 
-				dest[0] = 0.0f;
-				dest[1] = 0.0f;
-				dest[2] = 0.0f;
-				dest[3] = 1.0f;
+				dest->x = 0.0f;
+				dest->y = 0.0f;
+				dest->z = 0.0f;
+				dest->w = 1.0f;
 
 				for (int sourceFace = 0; sourceFace < 6; sourceFace++)
 				{
@@ -303,9 +231,9 @@ EngineResult::value IrradianceConvolution_v3(IrradianceThreadCommon& common, Cen
 	{
 		TaskData_v3* task = &taskData[k];
 
-		task->dest[0] += task->output.x;
-		task->dest[1] += task->output.y;
-		task->dest[2] += task->output.z;
+		task->dest->x += task->output.x;
+		task->dest->y += task->output.y;
+		task->dest->z += task->output.z;
 	}
 
 	double total_end = Ceng_HighPrecisionTimer();
@@ -323,31 +251,192 @@ EngineResult::value IrradianceConvolution_v3(IrradianceThreadCommon& common, Cen
 	text += total_end - total_start;
 	Ceng::Log::Print(text);
 
-	// Copy results to GPU
+	free(taskData);
+	free(normals);
+	free(durations);
 
-	EngineResult::value eresult = EngineResult::ok;
+	return EngineResult::ok;
+}
 
-	for (Ceng::UINT32 destFace = 0; destFace < 6; ++destFace)
+
+class IrradianceTask_v3
+{
+public:
+
+	IrradianceThreadCommon& common;
+	TaskData_v3* taskData;
+	Ceng::UINT32 first;
+	Ceng::UINT32 amount;
+	double& out_duration;
+
+	IrradianceTask_v3(IrradianceThreadCommon& _common, TaskData_v3* _taskData, Ceng::UINT32 _first, Ceng::UINT32 _amount, double& _out_duration)
+		: common(_common), taskData(_taskData), first(_first),amount(_amount), out_duration(_out_duration)
 	{
-		Ceng::CRESULT cresult = irradianceMap->SetSubResourceData(faceArray[destFace], 0, Ceng::IMAGE_FORMAT::unorm_a8_b8_g8_r8, &destMap[destFace]);
-		if (cresult != Ceng::CE_OK)
+
+	}
+
+	void operator() ()
+	{
+		double start = Ceng_HighPrecisionTimer();
+
+		for (int k = 0; k < amount; k++)
 		{
-			eresult = EngineResult::fail;
-			break;
+			TaskData_v3* params = &taskData[first + k];
+
+			for (Ceng::UINT32 sourceV = 0; sourceV < common.sourceMap->width; ++sourceV)
+			{
+				for (Ceng::UINT32 sourceU = 0; sourceU < common.sourceMap->width; ++sourceU)
+				{
+					Vec4* cache = &common.solidAngleRayDir[sourceV * common.sourceMap->width + sourceU];
+
+					// Get light source direction for +X face and rotate it for the current face
+					Ceng::VectorF4 dir;
+
+					dir.x = cache->x;
+					dir.y = cache->y;
+					dir.z = cache->z;
+					dir.w = 1.0f;
+
+					dir = common.faceMatrix[params->sourceFace] * dir;
+
+					// Dot product between surface normal and light direction
+					Ceng::FLOAT32 dot = params->normal->x * dir.x + params->normal->y * dir.y + params->normal->z * dir.z;
+
+					// Adjust by solid angle
+
+					dot *= cache->w;
+
+					if (dot > 0.0f)
+					{
+						Vec4* source = &common.sourceMap->faceData[params->sourceFace][sourceV * common.sourceMap->width + sourceU];
+
+						params->output.x += dot * source->x;
+						params->output.y += dot * source->y;
+						params->output.z += dot * source->z;
+					}
+				}
+			}
+		}
+
+		double end = Ceng_HighPrecisionTimer();
+
+		out_duration = end - start;
+	}
+};
+
+// Compared to v2, eliminates the need to re-create threads between source face loops
+EngineResult::value IrradianceConvolution_v3(IrradianceThreadCommon& common, Ceng::Cubemap* irradianceMap)
+{
+	Ceng::Log::Print(__func__);
+
+	// Convolve irradiance map from env map
+
+	double total_start = Ceng_HighPrecisionTimer();
+
+	Ceng::StringUtf8 text;
+
+	Ceng::UINT32 taskCount = 6 * 6 * common.destMap->width * common.destMap->width;
+
+	TaskData_v3* taskData = (TaskData_v3*)malloc(taskCount * sizeof(TaskData_v3));
+
+	Ceng::UINT32 normalCount = 6 * common.destMap->width * common.destMap->width;
+
+	Vec3* normals = (Vec3*)malloc(normalCount * sizeof(Vec3));
+
+	int taskIndex = 0;
+
+	// Precalculate normals
+
+	for (int destFace = 0; destFace < 6; destFace++)
+	{
+		for (Ceng::UINT32 destV = 0; destV < common.destMap->width; ++destV)
+		{
+			for (Ceng::UINT32 destU = 0; destU < common.destMap->width; ++destU)
+			{
+				// Destination vector (surface normal)
+				Vec3* normal = &normals[6*destFace + destV * common.destMap->width + destU];
+
+				CEngine::RayDir(destU, destV, faceArray[destFace], common.invDestWidth, normal);
+
+				Vec4* dest = &common.destMap->faceData[destFace][destV * common.destMap->width + destU];
+
+				dest->x = 0.0f;
+				dest->y = 0.0f;
+				dest->z = 0.0f;
+				dest->w = 1.0f;
+
+				for (int sourceFace = 0; sourceFace < 6; sourceFace++)
+				{
+					taskData[taskIndex].dest = dest;
+					taskData[taskIndex].normal = normal;
+					taskData[taskIndex].sourceFace = sourceFace;
+
+					++taskIndex;
+				}
+			}
 		}
 	}
 
-	for (int i = 0; i < 6; i++)
+	const Ceng::UINT32 threadCount = 6;
+
+	Ceng::UINT32 taskPerThread = taskCount / threadCount;
+	Ceng::UINT32 taskRemainder = taskCount % threadCount;
+
+	std::vector<std::thread> threads;
+
+	Ceng::UINT32 firstTask = 0;
+
+	double* durations = (double*)malloc(threadCount * sizeof(double));
+
+	for (int i = 0; i < threadCount-1; i++)
 	{
-		free(destMap[i]);
+		threads.emplace_back(IrradianceTask_v3(common, taskData, firstTask, taskPerThread, durations[i]));
+		//threads.emplace_back(IrradianceTask_v4(common, taskData, firstTask, taskPerThread, durations[i]));
+
+		firstTask += taskPerThread;
 	}
+
+	threads.emplace_back(IrradianceTask_v3(common, taskData, firstTask, taskPerThread + taskRemainder, durations[threadCount-1]));
+	//threads.emplace_back(IrradianceTask_v4(common, taskData, firstTask, taskPerThread + taskRemainder, durations[threadCount - 1]));
+
+	for (auto& x : threads)
+	{
+		x.join();
+	}
+
+	// Accumulate results
+
+	for (int k = 0; k < taskCount; k++)
+	{
+		TaskData_v3* task = &taskData[k];
+
+		task->dest->x += task->output.x;
+		task->dest->y += task->output.y;
+		task->dest->z += task->output.z;
+	}
+
+	double total_end = Ceng_HighPrecisionTimer();
+
+	for (int k = 0; k < threadCount; k++)
+	{
+		text = "thread ";
+		text += k;
+		text += ": Took ";
+		text += durations[k];
+		Ceng::Log::Print(text);
+	}
+
+	text = "total convolution time: ";
+	text += total_end - total_start;
+	Ceng::Log::Print(text);
 
 	free(taskData);
 	free(normals);
 	free(durations);
 
-	return eresult;
+	return EngineResult::ok;
 }
+
 
 
 class IrradianceMapTask_v2
@@ -356,11 +445,11 @@ public:
 
 	IrradianceThreadCommon& common;
 
-	Ceng::FLOAT32* dest;
+	Vec4* dest;
 	Ceng::UINT32 sourceFace;
 	Vec3* normal;
 
-	IrradianceMapTask_v2(IrradianceThreadCommon& _common, Ceng::UINT32 _sourceFace, Vec3* _normal, Ceng::FLOAT32* _dest)
+	IrradianceMapTask_v2(IrradianceThreadCommon& _common, Ceng::UINT32 _sourceFace, Vec3* _normal, Vec4* _dest)
 		: common(_common), sourceFace(_sourceFace), normal(_normal), dest(_dest)
 	{
 
@@ -368,11 +457,11 @@ public:
 
 	void operator() ()
 	{
-		for (Ceng::UINT32 sourceV = 0; sourceV < common.sourceWidthInt; ++sourceV)
+		for (Ceng::UINT32 sourceV = 0; sourceV < common.sourceMap->width; ++sourceV)
 		{
-			for (Ceng::UINT32 sourceU = 0; sourceU < common.sourceWidthInt; ++sourceU)
+			for (Ceng::UINT32 sourceU = 0; sourceU < common.sourceMap->width; ++sourceU)
 			{
-				Vec4* cache = &common.solidAngleRayDir[sourceV * common.sourceWidthInt + sourceU];
+				Vec4* cache = &common.solidAngleRayDir[sourceV * common.sourceMap->width + sourceU];
 
 				// Get light source direction for +X face and rotate it for the current face
 				Ceng::VectorF4 dir;
@@ -393,11 +482,11 @@ public:
 
 				if (dot > 0.0f)
 				{
-					Ceng::FLOAT32* source = &common.sourceMap[sourceFace * common.faceSize + 4 * (sourceV * common.sourceWidthInt + sourceU)];
+					Vec4* source = &common.sourceMap->faceData[sourceFace][sourceV * common.sourceMap->width + sourceU];
 
-					dest[0] += dot * source[0];
-					dest[1] += dot * source[1];
-					dest[2] += dot * source[2];
+					dest->x += dot * source->x;
+					dest->y += dot * source->y;
+					dest->z += dot * source->z;
 				}
 			}
 		}
@@ -409,14 +498,6 @@ public:
 EngineResult::value IrradianceConvolution_v2(IrradianceThreadCommon &common, Ceng::Cubemap* irradianceMap)
 {
 	Ceng::Log::Print(__func__);
-	//std::vector<Ceng::FLOAT32> destMap(4 * destWidthInt*destWidthInt);
-
-	Ceng::FLOAT32* destMap[6];
-
-	for (int i = 0; i < 6; i++)
-	{
-		destMap[i] = (Ceng::FLOAT32*)malloc(4 * common.destWidthInt * common.destWidthInt * sizeof(Ceng::FLOAT32));
-	}
 
 	// Convolve irradiance map from env map
 
@@ -428,32 +509,39 @@ EngineResult::value IrradianceConvolution_v2(IrradianceThreadCommon &common, Cen
 	{
 		double face_start = Ceng_HighPrecisionTimer();
 
-		for (Ceng::UINT32 destV = 0; destV < common.destWidthInt; ++destV)
+		for (Ceng::UINT32 destV = 0; destV < common.destMap->width; ++destV)
 		{
-			for (Ceng::UINT32 destU = 0; destU < common.destWidthInt; ++destU)
+			for (Ceng::UINT32 destU = 0; destU < common.destMap->width; ++destU)
 			{
 				// Destination vector (surface normal)
 				Vec3 normal;
 
 				CEngine::RayDir(destU, destV, faceArray[destFace], common.invDestWidth, &normal);
 
-				Ceng::FLOAT32* dest = &destMap[destFace][4 * (destV * common.destWidthInt + destU)];
+				Vec4* dest = &common.destMap->faceData[destFace][destV * common.destMap->width + destU];
 
-				dest[0] = 0.0;
-				dest[1] = 0.0;
-				dest[2] = 0.0;
-				dest[3] = 1.0;
+				dest->x = 0.0;
+				dest->y = 0.0;
+				dest->z = 0.0;
+				dest->w = 1.0;
 
-				Ceng::FLOAT32 threadDest[4 * 6];
+				Vec4 threadDest[6];
+				for (int k = 0; k < 6; k++)
+				{
+					threadDest[k].x = 0.0f;
+					threadDest[k].y = 0.0f;
+					threadDest[k].z = 0.0f;
+					threadDest[k].w = 1.0f;
+				}
 
 				IrradianceMapTask_v2 tasks[6] =
 				{
-					{common, 0, &normal, &threadDest[4*0]},
-					{common, 1, &normal, &threadDest[4*1]},
-					{common, 2, &normal, &threadDest[4 * 2]},
-					{common, 3, &normal, &threadDest[4 * 3]},
-					{common, 4, &normal, &threadDest[4 * 4]},
-					{common, 5, &normal, &threadDest[4 * 5]},
+					{common, 0, &normal, &threadDest[0]},
+					{common, 1, &normal, &threadDest[1]},
+					{common, 2, &normal, &threadDest[2]},
+					{common, 3, &normal, &threadDest[3]},
+					{common, 4, &normal, &threadDest[4]},
+					{common, 5, &normal, &threadDest[5]},
 				};
 
 				std::thread t0(tasks[0]);
@@ -472,9 +560,9 @@ EngineResult::value IrradianceConvolution_v2(IrradianceThreadCommon &common, Cen
 
 				for (int i = 0; i < 6; i++)
 				{
-					dest[0] += threadDest[0 + 4 * i];
-					dest[1] += threadDest[1 + 4 * i];
-					dest[2] += threadDest[2 + 4 * i];					
+					dest->x += threadDest[i].x;
+					dest->y += threadDest[i].y;
+					dest->z += threadDest[i].z;					
 				}
 			}
 		}
@@ -496,26 +584,9 @@ EngineResult::value IrradianceConvolution_v2(IrradianceThreadCommon &common, Cen
 
 	// Copy results to GPU
 
-	EngineResult::value eresult = EngineResult::ok;
-
-	for (Ceng::UINT32 destFace = 0; destFace < 6; ++destFace)
-	{
-		Ceng::CRESULT cresult = irradianceMap->SetSubResourceData(faceArray[destFace], 0, Ceng::IMAGE_FORMAT::unorm_a8_b8_g8_r8, &destMap[destFace]);
-		if (cresult != Ceng::CE_OK)
-		{
-			eresult = EngineResult::fail;
-			break;
-		}
-	}
-
-	for (int i = 0; i < 6; i++)
-	{
-		free(destMap[i]);
-	}
-
-	return eresult;
+	return EngineResult::ok;
 }
-*/
+
 
 
 class IrradianceMapTask_v1
@@ -921,8 +992,10 @@ const EngineResult::value CEngine::CreateIrradianceMap(Ceng::Cubemap *envMap, Ce
 	EngineResult::value eresult;
 
 	//eresult = IrradianceConvolution_v0(common, irradianceMap);
-	eresult = IrradianceConvolution_v1(common, irradianceMap);
+	//eresult = IrradianceConvolution_v1(common, irradianceMap);
+	//eresult = IrradianceConvolution_v2(common, irradianceMap);
 	//eresult = IrradianceConvolution_v3(common, irradianceMap);
+	eresult = IrradianceConvolution_v4(common, irradianceMap);
 
 	free(solidAngleRayDir);
 

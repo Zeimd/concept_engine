@@ -72,8 +72,8 @@ namespace CEngine
 	struct TaskData_v3
 	{
 		Vec3* normal;
-		Vec3 output;
-		Ceng::FLOAT32* dest;
+		Vec4 output;
+		Vec4* dest;
 		Ceng::UINT32 sourceFace;
 	};
 
