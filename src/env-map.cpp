@@ -170,7 +170,7 @@ public:
 
 					// dir = [solidAngle,solidAngle,solidAngle,solidAngle]
 
-					__m128 factor = _mm_mul_ss(solidAngle, dot);
+					__m128 factor = _mm_mul_ps(solidAngle, dot);
 
 					// factor = [factor,factor,factor,factor]
 
