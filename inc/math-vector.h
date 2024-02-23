@@ -40,6 +40,20 @@ namespace CEngine
 		Ceng::FLOAT32 w;
 	};
 
+	struct BasisVec3
+	{
+		Vec3 forward;
+		Vec3 right;
+		Vec3 up;
+	};
+
+	struct BasisVec4
+	{
+		Vec4 forward;
+		Vec4 right;
+		Vec4 up;
+	};
+
 }
 
 #endif

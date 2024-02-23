@@ -65,9 +65,11 @@ namespace CEngine
 	struct IrradianceThreadCommon
 	{
 		Ceng::FLOAT32 invDestWidth;
+		Ceng::FLOAT32 invSourceWidth;
 		Ceng::Matrix4* faceMatrix;
 		Ceng::Matrix4* faceTranspose;
 		Vec4* solidAngleRayDir;
+		Vec4* solidAngleRayDirQuadrant;
 		CubemapData* sourceMap;
 		CubemapData* destMap;
 	};
