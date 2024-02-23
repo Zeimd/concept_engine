@@ -12,6 +12,7 @@
 
 #include <xmmintrin.h>
 #include <emmintrin.h>
+#include <smmintrin.h>
 
 #include "math-vector.h"
 #include "env-map.h"
@@ -96,15 +97,15 @@ public:
 
 					// Get light source direction for +X face and rotate it for the current face
 
-					__m128 dir = _mm_loadu_ps(&cache->x);
+					__m128 inputDir = _mm_loadu_ps(&cache->x);
 
 					// We know that our matrix is a 3x3 rotation matrix, and we only need xyz of output
 					// vector, so we can skip the fourth dimension
 
-					__m128i allX = _mm_shuffle_epi32(*(__m128i*) &dir, 0b0);
-					__m128i allY = _mm_shuffle_epi32(*(__m128i*) & dir, 0b01010101);
-					__m128i allZ = _mm_shuffle_epi32(*(__m128i*) & dir, 0b10101010);
-					//__m128i wVec = _mm_shuffle_epi32(*(__m128i*) & dir, 0b11111111);
+					__m128i allX = _mm_shuffle_epi32(*(__m128i*) & inputDir, 0b0);
+					__m128i allY = _mm_shuffle_epi32(*(__m128i*) & inputDir, 0b01010101);
+					__m128i allZ = _mm_shuffle_epi32(*(__m128i*) & inputDir, 0b10101010);
+					//__m128i wVec = _mm_shuffle_epi32(*(__m128i*) & inputDir, 0b11111111);
 
 					__m128 prod0 = _mm_mul_ps(col0, *(__m128*) & allX);
 					__m128 prod1 = _mm_mul_ps(col1, *(__m128*) & allY);
@@ -112,29 +113,34 @@ public:
 					//__m128 prod3 = _mm_mul_ps(col3, *(__m128*) & wVec);
 
 					__m128 resA = _mm_add_ps(prod0, prod1);
-					__m128 result = _mm_add_ps(resA, prod2);
+					__m128 rotatedDir = _mm_add_ps(resA, prod2);
 
-					Vec4 rotatedDir;
+					__m128 normal = _mm_loadu_ps(&params->normal->x);
 
-					_mm_storeu_ps(&rotatedDir.x, result);
+					__m128 dot = _mm_dp_ps(rotatedDir, normal, 0b01111111);
 
-					// Dot product between surface normal and light direction
-					Ceng::FLOAT32 dot = params->normal->x * rotatedDir.x + 
-						params->normal->y * rotatedDir.y + params->normal->z * rotatedDir.z;
+					// dot = [dot,dot,dot,dot]
 
-					// Adjust by solid angle
+					__m128 solidAngle = _mm_shuffle_ps(inputDir, inputDir, 0b11111111);
 
-					dot *= cache->w;
+					// dir = [solidAngle,solidAngle,solidAngle,solidAngle]
 
-					if (dot > 0.0f)
-					{
-						Vec4* source = 
-							&common.sourceMap->faceData[params->sourceFace][sourceV * common.sourceMap->width + sourceU];
+					__m128 factor = _mm_mul_ss(solidAngle, dot);
 
-						params->output.x += dot * source->x;
-						params->output.y += dot * source->y;
-						params->output.z += dot * source->z;
-					}
+					// factor = [factor,factor,factor,factor]
+
+					__m128 allZero = _mm_setzero_ps();
+
+					__m128 mask = _mm_cmpgt_ps(factor, allZero);
+
+					Vec4* source =
+						&common.sourceMap->faceData[params->sourceFace][sourceV * common.sourceMap->width + sourceU];
+
+					__m128 sourceVec = _mm_loadu_ps(&source->x);
+
+					__m128 masked = _mm_and_ps(mask, sourceVec);
+
+					_mm_storeu_ps(&params->output.x, masked);
 				}
 			}
 		}
@@ -162,7 +168,7 @@ EngineResult::value IrradianceConvolution_v4(IrradianceThreadCommon& common, Cen
 
 	Ceng::UINT32 normalCount = 6 * common.destMap->width * common.destMap->width;
 
-	Vec3* normals = (Vec3*)malloc(normalCount * sizeof(Vec3));
+	Vec4* normals = (Vec4*)malloc(normalCount * sizeof(Vec4));
 
 	int taskIndex = 0;
 
@@ -175,7 +181,7 @@ EngineResult::value IrradianceConvolution_v4(IrradianceThreadCommon& common, Cen
 			for (Ceng::UINT32 destU = 0; destU < common.destMap->width; ++destU)
 			{
 				// Destination vector (surface normal)
-				Vec3* normal = &normals[6*destFace + destV * common.destMap->width + destU];
+				Vec4* normal = &normals[6*destFace + destV * common.destMap->width + destU];
 
 				CEngine::RayDir(destU, destV, faceArray[destFace], common.invDestWidth, normal);
 
@@ -341,7 +347,7 @@ EngineResult::value IrradianceConvolution_v3(IrradianceThreadCommon& common, Cen
 
 	Ceng::UINT32 normalCount = 6 * common.destMap->width * common.destMap->width;
 
-	Vec3* normals = (Vec3*)malloc(normalCount * sizeof(Vec3));
+	Vec4* normals = (Vec4*)malloc(normalCount * sizeof(Vec4));
 
 	int taskIndex = 0;
 
@@ -354,7 +360,7 @@ EngineResult::value IrradianceConvolution_v3(IrradianceThreadCommon& common, Cen
 			for (Ceng::UINT32 destU = 0; destU < common.destMap->width; ++destU)
 			{
 				// Destination vector (surface normal)
-				Vec3* normal = &normals[6*destFace + destV * common.destMap->width + destU];
+				Vec4* normal = &normals[6*destFace + destV * common.destMap->width + destU];
 
 				CEngine::RayDir(destU, destV, faceArray[destFace], common.invDestWidth, normal);
 
@@ -1077,4 +1083,70 @@ void CEngine::RayDir(const Ceng::UINT32 u, const Ceng::UINT32 v, const Ceng::Cub
 		out_dir->z = -m;
 		break;
 	}
+}
+
+
+void CEngine::RayDir(const Ceng::UINT32 u, const Ceng::UINT32 v, const Ceng::CubemapFace::value face,
+	const Ceng::FLOAT32 invCubeWidth, Vec4* out_dir)
+{
+	Ceng::FLOAT32 s = u * invCubeWidth;
+	Ceng::FLOAT32 t = v * invCubeWidth;
+
+	// Adjust to [-1,1] range
+
+	s = 2.0f * s - 1.0f;
+
+	t = 2.0f * t - 1.0f;
+
+	Ceng::FLOAT32 sc, tc, m;
+
+	// Translation from input vector,
+	// where m = major axis component of the vector
+	//s = sc / abs(m);
+	//t = tc / abs(m);
+
+	// Assume input vector is unit length, so
+	// dot = sc*sc + tc*tc + m*m = s*s*m*m + t*t*m*m + m*m
+	// dot = m*m(1+s*s+t*t) = 1
+
+	m = sqrt(1.0f / (1.0f + s * s + t * t));
+
+	sc = s * m;
+	tc = t * m;
+
+	switch (face)
+	{
+	case Ceng::CubemapFace::positive_x:
+		out_dir->x = m;
+		out_dir->y = -tc;
+		out_dir->z = -sc;
+		break;
+	case Ceng::CubemapFace::negative_x:
+		out_dir->x = -m;
+		out_dir->y = -tc;
+		out_dir->z = sc;
+		break;
+	case Ceng::CubemapFace::positive_y:
+		out_dir->x = sc;
+		out_dir->y = m;
+		out_dir->z = tc;
+		break;
+	case Ceng::CubemapFace::negative_y:
+		out_dir->x = sc;
+		out_dir->y = -m;
+		out_dir->z = -tc;
+		break;
+	case Ceng::CubemapFace::positive_z:
+		out_dir->x = sc;
+		out_dir->y = -tc;
+		out_dir->z = m;
+		break;
+	case Ceng::CubemapFace::negative_z:
+		out_dir->x = -sc;
+		out_dir->y = -tc;
+		out_dir->z = -m;
+		break;
+	}
+
+	out_dir->w = 0.0f;
 }

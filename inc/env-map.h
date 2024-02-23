@@ -21,6 +21,9 @@ namespace CEngine
 	void RayDir(const Ceng::UINT32 u, const Ceng::UINT32 v, const Ceng::CubemapFace::value face,
 		const Ceng::FLOAT32 cubeWidth, Vec3 *out_dir);
 
+	void RayDir(const Ceng::UINT32 u, const Ceng::UINT32 v, const Ceng::CubemapFace::value face,
+		const Ceng::FLOAT32 cubeWidth, Vec4* out_dir);
+
 	class CubemapData
 	{
 	public:
@@ -71,7 +74,7 @@ namespace CEngine
 
 	struct TaskData_v3
 	{
-		Vec3* normal;
+		Vec4* normal;
 		Vec4 output;
 		Vec4* dest;
 		Ceng::UINT32 sourceFace;
