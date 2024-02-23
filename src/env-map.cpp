@@ -2237,6 +2237,8 @@ const EngineResult::value CEngine::CreateIrradianceMap(Ceng::Cubemap *envMap, Ce
 
 	EngineResult::value eresult;
 
+	start = Ceng_HighPrecisionTimer();
+
 	//eresult = IrradianceConvolution_v0(common, irradianceMap);
 	//eresult = IrradianceConvolution_v0b(common, irradianceMap);
 	//eresult = IrradianceConvolution_v0c(common, irradianceMap);
@@ -2246,7 +2248,13 @@ const EngineResult::value CEngine::CreateIrradianceMap(Ceng::Cubemap *envMap, Ce
 	//eresult = IrradianceConvolution_v2(common, irradianceMap);
 	//eresult = IrradianceConvolution_v3(common, irradianceMap);
 	//eresult = IrradianceConvolution_v3b(common, irradianceMap);
-	//eresult = IrradianceConvolution_v4(common, irradianceMap);
+	eresult = IrradianceConvolution_v4(common, irradianceMap);
+
+	end = Ceng_HighPrecisionTimer();
+
+	text = "exterior duration = ";
+	text += end - start;
+	Ceng::Log::Print(text);
 
 	free(solidAngleRayDir);
 	free(solidAngleRayDirQuadrant);
