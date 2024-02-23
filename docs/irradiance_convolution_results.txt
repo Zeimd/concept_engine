@@ -1,0 +1,134 @@
+IrradianceConvolution_v0
+
+uses rotation and lookup table to find light direction from source cube map
+
+cost: Matrix * vector, lookup
+
+dest face 0: Took 1.022888
+dest face 1: Took 1.007688
+dest face 2: Took 1.014877
+dest face 3: Took 1.057195
+dest face 4: Took 1.014201
+dest face 5: Took 1.006545
+total convolution time: 6.123396
+
+-----------------------------------------------------------------------------------------------------
+
+IrradianceConvolution_v0b
+
+uses basis vectors per cubemap face to find light direction from source cube map
+
+cost: 
+
+    base transformation (comparable to Matrix * vector)
+
+    vector normalization
+
+dest face 0: Took 2.815018
+dest face 1: Took 2.783187
+dest face 2: Took 2.752125
+dest face 3: Took 2.764520
+dest face 4: Took 2.779965
+dest face 5: Took 2.764358
+total convolution time: 16.659176
+
+-----------------------------------------------------------------------------------------------------
+
+uses RayDir() to find light direction from source cube map
+
+cost: 
+
+    vector normalization
+
+    switch statement
+
+IrradianceConvolution_v0c
+dest face 0: Took 3.160401
+dest face 1: Took 3.172940
+dest face 2: Took 3.141552
+dest face 3: Took 3.167521
+dest face 4: Took 3.180223
+dest face 5: Took 3.283450
+total convolution time: 19.106088
+
+-----------------------------------------------------------------------------------------------------
+
+IrradianceConvolution_v1
+
+Derivation of v0. Uses thread per dest face.
+
+
+dest face 0: Took 1.208831
+dest face 1: Took 1.248263
+dest face 2: Took 1.208574
+dest face 3: Took 1.178345
+dest face 4: Took 1.200002
+dest face 5: Took 1.156844
+total convolution time: 1.270160
+
+-----------------------------------------------------------------------------------------------------
+
+IrradianceConvolution_v2
+
+Derivation of v0. Uses thread per source face.
+
+cost:
+
+    Has to create dest_width^2 threads
+
+dest face 0: Took 1.000279
+dest face 1: Took 1.059967
+dest face 2: Took 1.007767
+dest face 3: Took 1.017410
+dest face 4: Took 1.220853
+dest face 5: Took 1.196247
+total convolution time: 6.502849
+
+-----------------------------------------------------------------------------------------------------
+
+IrradianceConvolution_v3
+
+Derivation of v2. Constructs tasks per source face, which are then divided between six threads that
+run continously.
+
+thread 0: Took 1.245443
+thread 1: Took 1.227177
+thread 2: Took 1.216252
+thread 3: Took 1.220733
+thread 4: Took 1.215584
+thread 5: Took 1.214559
+total convolution time: 1.246094
+
+-----------------------------------------------------------------------------------------------------
+
+IrradianceConvolution_v3b
+
+Uses matrix in row major instead of the usual column major. 
+
+cost:
+
+    Slightly different algorithm for Matrix * vector that is unoptimal for non-vectorized code
+
+thread 0: Took 1.276437
+thread 1: Took 1.256106
+thread 2: Took 1.304846
+thread 3: Took 1.295412
+thread 4: Took 1.294898
+thread 5: Took 1.274904
+total convolution time: 1.305868
+
+-----------------------------------------------------------------------------------------------------
+
+IrradianceConvolution_v4
+
+Derivation of v3. Uses hand optimized vectorization together with matrix in row major.
+
+thread 0: Took 0.909802
+thread 1: Took 0.918153
+thread 2: Took 0.896657
+thread 3: Took 0.907969
+thread 4: Took 0.903598
+thread 5: Took 0.893217
+total convolution time: 0.919017
+
+
