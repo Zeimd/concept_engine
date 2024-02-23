@@ -185,7 +185,11 @@ public:
 
 					__m128 masked = _mm_and_ps(mask, sourceVec);
 
-					_mm_storeu_ps(&params->output.x, masked);
+					__m128 output = _mm_loadu_ps(&params->output.x);
+
+					output = _mm_add_ps(masked, output);
+
+					_mm_storeu_ps(&params->output.x, output);
 				}
 			}
 		}
