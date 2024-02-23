@@ -8,14 +8,12 @@
 
 #include <upng.h>
 
-const Ceng::String ImageFormatToString(const Ceng::IMAGE_FORMAT::value format);
-
 const Ceng::CRESULT EnumBackbufferFormats(Ceng::GraphicsSystem* renderCore, Ceng::GraphicsAdapter* adapter, Ceng::IMAGE_FORMAT::value format)
 {
 	Ceng::StringUtf8 out;
 
 	out = "Checking back buffer format : ";
-	out += ImageFormatToString(format);
+	out += CEngine::ImageFormatToString(format);
 	out += "\n";
 
 	Ceng::UINT32 modeCount = renderCore->DisplayModeCount(adapter, format);
@@ -45,7 +43,7 @@ const Ceng::CRESULT EnumBackbufferFormats(Ceng::GraphicsSystem* renderCore, Ceng
 		out += modeList.size() - 1;
 		out += " :\n";
 		out += "format = ";
-		out += ImageFormatToString(displayMode.format);
+		out += CEngine::ImageFormatToString(displayMode.format);
 		out += "\n";
 		out += "width = ";
 		out += displayMode.width;
@@ -302,7 +300,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	out = "Current display mode:\n";
 	out += "format = ";
-	out += ImageFormatToString(currentDisplayMode.format);
+	out += CEngine::ImageFormatToString(currentDisplayMode.format);
 	out += "\n";
 	out += "width = ";
 	out += currentDisplayMode.width;
