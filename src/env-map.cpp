@@ -1008,6 +1008,126 @@ EngineResult::value IrradianceConvolution_v1(IrradianceThreadCommon &common, Cen
 	return EngineResult::ok;
 }
 
+// Like v0e_b, but calculates solid angle on the fly
+EngineResult::value IrradianceConvolution_v0e_d(IrradianceThreadCommon& common, Ceng::Cubemap* irradianceMap)
+{
+	Ceng::Log::Print(__func__);
+
+	Ceng::StringUtf8 text;
+
+	double start, end;
+
+	Vec4* normals = nullptr;
+
+	// Precalculate normals and clear ooutput
+
+	start = Ceng_HighPrecisionTimer();
+
+	PrecalculateNormals(common, &normals);
+
+	end = Ceng_HighPrecisionTimer();
+
+	text = "precalculate destination normals. Took ";
+	text += end - start;
+	Ceng::Log::Print(text);
+
+	double duration[6];
+
+	// Convolve irradiance map from env map
+
+	start = Ceng_HighPrecisionTimer();
+
+	for (Ceng::UINT32 sourceFace = 0; sourceFace < 6; ++sourceFace)
+	{
+		double faceStart = Ceng_HighPrecisionTimer();
+
+		for (Ceng::UINT32 sourceV = 0; sourceV < common.sourceMap->width; ++sourceV)
+		{
+			for (Ceng::UINT32 sourceU = 0; sourceU < common.sourceMap->width; ++sourceU)
+			{
+				Ceng::FLOAT32 solidAngle = TexelCoordSolidAngle(0, Ceng::FLOAT32(sourceU), Ceng::FLOAT32(sourceV), common.sourceMap->width);
+
+				Vec4 dir;
+
+				Ceng::INT32 uDelta = sourceU - (common.sourceMap->width >> 1);
+				Ceng::INT32 vDelta = sourceV - (common.sourceMap->width >> 1);
+
+				dir.x = cubemapBasis[sourceFace].forward.x * (common.sourceMap->width >> 1);
+				dir.y = cubemapBasis[sourceFace].forward.y * (common.sourceMap->width >> 1);
+				dir.z = cubemapBasis[sourceFace].forward.z * (common.sourceMap->width >> 1);
+
+				dir.x += cubemapBasis[sourceFace].right.x * uDelta;
+				dir.y += cubemapBasis[sourceFace].right.y * uDelta;
+				dir.z += cubemapBasis[sourceFace].right.z * uDelta;
+
+				dir.x += cubemapBasis[sourceFace].up.x * vDelta;
+				dir.y += cubemapBasis[sourceFace].up.y * vDelta;
+				dir.z += cubemapBasis[sourceFace].up.z * vDelta;
+
+				Ceng::FLOAT32 normDiv = 1.0f / sqrtf(dir.x * dir.x + dir.y * dir.y + dir.z * dir.z);
+
+				dir.x *= normDiv;
+				dir.y *= normDiv;
+				dir.z *= normDiv;
+
+				for (Ceng::UINT32 destFace = 0; destFace < 6; destFace++)
+				{
+					for (Ceng::UINT32 destV = 0; destV < common.destMap->width; ++destV)
+					{
+						for (Ceng::UINT32 destU = 0; destU < common.destMap->width; ++destU)
+						{
+							// Destination vector (surface normal)
+							Vec4* normal = &normals[6 * destFace + destV * common.destMap->width + destU];
+
+							Vec4* dest = &common.destMap->faceData[destFace][destV * common.destMap->width + destU];
+
+							// Dot product between surface normal and light direction
+							Ceng::FLOAT32 dot = normal->x * dir.x + normal->y * dir.y + normal->z * dir.z;
+
+							dot *= solidAngle;
+
+							if (dot > 0.0f)
+							{
+								Vec4* source = &common.sourceMap->faceData[sourceFace][sourceV * common.sourceMap->width + sourceU];
+
+								dest->x += dot * source->x;
+								dest->y += dot * source->y;
+								dest->z += dot * source->z;
+							}
+						}
+					}
+				}
+
+			}
+		}
+
+		double faceEnd = Ceng_HighPrecisionTimer();
+
+		duration[sourceFace] = faceEnd - faceStart;
+	}
+
+	end = Ceng_HighPrecisionTimer();
+
+
+	for (int i = 0; i < 6; i++)
+	{
+		text = "dest face ";
+		text += i;
+		text += ": Took ";
+		text += duration[i];
+		Ceng::Log::Print(text);
+	}
+
+	text = "total convolution time: ";
+	text += end - start;
+	Ceng::Log::Print(text);
+
+	free(normals);
+
+	return EngineResult::ok;
+}
+
+
 // Like v0e_b, but uses lightweight lookup-table with solid angle only
 EngineResult::value IrradianceConvolution_v0e_c(IrradianceThreadCommon& common, Ceng::Cubemap* irradianceMap)
 {

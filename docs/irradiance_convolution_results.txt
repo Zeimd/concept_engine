@@ -120,6 +120,21 @@ total convolution time: 3.863083
 
 -----------------------------------------------------------------------------------------------------
 
+Derived from v0e_b. Calculates solid angle directly instead of using lookup table.
+
+IrradianceConvolution_v0e_d
+precalculate destination normals. Took 0.000047
+dest face 0: Took 0.786453
+dest face 1: Took 0.676205
+dest face 2: Took 0.754583
+dest face 3: Took 0.722308
+dest face 4: Took 0.515510
+dest face 5: Took 0.824822
+total convolution time: 4.279884
+
+
+-----------------------------------------------------------------------------------------------------
+
 IrradianceConvolution_v1
 
 Derivation of v0. Uses thread per dest face.
