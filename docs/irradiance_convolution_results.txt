@@ -6,6 +6,8 @@ cost:
 
     Matrix * vector, lookup
 
+compiler switch: SSE2
+
 dest face 0: Took 0.999229
 dest face 1: Took 1.020609
 dest face 2: Took 1.013694
@@ -14,6 +16,16 @@ dest face 4: Took 0.988126
 dest face 5: Took 0.986860
 total convolution time: 6.017616
 exterior duration = 6.017774
+
+compiler switch: AVX
+
+dest face 0: Took 0.943512
+dest face 1: Took 0.932289
+dest face 2: Took 0.939328
+dest face 3: Took 0.945289
+dest face 4: Took 1.037473
+dest face 5: Took 0.940896
+total convolution time: 5.738789
 
 -----------------------------------------------------------------------------------------------------
 
@@ -27,6 +39,8 @@ cost:
 
     vector normalization
 
+compiler switch: SSE2
+
 dest face 0: Took 2.674409
 dest face 1: Took 2.648177
 dest face 2: Took 2.628003
@@ -35,6 +49,16 @@ dest face 4: Took 2.766635
 dest face 5: Took 2.686415
 total convolution time: 16.039257
 exterior duration = 16.039409
+
+compiler switch: AVX
+
+dest face 0: Took 2.484615
+dest face 1: Took 2.488004
+dest face 2: Took 2.568273
+dest face 3: Took 2.561780
+dest face 4: Took 2.508327
+dest face 5: Took 2.572303
+total convolution time: 15.183304
 
 -----------------------------------------------------------------------------------------------------
 
@@ -48,6 +72,8 @@ cost:
 
     switch statement
 
+compiler switch: SSE2
+
 dest face 0: Took 3.001385
 dest face 1: Took 3.036090
 dest face 2: Took 3.095273
@@ -56,6 +82,16 @@ dest face 4: Took 3.061742
 dest face 5: Took 3.020160
 total convolution time: 18.222229
 exterior duration = 18.222387
+
+compiler switch: AVX
+
+dest face 0: Took 2.959971
+dest face 1: Took 2.959024
+dest face 2: Took 2.858923
+dest face 3: Took 2.841131
+dest face 4: Took 3.070839
+dest face 5: Took 2.933902
+total convolution time: 17.623792
 
 -----------------------------------------------------------------------------------------------------
 
@@ -69,6 +105,8 @@ cost:
 
     Matrix * vector, lookup with input folding
 
+compiler switch: SSE2
+
 dest face 0: Took 1.104717
 dest face 1: Took 1.099562
 dest face 2: Took 1.093364
@@ -78,6 +116,16 @@ dest face 5: Took 1.146812
 total convolution time: 6.668075
 exterior duration = 6.668236
 
+compiler switch: AVX
+
+dest face 0: Took 1.128783
+dest face 1: Took 1.102296
+dest face 2: Took 1.101491
+dest face 3: Took 1.077043
+dest face 4: Took 1.074282
+dest face 5: Took 1.065503
+total convolution time: 6.549400
+
 -----------------------------------------------------------------------------------------------------
 
 IrradianceConvolution_v0e
@@ -85,6 +133,7 @@ IrradianceConvolution_v0e
 Swap loop order so that source loop is outer and dest loop is inner. This significantly reduces
 the number of matrix * vector operations.
 
+compiler switch: SSE2
 
 Preecalculate destination normals. Took 0.000049
 dest face 0: Took 0.738544
@@ -96,11 +145,24 @@ dest face 5: Took 0.782654
 total convolution time: 4.089770
 exterior duration = 4.089985
 
------------------------------------------------------------------------------------------------------
+compiler switch: AVX
+
+precalculate destination normals. Took 0.000043
+dest face 0: Took 0.717835
+dest face 1: Took 0.713791
+dest face 2: Took 0.683492
+dest face 3: Took 0.647577
+dest face 4: Took 0.462625
+dest face 5: Took 0.776745
+total convolution time: 4.002067
+
+--------------------------------------------------------------------------------------------------
 
 IrradianceConvolution_v0e_b
 
-Use basis vectors to construct light direction instead of lookup-table + rotation.
+Derived from v0e. Use basis vectors to construct light direction instead of lookup-table + rotation.
+
+compiler switch: SSE2
 
 precalculate destination normals. Took 0.000046
 dest face 0: Took 0.727758
@@ -112,12 +174,24 @@ dest face 5: Took 0.766143
 total convolution time: 3.949445
 exterior duration = 3.949659
 
+compiler switch: AVX
+
+precalculate destination normals. Took 0.000034
+dest face 0: Took 0.758007
+dest face 1: Took 0.638960
+dest face 2: Took 0.739641
+dest face 3: Took 0.692328
+dest face 4: Took 0.463551
+dest face 5: Took 0.819803
+total convolution time: 4.112292
 
 -----------------------------------------------------------------------------------------------------
 
 IrradianceConvolution_v0e_c
 
 Derived from v0e_b. Uses a lightweight lookup table that has solid angle only.
+
+compiler switch: SSE2
 
 precalculate destination normals. Took 0.000046
 dest face 0: Took 0.716732
@@ -129,12 +203,25 @@ dest face 5: Took 0.762986
 total convolution time: 3.910389
 exterior duration = 3.910610
 
+compiler switch: AVX
+
+precalculate destination normals. Took 0.000036
+dest face 0: Took 0.720460
+dest face 1: Took 0.596008
+dest face 2: Took 0.673890
+dest face 3: Took 0.652537
+dest face 4: Took 0.448482
+dest face 5: Took 0.747396
+total convolution time: 3.838798
 
 -----------------------------------------------------------------------------------------------------
 
+IrradianceConvolution_v0e_d
+
 Derived from v0e_b. Calculates solid angle directly instead of using lookup table.
 
-IrradianceConvolution_v0e_d
+compiler switch: SSE2
+
 precalculate destination normals. Took 0.000048
 dest face 0: Took 0.789785
 dest face 1: Took 0.673671
@@ -145,12 +232,24 @@ dest face 5: Took 0.826095
 total convolution time: 4.293146
 exterior duration = 4.293363
 
+compiler switch: AVX
+
+precalculate destination normals. Took 0.000034
+dest face 0: Took 0.869290
+dest face 1: Took 0.671008
+dest face 2: Took 0.762053
+dest face 3: Took 0.731671
+dest face 4: Took 0.541270
+dest face 5: Took 0.836132
+total convolution time: 4.411427
 
 -----------------------------------------------------------------------------------------------------
 
 IrradianceConvolution_v0e_e
 
 Derived from v0e_c. Uses the smaller quadrant version of solid angle lookup table.
+
+compiler switch: SSE2
 
 precalculate destination normals. Took 0.000048
 dest face 0: Took 0.708357
@@ -162,13 +261,24 @@ dest face 5: Took 0.744401
 total convolution time: 3.839856
 exterior duration = 3.840073
 
+compiler switch: AVX
 
+precalculate destination normals. Took 0.000034
+dest face 0: Took 0.714764
+dest face 1: Took 0.606571
+dest face 2: Took 0.681859
+dest face 3: Took 0.652821
+dest face 4: Took 0.462139
+dest face 5: Took 0.761566
+total convolution time: 3.879721
 
 -----------------------------------------------------------------------------------------------------
 
 IrradianceConvolution_v1
 
 Derivation of v0. Uses thread per dest face.
+
+compiler switch: SSE2
 
 dest face 0: Took 1.174393
 dest face 1: Took 1.175885
@@ -178,6 +288,16 @@ dest face 4: Took 1.162576
 dest face 5: Took 1.158917
 total convolution time: 1.184927
 exterior duration = 1.185083
+
+compiler switch: AVX
+
+dest face 0: Took 1.150163
+dest face 1: Took 1.147397
+dest face 2: Took 1.127826
+dest face 3: Took 1.127503
+dest face 4: Took 1.133993
+dest face 5: Took 1.118597
+total convolution time: 1.167209
 
 -----------------------------------------------------------------------------------------------------
 
@@ -189,6 +309,8 @@ cost:
 
     Has to create dest_width^2 threads
 
+compiler switch: SSE2
+
 dest face 0: Took 1.311897
 dest face 1: Took 1.302464
 dest face 2: Took 1.162126
@@ -198,12 +320,24 @@ dest face 5: Took 1.213746
 total convolution time: 7.254172
 exterior duration = 7.254204
 
+compiler switch: AVX
+
+dest face 0: Took 1.060365
+dest face 1: Took 1.529202
+dest face 2: Took 1.124677
+dest face 3: Took 1.279810
+dest face 4: Took 1.635191
+dest face 5: Took 0.904679
+total convolution time: 7.534260
+
 -----------------------------------------------------------------------------------------------------
 
 IrradianceConvolution_v3
 
 Derivation of v2. Constructs tasks per source face, which are then divided between six threads that
 run continously.
+
+compiler switch: SSE2
 
 thread 0: Took 1.258288
 thread 1: Took 1.232248
@@ -214,15 +348,27 @@ thread 5: Took 1.264128
 total convolution time: 1.265891
 exterior duration = 1.266055
 
+compiler switch:AVX
+
+thread 0: Took 1.209924
+thread 1: Took 1.206061
+thread 2: Took 1.221126
+thread 3: Took 1.194779
+thread 4: Took 1.193912
+thread 5: Took 1.201282
+total convolution time: 1.221989
+
 -----------------------------------------------------------------------------------------------------
 
 IrradianceConvolution_v3b
 
-Uses matrix in row major instead of the usual column major. 
+Matrix in row major instead of the usual column major. 
 
 cost:
 
-    Slightly different algorithm for Matrix * vector that is unoptimal for non-vectorized code
+    Slightly different algorithm for Matrix * vector that is unoptimal for scalar code
+
+compiler switch: SSE2
 
 thread 0: Took 1.241548
 thread 1: Took 1.238770
@@ -233,20 +379,41 @@ thread 5: Took 1.249115
 total convolution time: 1.252471
 exterior duration = 1.252628
 
+compiler switch: AVX
+
+thread 0: Took 1.160426
+thread 1: Took 1.165783
+thread 2: Took 1.156243
+thread 3: Took 1.148420
+thread 4: Took 1.146807
+thread 5: Took 1.151013
+total convolution time: 1.166368
+
 -----------------------------------------------------------------------------------------------------
 
 IrradianceConvolution_v4
 
-Derivation of v3. Uses hand optimized vectorization together with matrix in row major.
+Derivation of v3b. Uses hand optimized vector intrinsics.
 
-thread 0: Took 1.044046
-thread 1: Took 1.028976
-thread 2: Took 1.040894
-thread 3: Took 1.032591
-thread 4: Took 1.018710
-thread 5: Took 1.004366
-total convolution time: 1.044798
-exterior duration = 1.044966
+compiler switch: SSE2
+
+thread 0: Took 0.975651
+thread 1: Took 1.041653
+thread 2: Took 1.021213
+thread 3: Took 1.012318
+thread 4: Took 1.033247
+thread 5: Took 0.997085
+total convolution time: 1.042307
+
+compiler switch: AVX
+
+thread 0: Took 1.056316
+thread 1: Took 1.079120
+thread 2: Took 1.086496
+thread 3: Took 1.085055
+thread 4: Took 1.047801
+thread 5: Took 1.064990
+total convolution time: 1.087296
 
 
 
