@@ -2,7 +2,9 @@ IrradianceConvolution_v0
 
 uses rotation and lookup table to find light direction from source cube map
 
-cost: Matrix * vector, lookup
+cost: 
+
+    Matrix * vector, lookup
 
 dest face 0: Took 1.022888
 dest face 1: Took 1.007688
@@ -50,6 +52,71 @@ dest face 3: Took 3.167521
 dest face 4: Took 3.180223
 dest face 5: Took 3.283450
 total convolution time: 19.106088
+
+-----------------------------------------------------------------------------------------------------
+
+IrradianceConvolution_v0d
+
+Uses rotation and lookup table to find light direction from source cube map
+
+Lookup table is only [0,width/2] (ie. 1/4 size)
+
+cost: 
+
+    Matrix * vector, lookup with input folding
+
+dest face 0: Took 1.150235
+dest face 1: Took 1.168050
+dest face 2: Took 1.147122
+dest face 3: Took 1.162807
+dest face 4: Took 1.161161
+dest face 5: Took 1.174904
+total convolution time: 6.964280
+-----------------------------------------------------------------------------------------------------
+
+IrradianceConvolution_v0e
+
+Swap loop order so that source loop is outer and dest loop is inner. This significantly reduces
+the number of matrix * vector operations.
+
+
+dest face 0: Took 0.742628
+dest face 1: Took 0.735921
+dest face 2: Took 0.748122
+dest face 3: Took 0.682044
+dest face 4: Took 0.464893
+dest face 5: Took 0.794232
+total convolution time: 4.167841
+
+-----------------------------------------------------------------------------------------------------
+
+IrradianceConvolution_v0e_b
+
+Use basis vectors to construct light direction instead of lookup-table + rotation.
+
+precalculate destination normals. Took 0.000047
+dest face 0: Took 0.734858
+dest face 1: Took 0.629781
+dest face 2: Took 0.706457
+dest face 3: Took 0.668346
+dest face 4: Took 0.452743
+dest face 5: Took 0.769648
+total convolution time: 3.961835
+
+-----------------------------------------------------------------------------------------------------
+
+IrradianceConvolution_v0e_c
+
+Derived from v0e_b. Uses a lightweight lookup table that has solid angle only.
+
+precalculate destination normals. Took 0.000044
+dest face 0: Took 0.730584
+dest face 1: Took 0.611360
+dest face 2: Took 0.681067
+dest face 3: Took 0.647141
+dest face 4: Took 0.443066
+dest face 5: Took 0.749864
+total convolution time: 3.863083
 
 -----------------------------------------------------------------------------------------------------
 
@@ -123,12 +190,12 @@ IrradianceConvolution_v4
 
 Derivation of v3. Uses hand optimized vectorization together with matrix in row major.
 
-thread 0: Took 0.909802
-thread 1: Took 0.918153
-thread 2: Took 0.896657
-thread 3: Took 0.907969
-thread 4: Took 0.903598
-thread 5: Took 0.893217
-total convolution time: 0.919017
+thread 0: Took 1.162515
+thread 1: Took 1.158857
+thread 2: Took 1.174532
+thread 3: Took 1.145724
+thread 4: Took 1.158990
+thread 5: Took 1.119099
+total convolution time: 1.205496
 
 
