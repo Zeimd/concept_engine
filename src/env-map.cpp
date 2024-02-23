@@ -978,6 +978,127 @@ EngineResult::value IrradianceConvolution_v1(IrradianceThreadCommon &common, Cen
 	return EngineResult::ok;
 }
 
+// Flip inner and outer loops to reduce costly operations
+EngineResult::value IrradianceConvolution_v0e(IrradianceThreadCommon& common, Ceng::Cubemap* irradianceMap)
+{
+	Ceng::Log::Print(__func__);
+
+	Ceng::UINT32 normalCount = 6 * common.destMap->width * common.destMap->width;
+
+	Vec4* normals = (Vec4*)malloc(normalCount * sizeof(Vec4));
+
+	int taskIndex = 0;
+
+	// Precalculate normals and clear ooutput
+
+	for (int destFace = 0; destFace < 6; destFace++)
+	{
+		for (Ceng::UINT32 destV = 0; destV < common.destMap->width; ++destV)
+		{
+			for (Ceng::UINT32 destU = 0; destU < common.destMap->width; ++destU)
+			{
+				// Destination vector (surface normal)
+				Vec4* normal = &normals[6 * destFace + destV * common.destMap->width + destU];
+
+				CEngine::RayDir(destU, destV, faceArray[destFace], common.invDestWidth, normal);
+
+				Vec4* dest = &common.destMap->faceData[destFace][destV * common.destMap->width + destU];
+
+				dest->x = 0.0f;
+				dest->y = 0.0f;
+				dest->z = 0.0f;
+				dest->w = 1.0f;
+			}
+		}
+	}
+
+	double duration[6];
+
+	// Convolve irradiance map from env map
+
+	double start = Ceng_HighPrecisionTimer();
+
+	for (Ceng::UINT32 sourceFace = 0; sourceFace < 6; ++sourceFace)
+	{
+		double faceStart = Ceng_HighPrecisionTimer();
+
+		for (Ceng::UINT32 sourceV = 0; sourceV < common.sourceMap->width; ++sourceV)
+		{
+			for (Ceng::UINT32 sourceU = 0; sourceU < common.sourceMap->width; ++sourceU)
+			{
+				Vec4* cache = &common.solidAngleRayDir[sourceV * common.sourceMap->width + sourceU];
+
+				// Get light source direction for +X face and rotate it for the current face
+				Ceng::VectorF4 dir;
+
+				dir.x = cache->x;
+				dir.y = cache->y;
+				dir.z = cache->z;
+				dir.w = 1.0f;
+
+				dir = common.faceMatrix[sourceFace] * dir;
+
+				for (Ceng::UINT32 destFace = 0; destFace < 6; destFace++)
+				{
+					for (Ceng::UINT32 destV = 0; destV < common.destMap->width; ++destV)
+					{
+						for (Ceng::UINT32 destU = 0; destU < common.destMap->width; ++destU)
+						{
+							// Destination vector (surface normal)
+							Vec4* normal = &normals[6*destFace + destV*common.destMap->width + destU];
+
+							Vec4* dest = &common.destMap->faceData[destFace][destV * common.destMap->width + destU];
+
+							// Dot product between surface normal and light direction
+							Ceng::FLOAT32 dot = normal->x * dir.x + normal->y * dir.y + normal->z * dir.z;
+
+							// Adjust by solid angle
+
+							dot *= cache->w;
+
+							if (dot > 0.0f)
+							{
+								Vec4* source = &common.sourceMap->faceData[sourceFace][sourceV * common.sourceMap->width + sourceU];
+
+								dest->x += dot * source->x;
+								dest->y += dot * source->y;
+								dest->z += dot * source->z;
+							}
+						}
+					}
+				}
+
+			}
+		}
+
+		double faceEnd = Ceng_HighPrecisionTimer();
+
+		duration[sourceFace] = faceEnd - faceStart;
+	}
+
+	double end = Ceng_HighPrecisionTimer();
+
+	Ceng::StringUtf8 text;
+
+	for (int i = 0; i < 6; i++)
+	{
+		text = "dest face ";
+		text += i;
+		text += ": Took ";
+		text += duration[i];
+		Ceng::Log::Print(text);
+	}
+
+	text = "total convolution time: ";
+	text += end - start;
+	Ceng::Log::Print(text);
+
+	free(normals);
+
+	return EngineResult::ok;
+}
+
+
 // Test quadrant solid angle lookup table
 EngineResult::value IrradianceConvolution_v0d(IrradianceThreadCommon& common, Ceng::Cubemap* irradianceMap)
 {
