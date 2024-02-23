@@ -132,6 +132,21 @@ dest face 4: Took 0.515510
 dest face 5: Took 0.824822
 total convolution time: 4.279884
 
+-----------------------------------------------------------------------------------------------------
+
+IrradianceConvolution_v0e_e
+
+Derived from v0e_c. Uses the smaller quadrant version of solid angle lookup table.
+
+precalculate destination normals. Took 0.000069
+dest face 0: Took 0.714834
+dest face 1: Took 0.604268
+dest face 2: Took 0.680438
+dest face 3: Took 0.649498
+dest face 4: Took 0.443336
+dest face 5: Took 0.750790
+total convolution time: 3.843165
+
 
 -----------------------------------------------------------------------------------------------------
 
