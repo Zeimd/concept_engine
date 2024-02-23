@@ -996,7 +996,7 @@ EngineResult::value IrradianceConvolution_v0d(IrradianceThreadCommon& common, Ce
 
 				CEngine::RayDir(destU, destV, faceArray[destFace], common.invDestWidth, &normal);
 
-				Vec4* dest = &common.destMap->faceData[destFace][4 * (destV * common.destMap->width + destU)];
+				Vec4* dest = &common.destMap->faceData[destFace][destV * common.destMap->width + destU];
 
 				dest->x = 0.0;
 				dest->y = 0.0;
@@ -1120,7 +1120,7 @@ EngineResult::value IrradianceConvolution_v0c(IrradianceThreadCommon& common, Ce
 
 				CEngine::RayDir(destU, destV, faceArray[destFace], common.invDestWidth, &normal);
 
-				Vec4* dest = &common.destMap->faceData[destFace][4 * (destV * common.destMap->width + destU)];
+				Vec4* dest = &common.destMap->faceData[destFace][destV * common.destMap->width + destU];
 
 				dest->x = 0.0;
 				dest->y = 0.0;
@@ -1208,7 +1208,7 @@ EngineResult::value IrradianceConvolution_v0b(IrradianceThreadCommon& common, Ce
 
 				CEngine::RayDir(destU, destV, faceArray[destFace], common.invDestWidth, &normal);
 
-				Vec4* dest = &common.destMap->faceData[destFace][4 * (destV * common.destMap->width + destU)];
+				Vec4* dest = &common.destMap->faceData[destFace][destV * common.destMap->width + destU];
 
 				dest->x = 0.0;
 				dest->y = 0.0;
@@ -1315,7 +1315,7 @@ EngineResult::value IrradianceConvolution_v0(IrradianceThreadCommon& common, Cen
 
 				CEngine::RayDir(destU, destV, faceArray[destFace], common.invDestWidth, &normal);
 
-				Vec4* dest = &common.destMap->faceData[destFace][4 * (destV * common.destMap->width + destU)];
+				Vec4* dest = &common.destMap->faceData[destFace][destV * common.destMap->width + destU];
 
 				dest->x = 0.0;
 				dest->y = 0.0;
