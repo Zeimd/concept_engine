@@ -6,13 +6,14 @@ cost:
 
     Matrix * vector, lookup
 
-dest face 0: Took 1.022888
-dest face 1: Took 1.007688
-dest face 2: Took 1.014877
-dest face 3: Took 1.057195
-dest face 4: Took 1.014201
-dest face 5: Took 1.006545
-total convolution time: 6.123396
+dest face 0: Took 0.999229
+dest face 1: Took 1.020609
+dest face 2: Took 1.013694
+dest face 3: Took 1.009095
+dest face 4: Took 0.988126
+dest face 5: Took 0.986860
+total convolution time: 6.017616
+exterior duration = 6.017774
 
 -----------------------------------------------------------------------------------------------------
 
@@ -26,15 +27,18 @@ cost:
 
     vector normalization
 
-dest face 0: Took 2.815018
-dest face 1: Took 2.783187
-dest face 2: Took 2.752125
-dest face 3: Took 2.764520
-dest face 4: Took 2.779965
-dest face 5: Took 2.764358
-total convolution time: 16.659176
+dest face 0: Took 2.674409
+dest face 1: Took 2.648177
+dest face 2: Took 2.628003
+dest face 3: Took 2.635615
+dest face 4: Took 2.766635
+dest face 5: Took 2.686415
+total convolution time: 16.039257
+exterior duration = 16.039409
 
 -----------------------------------------------------------------------------------------------------
+
+IrradianceConvolution_v0c
 
 uses RayDir() to find light direction from source cube map
 
@@ -44,14 +48,14 @@ cost:
 
     switch statement
 
-IrradianceConvolution_v0c
-dest face 0: Took 3.160401
-dest face 1: Took 3.172940
-dest face 2: Took 3.141552
-dest face 3: Took 3.167521
-dest face 4: Took 3.180223
-dest face 5: Took 3.283450
-total convolution time: 19.106088
+dest face 0: Took 3.001385
+dest face 1: Took 3.036090
+dest face 2: Took 3.095273
+dest face 3: Took 3.007577
+dest face 4: Took 3.061742
+dest face 5: Took 3.020160
+total convolution time: 18.222229
+exterior duration = 18.222387
 
 -----------------------------------------------------------------------------------------------------
 
@@ -65,13 +69,15 @@ cost:
 
     Matrix * vector, lookup with input folding
 
-dest face 0: Took 1.150235
-dest face 1: Took 1.168050
-dest face 2: Took 1.147122
-dest face 3: Took 1.162807
-dest face 4: Took 1.161161
-dest face 5: Took 1.174904
-total convolution time: 6.964280
+dest face 0: Took 1.104717
+dest face 1: Took 1.099562
+dest face 2: Took 1.093364
+dest face 3: Took 1.107436
+dest face 4: Took 1.116183
+dest face 5: Took 1.146812
+total convolution time: 6.668075
+exterior duration = 6.668236
+
 -----------------------------------------------------------------------------------------------------
 
 IrradianceConvolution_v0e
@@ -80,13 +86,15 @@ Swap loop order so that source loop is outer and dest loop is inner. This signif
 the number of matrix * vector operations.
 
 
-dest face 0: Took 0.742628
-dest face 1: Took 0.735921
-dest face 2: Took 0.748122
-dest face 3: Took 0.682044
-dest face 4: Took 0.464893
-dest face 5: Took 0.794232
-total convolution time: 4.167841
+Preecalculate destination normals. Took 0.000049
+dest face 0: Took 0.738544
+dest face 1: Took 0.718944
+dest face 2: Took 0.706498
+dest face 3: Took 0.665701
+dest face 4: Took 0.477428
+dest face 5: Took 0.782654
+total convolution time: 4.089770
+exterior duration = 4.089985
 
 -----------------------------------------------------------------------------------------------------
 
@@ -94,14 +102,16 @@ IrradianceConvolution_v0e_b
 
 Use basis vectors to construct light direction instead of lookup-table + rotation.
 
-precalculate destination normals. Took 0.000047
-dest face 0: Took 0.734858
-dest face 1: Took 0.629781
-dest face 2: Took 0.706457
-dest face 3: Took 0.668346
-dest face 4: Took 0.452743
-dest face 5: Took 0.769648
-total convolution time: 3.961835
+precalculate destination normals. Took 0.000046
+dest face 0: Took 0.727758
+dest face 1: Took 0.619404
+dest face 2: Took 0.718213
+dest face 3: Took 0.662486
+dest face 4: Took 0.455439
+dest face 5: Took 0.766143
+total convolution time: 3.949445
+exterior duration = 3.949659
+
 
 -----------------------------------------------------------------------------------------------------
 
@@ -109,28 +119,32 @@ IrradianceConvolution_v0e_c
 
 Derived from v0e_b. Uses a lightweight lookup table that has solid angle only.
 
-precalculate destination normals. Took 0.000044
-dest face 0: Took 0.730584
-dest face 1: Took 0.611360
-dest face 2: Took 0.681067
-dest face 3: Took 0.647141
-dest face 4: Took 0.443066
-dest face 5: Took 0.749864
-total convolution time: 3.863083
+precalculate destination normals. Took 0.000046
+dest face 0: Took 0.716732
+dest face 1: Took 0.607728
+dest face 2: Took 0.725629
+dest face 3: Took 0.653393
+dest face 4: Took 0.443919
+dest face 5: Took 0.762986
+total convolution time: 3.910389
+exterior duration = 3.910610
+
 
 -----------------------------------------------------------------------------------------------------
 
 Derived from v0e_b. Calculates solid angle directly instead of using lookup table.
 
 IrradianceConvolution_v0e_d
-precalculate destination normals. Took 0.000047
-dest face 0: Took 0.786453
-dest face 1: Took 0.676205
-dest face 2: Took 0.754583
-dest face 3: Took 0.722308
-dest face 4: Took 0.515510
-dest face 5: Took 0.824822
-total convolution time: 4.279884
+precalculate destination normals. Took 0.000048
+dest face 0: Took 0.789785
+dest face 1: Took 0.673671
+dest face 2: Took 0.772168
+dest face 3: Took 0.718881
+dest face 4: Took 0.512546
+dest face 5: Took 0.826095
+total convolution time: 4.293146
+exterior duration = 4.293363
+
 
 -----------------------------------------------------------------------------------------------------
 
@@ -138,14 +152,16 @@ IrradianceConvolution_v0e_e
 
 Derived from v0e_c. Uses the smaller quadrant version of solid angle lookup table.
 
-precalculate destination normals. Took 0.000069
-dest face 0: Took 0.714834
-dest face 1: Took 0.604268
-dest face 2: Took 0.680438
-dest face 3: Took 0.649498
-dest face 4: Took 0.443336
-dest face 5: Took 0.750790
-total convolution time: 3.843165
+precalculate destination normals. Took 0.000048
+dest face 0: Took 0.708357
+dest face 1: Took 0.600914
+dest face 2: Took 0.692873
+dest face 3: Took 0.645875
+dest face 4: Took 0.447435
+dest face 5: Took 0.744401
+total convolution time: 3.839856
+exterior duration = 3.840073
+
 
 
 -----------------------------------------------------------------------------------------------------
@@ -154,14 +170,14 @@ IrradianceConvolution_v1
 
 Derivation of v0. Uses thread per dest face.
 
-
-dest face 0: Took 1.208831
-dest face 1: Took 1.248263
-dest face 2: Took 1.208574
-dest face 3: Took 1.178345
-dest face 4: Took 1.200002
-dest face 5: Took 1.156844
-total convolution time: 1.270160
+dest face 0: Took 1.174393
+dest face 1: Took 1.175885
+dest face 2: Took 1.173264
+dest face 3: Took 1.183861
+dest face 4: Took 1.162576
+dest face 5: Took 1.158917
+total convolution time: 1.184927
+exterior duration = 1.185083
 
 -----------------------------------------------------------------------------------------------------
 
@@ -173,13 +189,14 @@ cost:
 
     Has to create dest_width^2 threads
 
-dest face 0: Took 1.000279
-dest face 1: Took 1.059967
-dest face 2: Took 1.007767
-dest face 3: Took 1.017410
-dest face 4: Took 1.220853
-dest face 5: Took 1.196247
-total convolution time: 6.502849
+dest face 0: Took 1.311897
+dest face 1: Took 1.302464
+dest face 2: Took 1.162126
+dest face 3: Took 1.136271
+dest face 4: Took 1.127353
+dest face 5: Took 1.213746
+total convolution time: 7.254172
+exterior duration = 7.254204
 
 -----------------------------------------------------------------------------------------------------
 
@@ -188,13 +205,14 @@ IrradianceConvolution_v3
 Derivation of v2. Constructs tasks per source face, which are then divided between six threads that
 run continously.
 
-thread 0: Took 1.245443
-thread 1: Took 1.227177
-thread 2: Took 1.216252
-thread 3: Took 1.220733
-thread 4: Took 1.215584
-thread 5: Took 1.214559
-total convolution time: 1.246094
+thread 0: Took 1.258288
+thread 1: Took 1.232248
+thread 2: Took 1.254356
+thread 3: Took 1.241774
+thread 4: Took 1.243972
+thread 5: Took 1.264128
+total convolution time: 1.265891
+exterior duration = 1.266055
 
 -----------------------------------------------------------------------------------------------------
 
@@ -206,13 +224,14 @@ cost:
 
     Slightly different algorithm for Matrix * vector that is unoptimal for non-vectorized code
 
-thread 0: Took 1.276437
-thread 1: Took 1.256106
-thread 2: Took 1.304846
-thread 3: Took 1.295412
-thread 4: Took 1.294898
-thread 5: Took 1.274904
-total convolution time: 1.305868
+thread 0: Took 1.241548
+thread 1: Took 1.238770
+thread 2: Took 1.226924
+thread 3: Took 1.205949
+thread 4: Took 1.231864
+thread 5: Took 1.249115
+total convolution time: 1.252471
+exterior duration = 1.252628
 
 -----------------------------------------------------------------------------------------------------
 
@@ -220,12 +239,14 @@ IrradianceConvolution_v4
 
 Derivation of v3. Uses hand optimized vectorization together with matrix in row major.
 
-thread 0: Took 1.162515
-thread 1: Took 1.158857
-thread 2: Took 1.174532
-thread 3: Took 1.145724
-thread 4: Took 1.158990
-thread 5: Took 1.119099
-total convolution time: 1.205496
+thread 0: Took 1.044046
+thread 1: Took 1.028976
+thread 2: Took 1.040894
+thread 3: Took 1.032591
+thread 4: Took 1.018710
+thread 5: Took 1.004366
+total convolution time: 1.044798
+exterior duration = 1.044966
+
 
 
