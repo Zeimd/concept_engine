@@ -82,6 +82,7 @@ namespace CEngine
 		Ceng::UINT32 sourceFace;
 	};
 
+	void PrecalculateNormals(IrradianceThreadCommon& common, Vec4** out_normals);
 }
 
 #endif
