@@ -73,6 +73,7 @@ namespace CEngine
 		Vec4* solidAngleRayDirQuadrant;
 
 		Ceng::FLOAT32* solidAngleOnly;
+		Ceng::FLOAT32* solidAngleOnlyQuadrant;
 
 
 		CubemapData* sourceMap;
