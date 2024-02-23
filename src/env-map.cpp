@@ -132,7 +132,7 @@ public:
 			__m128 col0 = _mm_loadu_ps(&common.faceTranspose[params->sourceFace].data[0][0]);
 			__m128 col1 = _mm_loadu_ps(&common.faceTranspose[params->sourceFace].data[1][0]);
 			__m128 col2 = _mm_loadu_ps(&common.faceTranspose[params->sourceFace].data[2][0]);
-			__m128 col3 = _mm_loadu_ps(&common.faceTranspose[params->sourceFace].data[3][0]);
+			//__m128 col3 = _mm_loadu_ps(&common.faceTranspose[params->sourceFace].data[3][0]);
 
 			for (Ceng::UINT32 sourceV = 0; sourceV < common.sourceMap->width; ++sourceV)
 			{
