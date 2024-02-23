@@ -217,13 +217,11 @@ EngineResult::value IrradianceConvolution_v4(IrradianceThreadCommon& common, Cen
 
 	for (int i = 0; i < threadCount-1; i++)
 	{
-		//threads.emplace_back(IrradianceTask_v3(common, taskData, firstTask, taskPerThread, durations[i]));
 		threads.emplace_back(IrradianceTask_v4(common, taskData, firstTask, taskPerThread, durations[i]));
 
 		firstTask += taskPerThread;
 	}
 
-	//threads.emplace_back(IrradianceTask_v3(common, taskData, firstTask, taskPerThread + taskRemainder, durations[threadCount-1]));
 	threads.emplace_back(IrradianceTask_v4(common, taskData, firstTask, taskPerThread + taskRemainder, durations[threadCount - 1]));
 
 	for (auto& x : threads)
@@ -397,13 +395,11 @@ EngineResult::value IrradianceConvolution_v3(IrradianceThreadCommon& common, Cen
 	for (int i = 0; i < threadCount-1; i++)
 	{
 		threads.emplace_back(IrradianceTask_v3(common, taskData, firstTask, taskPerThread, durations[i]));
-		//threads.emplace_back(IrradianceTask_v4(common, taskData, firstTask, taskPerThread, durations[i]));
 
 		firstTask += taskPerThread;
 	}
 
 	threads.emplace_back(IrradianceTask_v3(common, taskData, firstTask, taskPerThread + taskRemainder, durations[threadCount-1]));
-	//threads.emplace_back(IrradianceTask_v4(common, taskData, firstTask, taskPerThread + taskRemainder, durations[threadCount - 1]));
 
 	for (auto& x : threads)
 	{
