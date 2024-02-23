@@ -243,6 +243,11 @@ EngineResult::value IrradianceConvolution_v4(IrradianceThreadCommon& common, Cen
 					taskData[taskIndex].normal = normal;
 					taskData[taskIndex].sourceFace = sourceFace;
 
+					taskData[taskIndex].output.x = 0.0f;
+					taskData[taskIndex].output.y = 0.0f;
+					taskData[taskIndex].output.z = 0.0f;
+					taskData[taskIndex].output.w = 0.0f;					
+
 					++taskIndex;
 				}
 			}
@@ -418,6 +423,11 @@ EngineResult::value IrradianceConvolution_v3b(IrradianceThreadCommon& common, Ce
 					taskData[taskIndex].dest = dest;
 					taskData[taskIndex].normal = normal;
 					taskData[taskIndex].sourceFace = sourceFace;
+
+					taskData[taskIndex].output.x = 0.0f;
+					taskData[taskIndex].output.y = 0.0f;
+					taskData[taskIndex].output.z = 0.0f;
+					taskData[taskIndex].output.w = 0.0f;
 
 					++taskIndex;
 				}
@@ -597,6 +607,11 @@ EngineResult::value IrradianceConvolution_v3(IrradianceThreadCommon& common, Cen
 					taskData[taskIndex].dest = dest;
 					taskData[taskIndex].normal = normal;
 					taskData[taskIndex].sourceFace = sourceFace;
+
+					taskData[taskIndex].output.x = 0.0f;
+					taskData[taskIndex].output.y = 0.0f;
+					taskData[taskIndex].output.z = 0.0f;
+					taskData[taskIndex].output.w = 0.0f;
 
 					++taskIndex;
 				}
