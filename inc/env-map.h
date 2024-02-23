@@ -68,8 +68,13 @@ namespace CEngine
 		Ceng::FLOAT32 invSourceWidth;
 		Ceng::Matrix4* faceMatrix;
 		Ceng::Matrix4* faceTranspose;
+		
 		Vec4* solidAngleRayDir;
 		Vec4* solidAngleRayDirQuadrant;
+
+		Ceng::FLOAT32* solidAngleOnly;
+
+
 		CubemapData* sourceMap;
 		CubemapData* destMap;
 	};
