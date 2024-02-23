@@ -129,6 +129,8 @@ public:
 		{
 			TaskData_v3* params = &taskData[first + k];
 
+			// Load matrix. The last column isn't needed since we are only using the 3x3 portion of the matrix
+
 			__m128 col0 = _mm_loadu_ps(&common.faceTranspose[params->sourceFace].data[0][0]);
 			__m128 col1 = _mm_loadu_ps(&common.faceTranspose[params->sourceFace].data[1][0]);
 			__m128 col2 = _mm_loadu_ps(&common.faceTranspose[params->sourceFace].data[2][0]);
@@ -168,7 +170,7 @@ public:
 
 					__m128 solidAngle = _mm_shuffle_ps(inputDir, inputDir, 0b11111111);
 
-					// dir = [solidAngle,solidAngle,solidAngle,solidAngle]
+					// solidAngle = [solidAngle,solidAngle,solidAngle,solidAngle]
 
 					__m128 factor = _mm_mul_ps(solidAngle, dot);
 
