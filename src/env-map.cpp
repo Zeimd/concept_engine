@@ -178,16 +178,22 @@ public:
 
 					__m128 mask = _mm_cmpgt_ps(factor, allZero);
 
+					factor = _mm_and_ps(mask, factor);
+
+					// now factor is:
+					// zero if dot <= 0
+					// dot*solidAngle otherwise
+
 					Vec4* source =
 						&common.sourceMap->faceData[params->sourceFace][sourceV * common.sourceMap->width + sourceU];
 
 					__m128 sourceVec = _mm_loadu_ps(&source->x);
 
-					__m128 masked = _mm_and_ps(mask, sourceVec);
+					sourceVec = _mm_mul_ps(factor, sourceVec);
 
 					__m128 output = _mm_loadu_ps(&params->output.x);
 
-					output = _mm_add_ps(masked, output);
+					output = _mm_add_ps(output, sourceVec);
 
 					_mm_storeu_ps(&params->output.x, output);
 				}
