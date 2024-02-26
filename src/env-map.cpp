@@ -129,8 +129,8 @@ void CEngine::PrecalculateNormals(IrradianceThreadCommon& common, Vec4** out_nor
 
 
 
-
-class IrradianceTask_v4
+// Like v3b, but uses hand-optimized vector intrinsics
+class IrradianceTask_v3c
 {
 public:
 
@@ -140,7 +140,7 @@ public:
 	Ceng::UINT32 amount;
 	double& out_duration;
 
-	IrradianceTask_v4(IrradianceThreadCommon& _common, TaskData_v3* _taskData, Ceng::UINT32 _first, Ceng::UINT32 _amount, double& _out_duration)
+	IrradianceTask_v3c(IrradianceThreadCommon& _common, TaskData_v3* _taskData, Ceng::UINT32 _first, Ceng::UINT32 _amount, double& _out_duration)
 		: common(_common), taskData(_taskData), first(_first), amount(_amount), out_duration(_out_duration)
 	{
 
@@ -233,6 +233,7 @@ public:
 	}
 };
 
+// Like v3, but uses matrix is row major form
 class IrradianceTask_v3b
 {
 public:
@@ -482,7 +483,7 @@ EngineResult::value IrradianceConvolution_v3_Base(IrradianceThreadCommon& common
 
 auto IrradianceConvolution_v3 = IrradianceConvolution_v3_Base< IrradianceTask_v3>;
 auto IrradianceConvolution_v3b = IrradianceConvolution_v3_Base< IrradianceTask_v3b>;
-auto IrradianceConvolution_v4 = IrradianceConvolution_v3_Base< IrradianceTask_v4>;
+auto IrradianceConvolution_v3c = IrradianceConvolution_v3_Base< IrradianceTask_v3c>;
 
 class IrradianceMapTask_v2
 {
@@ -2475,15 +2476,17 @@ const EngineResult::value CEngine::CreateIrradianceMap(Ceng::Cubemap *envMap, Ce
 	//eresult = IrradianceConvolution_v0e_c(common, irradianceMap);
 	//eresult = IrradianceConvolution_v0e_d(common, irradianceMap);
 	//eresult = IrradianceConvolution_v0e_e(common, irradianceMap);
+	
 	eresult = IrradianceConvolution_v0e_e_m(common, irradianceMap);
 	eresult = IrradianceConvolution_v0e_e_m_b(common, irradianceMap);
 	eresult = IrradianceConvolution_v0e_e_m_c(common, irradianceMap);
+	eresult = IrradianceConvolution_v0e_e_m_d(common, irradianceMap);
 
 	//eresult = IrradianceConvolution_v1(common, irradianceMap);
 	//eresult = IrradianceConvolution_v2(common, irradianceMap);
 	//eresult = IrradianceConvolution_v3(common, irradianceMap);
 	//eresult = IrradianceConvolution_v3b(common, irradianceMap);
-	//eresult = IrradianceConvolution_v4(common, irradianceMap);
+	//eresult = IrradianceConvolution_v3c(common, irradianceMap);
 
 	end = Ceng_HighPrecisionTimer();
 
