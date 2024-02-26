@@ -75,6 +75,8 @@ namespace CEngine
 		Ceng::FLOAT32* solidAngleOnly;
 		Ceng::FLOAT32* solidAngleOnlyQuadrant;
 
+		Ceng::UINT32 quadrantWidth;
+
 
 		CubemapData* sourceMap;
 		CubemapData* destMap;
