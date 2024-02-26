@@ -880,7 +880,8 @@ public:
 
 
 // v0e_e with multithreading
-EngineResult::value IrradianceConvolution_v0e_e_m(IrradianceThreadCommon& common, Ceng::Cubemap* irradianceMap)
+template<class IRRADIANCE_TASK>
+EngineResult::value IrradianceConvolution_v0e_e_m_Base(IrradianceThreadCommon& common, Ceng::Cubemap* irradianceMap)
 {
 	Ceng::Log::Print(__func__);
 
@@ -919,12 +920,12 @@ EngineResult::value IrradianceConvolution_v0e_e_m(IrradianceThreadCommon& common
 
 	double duration[6];
 
-	std::thread t0(IrradianceMapTask_v0e_e(common,0, normals, *common.destMap, duration[0]));
-	std::thread t1(IrradianceMapTask_v0e_e(common,1, normals, tempCubes[0], duration[1]));
-	std::thread t2(IrradianceMapTask_v0e_e(common,2, normals, tempCubes[1], duration[2]));
-	std::thread t3(IrradianceMapTask_v0e_e(common,3, normals, tempCubes[2], duration[3]));
-	std::thread t4(IrradianceMapTask_v0e_e(common,4, normals, tempCubes[3], duration[4]));
-	std::thread t5(IrradianceMapTask_v0e_e(common,5, normals, tempCubes[4], duration[5]));
+	std::thread t0(IRRADIANCE_TASK(common,0, normals, *common.destMap, duration[0]));
+	std::thread t1(IRRADIANCE_TASK(common,1, normals, tempCubes[0], duration[1]));
+	std::thread t2(IRRADIANCE_TASK(common,2, normals, tempCubes[1], duration[2]));
+	std::thread t3(IRRADIANCE_TASK(common,3, normals, tempCubes[2], duration[3]));
+	std::thread t4(IRRADIANCE_TASK(common,4, normals, tempCubes[3], duration[4]));
+	std::thread t5(IRRADIANCE_TASK(common,5, normals, tempCubes[4], duration[5]));
 
 	t0.join();
 	t1.join();
@@ -966,6 +967,7 @@ EngineResult::value IrradianceConvolution_v0e_e_m(IrradianceThreadCommon& common
 	return EngineResult::ok;
 }
 
+auto IrradianceConvolution_v0e_e_m = IrradianceConvolution_v0e_e_m_Base< IrradianceMapTask_v0e_e>;
 
 // Like v0e_c, but uses quadrant version of solid angle lookup
 EngineResult::value IrradianceConvolution_v0e_e(IrradianceThreadCommon& common, Ceng::Cubemap* irradianceMap)
