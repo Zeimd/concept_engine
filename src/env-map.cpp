@@ -129,22 +129,22 @@ void CEngine::PrecalculateNormals(IrradianceThreadCommon& common, Vec4** out_nor
 
 void CEngine::PrecalculateNormalsPosFace(IrradianceThreadCommon& common, Vec4** out_normals)
 {
-	Ceng::UINT32 normalCount = 3 * common.destMap->width * common.destMap->width;
+	Ceng::UINT32 normalCount = 3 * common.destMap->faceSize;
 
 	*out_normals = (Vec4*)malloc(normalCount * sizeof(Vec4));
 
-	for (int destFace = 0; destFace < 3; destFace++)
+	for (int faceIndex = 0; faceIndex < 3; faceIndex++)
 	{
 		for (Ceng::UINT32 destV = 0; destV < common.destMap->width; ++destV)
 		{
 			for (Ceng::UINT32 destU = 0; destU < common.destMap->width; ++destU)
 			{
-				Ceng::UINT32 faceIndex = 2 * destFace;
+				Ceng::UINT32 originalFace = 2 * faceIndex;
 
 				// Destination vector (surface normal)
 				Vec4* normal = &(*out_normals)[common.destMap->faceSize * faceIndex + destV * common.destMap->width + destU];
 
-				CEngine::RayDir(destU, destV, faceArray[destFace], common.invDestWidth, normal);
+				CEngine::RayDir(destU, destV, faceArray[originalFace], common.invDestWidth, normal);
 			}
 		}
 	}
@@ -863,13 +863,13 @@ public:
 						{
 							// Destination vector (surface normal)
 
-							Ceng::UINT32 faceFetch = destFace >> 1;
+							Ceng::UINT32 faceIndex = destFace >> 1;
 
-							Vec4* normal = &normals[common.destMap->faceSize * faceFetch + destV * common.destMap->width + destU];
+							Vec4* normal = &normals[common.destMap->faceSize * faceIndex + destV * common.destMap->width + destU];
 
 							Ceng::FLOAT32 reflect = 1.0f;
 
-							if (faceFetch & 1)
+							if (destFace & 1)
 							{
 								reflect = -1.0f;
 							}
