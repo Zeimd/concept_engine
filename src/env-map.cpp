@@ -548,6 +548,8 @@ EngineResult::value IrradianceConvolution_v2(IrradianceThreadCommon &common, Cen
 
 	double total_start = Ceng_HighPrecisionTimer();
 
+	double faceTime[6];
+
 	Ceng::StringUtf8 text;
 
 	for (int destFace = 0; destFace < 6; destFace++)
@@ -579,22 +581,12 @@ EngineResult::value IrradianceConvolution_v2(IrradianceThreadCommon &common, Cen
 					threadDest[k].w = 1.0f;
 				}
 
-				IrradianceMapTask_v2 tasks[6] =
-				{
-					{common, 0, &normal, &threadDest[0]},
-					{common, 1, &normal, &threadDest[1]},
-					{common, 2, &normal, &threadDest[2]},
-					{common, 3, &normal, &threadDest[3]},
-					{common, 4, &normal, &threadDest[4]},
-					{common, 5, &normal, &threadDest[5]},
-				};
-
-				std::thread t0(tasks[0]);
-				std::thread t1(tasks[1]);
-				std::thread t2(tasks[2]);
-				std::thread t3(tasks[3]);
-				std::thread t4(tasks[4]);
-				std::thread t5(tasks[5]);
+				std::thread t0(IrradianceMapTask_v2(common, 0, &normal, &threadDest[0]));
+				std::thread t1(IrradianceMapTask_v2(common, 1, &normal, &threadDest[1]));
+				std::thread t2(IrradianceMapTask_v2(common, 2, &normal, &threadDest[2]));
+				std::thread t3(IrradianceMapTask_v2(common, 3, &normal, &threadDest[3]));
+				std::thread t4(IrradianceMapTask_v2(common, 4, &normal, &threadDest[4]));
+				std::thread t5(IrradianceMapTask_v2(common, 5, &normal, &threadDest[5]));
 
 				t0.join();
 				t1.join();
@@ -614,20 +606,23 @@ EngineResult::value IrradianceConvolution_v2(IrradianceThreadCommon &common, Cen
 
 		double face_end = Ceng_HighPrecisionTimer();
 
-		text = "dest face ";
-		text += destFace;
-		text += ": Took ";
-		text += face_end - face_start;
-		Ceng::Log::Print(text);
+		faceTime[destFace] = face_end - face_start;
 	}
 
 	double total_end = Ceng_HighPrecisionTimer();
 
+	for (int i = 0; i < 6; i++)
+	{
+		text = "dest face ";
+		text += i;
+		text += ": Took ";
+		text += faceTime[i];
+		Ceng::Log::Print(text);
+	}
+
 	text = "total convolution time: ";
 	text += total_end - total_start;
 	Ceng::Log::Print(text);
-
-	// Copy results to GPU
 
 	return EngineResult::ok;
 }
