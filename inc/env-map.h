@@ -60,6 +60,24 @@ namespace CEngine
 				}
 			}
 		}
+
+		// Fill with zeroes
+		void Fill()
+		{
+			return Fill({ 0.0f,0.0f,0.0f,0.0f });
+		}
+
+		// Fill with value
+		void Fill(const Vec4& value)
+		{
+			for (Ceng::UINT32 i = 0; i < 6; i++)
+			{
+				for (Ceng::UINT32 j = 0; j < faceSize; j++)
+				{
+					faceData[i][j] = value;
+				}
+			}
+		}
 	};
 
 	struct IrradianceThreadCommon

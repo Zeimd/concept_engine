@@ -122,13 +122,6 @@ void CEngine::PrecalculateNormals(IrradianceThreadCommon& common, Vec4** out_nor
 				Vec4* normal = &(*out_normals)[6 * destFace + destV * common.destMap->width + destU];
 
 				CEngine::RayDir(destU, destV, faceArray[destFace], common.invDestWidth, normal);
-
-				Vec4* dest = &common.destMap->faceData[destFace][destV * common.destMap->width + destU];
-
-				dest->x = 0.0f;
-				dest->y = 0.0f;
-				dest->z = 0.0f;
-				dest->w = 1.0f;
 			}
 		}
 	}
@@ -1173,23 +1166,11 @@ EngineResult::value IrradianceConvolution_v0e_e_m_Base(IrradianceThreadCommon& c
 		CubemapData(common.destMap->width),
 	};
 
+	common.destMap->Fill();
+
 	for (int i = 0; i < 5; i++)
 	{
-		for (int destFace = 0; destFace < 6; destFace++)
-		{
-			for (Ceng::UINT32 destV = 0; destV < common.destMap->width; ++destV)
-			{
-				for (Ceng::UINT32 destU = 0; destU < common.destMap->width; ++destU)
-				{
-					Vec4* dest = &tempCubes[i].faceData[destFace][destV * common.destMap->width + destU];
-
-					dest->x = 0.0f;
-					dest->y = 0.0f;
-					dest->z = 0.0f;
-					dest->w = 1.0f;
-				}
-			}
-		}
+		tempCubes[i].Fill();
 	}
 
 
@@ -1264,6 +1245,8 @@ EngineResult::value IrradianceConvolution_v0e_e(IrradianceThreadCommon& common, 
 	start = Ceng_HighPrecisionTimer();
 
 	PrecalculateNormals(common, &normals);
+
+	common.destMap->Fill();
 
 	end = Ceng_HighPrecisionTimer();
 
@@ -1400,6 +1383,8 @@ EngineResult::value IrradianceConvolution_v0e_d(IrradianceThreadCommon& common, 
 
 	PrecalculateNormals(common, &normals);
 
+	common.destMap->Fill();
+
 	end = Ceng_HighPrecisionTimer();
 
 	text = "precalculate destination normals. Took ";
@@ -1520,6 +1505,8 @@ EngineResult::value IrradianceConvolution_v0e_c(IrradianceThreadCommon& common, 
 
 	PrecalculateNormals(common, &normals);
 
+	common.destMap->Fill();
+
 	end = Ceng_HighPrecisionTimer();
 
 	text = "precalculate destination normals. Took ";
@@ -1639,6 +1626,8 @@ EngineResult::value IrradianceConvolution_v0e_b(IrradianceThreadCommon& common, 
 	start = Ceng_HighPrecisionTimer();
 
 	PrecalculateNormals(common, &normals);
+
+	common.destMap->Fill();
 
 	end = Ceng_HighPrecisionTimer();
 
@@ -1761,6 +1750,8 @@ EngineResult::value IrradianceConvolution_v0e(IrradianceThreadCommon& common, Ce
 	start = Ceng_HighPrecisionTimer();
 
 	PrecalculateNormals(common, &normals);
+
+	common.destMap->Fill();
 
 	end = Ceng_HighPrecisionTimer();
 
