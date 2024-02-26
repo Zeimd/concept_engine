@@ -6,6 +6,8 @@
 *
 *****************************************************************************/
 
+#include <cassert>
+
 #include <ceng/lib/timerlib.h>
 
 #include <thread>
@@ -59,48 +61,48 @@ const Ceng::CubemapFace::value faceArray[6] = { Ceng::CubemapFace::positive_x,
 Ceng::CubemapFace::negative_x, Ceng::CubemapFace::positive_y,
 Ceng::CubemapFace::negative_y, Ceng::CubemapFace::positive_z, Ceng::CubemapFace::negative_z };
 
-const BasisVec4 cubemapBasis[6] =
+__declspec(align(16)) const BasisVec4 cubemapBasis[6] =
 {
 	// positive_x
 	{
-		{1.0f,0.0f,0.0f}, // forward
-		{0.0f,0.0f,1.0f}, // right
-		{0.0f,1.0f,0.0f}, // up
+		{1.0f,0.0f,0.0f,0.0f}, // forward
+		{0.0f,0.0f,1.0f,0.0f}, // right
+		{0.0f,1.0f,0.0f,0.0f}, // up
 	},
 
 	// negative_x
 	{
-		{-1.0f,0.0f,0.0f}, // forward
-		{0.0f,0.0f,-1.0f}, // right
-		{0.0f,0.0f,1.0f},  // up
+		{-1.0f,0.0f,0.0f,0.0f}, // forward
+		{0.0f,0.0f,-1.0f,0.0f}, // right
+		{0.0f,0.0f,1.0f,0.0f},  // up
 	},
 
 	// positive_y
 	{
-		{0.0f,1.0f,0.0f},
-		{1.0f,0.0f,0.0f},
-		{0.0f,0.0f,1.0f},
+		{0.0f,1.0f,0.0f,0.0f},
+		{1.0f,0.0f,0.0f,0.0f},
+		{0.0f,0.0f,1.0f,0.0f},
 	},
 
 	// negative_y
 	{
-		{0.0f,-1.0f,0.0f},
-		{1.0f,0.0f,0.0f},
-		{0.0f,0.0f,-1.0f},
+		{0.0f,-1.0f,0.0f,0.0f},
+		{1.0f,0.0f,0.0f,0.0f},
+		{0.0f,0.0f,-1.0f,0.0f},
 	},
 
 	// positive_z
 	{
-		{0.0f,0.0f,1.0f},
-		{-1.0f,0.0f,0.0f},
-		{0.0f,1.0f,0.0f},
+		{0.0f,0.0f,1.0f,0.0f},
+		{-1.0f,0.0f,0.0f,0.0f},
+		{0.0f,1.0f,0.0f,0.0f},
 	},
 
 	// negative_z
 	{
-		{0.0f,0.0f,-1.0f},
-		{1.0f,0.0f,0.0f},
-		{0.0f,1.0f,0.0f},
+		{0.0f,0.0f,-1.0f,0.0f},
+		{1.0f,0.0f,0.0f,0.0f},
+		{0.0f,1.0f,0.0f,0.0f},
 	},
 };
 
@@ -776,6 +778,147 @@ EngineResult::value IrradianceConvolution_v1(IrradianceThreadCommon &common, Cen
 	return EngineResult::ok;
 }
 
+class IrradianceMapTask_v0e_e_b
+{
+public:
+
+	const IrradianceThreadCommon& common;
+	Ceng::UINT32 sourceFace;
+	Vec4* normals;
+
+	CubemapData& out_data;
+
+	double& out_duration;
+
+	IrradianceMapTask_v0e_e_b(const IrradianceThreadCommon& _common, const Ceng::UINT32 _sourceFace, Vec4* _normals,
+		CubemapData& _out_data, double& _out_duration)
+		: common(_common), sourceFace(_sourceFace), normals(_normals), out_data(_out_data), out_duration(_out_duration)
+	{
+
+	}
+
+	void operator() ()
+	{
+		double faceStart = Ceng_HighPrecisionTimer();
+
+		Vec4 dir;
+		Vec4 nextRowDelta;
+
+		nextRowDelta.x = cubemapBasis[sourceFace].up.x - cubemapBasis[sourceFace].right.x * common.sourceMap->width;
+		nextRowDelta.y = cubemapBasis[sourceFace].up.y - cubemapBasis[sourceFace].right.y * common.sourceMap->width;
+		nextRowDelta.z = cubemapBasis[sourceFace].up.z - cubemapBasis[sourceFace].right.z * common.sourceMap->width;
+		nextRowDelta.w = 0.0f;
+
+		// Calculate dir that corresponds to bottom-left texel
+
+		dir.x = cubemapBasis[sourceFace].forward.x * common.quadrantWidth;
+		dir.y = cubemapBasis[sourceFace].forward.y * common.quadrantWidth;
+		dir.z = cubemapBasis[sourceFace].forward.z * common.quadrantWidth;
+		dir.w = cubemapBasis[sourceFace].forward.w * common.quadrantWidth;
+
+		dir.x -= cubemapBasis[sourceFace].right.x * common.quadrantWidth;
+		dir.y -= cubemapBasis[sourceFace].right.y * common.quadrantWidth;
+		dir.z -= cubemapBasis[sourceFace].right.z * common.quadrantWidth;
+		dir.w -= cubemapBasis[sourceFace].right.w * common.quadrantWidth;
+
+		dir.x -= cubemapBasis[sourceFace].up.x * common.quadrantWidth;
+		dir.y -= cubemapBasis[sourceFace].up.y * common.quadrantWidth;
+		dir.z -= cubemapBasis[sourceFace].up.z * common.quadrantWidth;
+		dir.w -= cubemapBasis[sourceFace].up.w * common.quadrantWidth;
+
+		for (Ceng::UINT32 sourceV = 0; sourceV < common.sourceMap->width; ++sourceV)
+		{
+			for (Ceng::UINT32 sourceU = 0; sourceU < common.sourceMap->width; ++sourceU)
+			{
+				Ceng::UINT32 fetchU = sourceU;
+				if (fetchU > common.quadrantWidth)
+				{
+					fetchU = 2 * common.quadrantWidth - fetchU;
+				}
+
+				Ceng::UINT32 fetchV = sourceV;
+
+				if (fetchV > common.quadrantWidth)
+				{
+					fetchV = 2 * common.quadrantWidth - fetchV;
+				}
+
+				Ceng::FLOAT32 solidAngle = common.solidAngleOnly[fetchV * common.quadrantWidth + fetchU];
+
+				//Ceng::INT32 uDelta = sourceU - (common.sourceMap->width >> 1);
+				//Ceng::INT32 vDelta = sourceV - (common.sourceMap->width >> 1);
+
+				Ceng::FLOAT32 dot = (dir.x * dir.x) + (dir.y * dir.y) + (dir.z * dir.z) + (dir.w * dir.w);
+
+				assert(fabsf(dot) != 0.0f);
+
+				Ceng::FLOAT32 normDiv = 1.0f / sqrtf(dot);
+
+				Vec4 normalizedDir;
+
+				normalizedDir.x = dir.x * normDiv;
+				normalizedDir.y = dir.y * normDiv;
+				normalizedDir.z = dir.z * normDiv;
+				normalizedDir.w = dir.w * normDiv;
+
+				assert(dir.w == 0.0f);
+
+				assert(dir.x != std::numeric_limits<float>::quiet_NaN());
+				assert(dir.x != std::numeric_limits<float>::signaling_NaN());
+
+				assert(dir.y != std::numeric_limits<float>::quiet_NaN());
+				assert(dir.y != std::numeric_limits<float>::signaling_NaN());
+
+				assert(dir.z != std::numeric_limits<float>::quiet_NaN());
+				assert(dir.z != std::numeric_limits<float>::signaling_NaN());
+
+				for (Ceng::UINT32 destFace = 0; destFace < 6; destFace++)
+				{
+					for (Ceng::UINT32 destV = 0; destV < common.destMap->width; ++destV)
+					{
+						for (Ceng::UINT32 destU = 0; destU < common.destMap->width; ++destU)
+						{
+							// Destination vector (surface normal)
+							Vec4* normal = &normals[6 * destFace + destV * common.destMap->width + destU];
+
+							Vec4* dest = &out_data.faceData[destFace][destV * common.destMap->width + destU];
+
+							// Dot product between surface normal and light direction
+							Ceng::FLOAT32 dot = normal->x * normalizedDir.x + normal->y * normalizedDir.y + normal->z * normalizedDir.z;
+
+							dot *= solidAngle;
+
+							if (dot > 0.0f)
+							{
+								Vec4* source = &common.sourceMap->faceData[sourceFace][sourceV * common.sourceMap->width + sourceU];
+
+								dest->x += dot * source->x;
+								dest->y += dot * source->y;
+								dest->z += dot * source->z;
+							}
+						}
+					}
+				}
+
+				dir.x += cubemapBasis[sourceFace].right.x;
+				dir.y += cubemapBasis[sourceFace].right.y;
+				dir.z += cubemapBasis[sourceFace].right.z;
+				dir.w += cubemapBasis[sourceFace].right.w;
+			}
+
+			dir.x += nextRowDelta.x;
+			dir.y += nextRowDelta.y;
+			dir.z += nextRowDelta.z;
+			dir.w += nextRowDelta.w;
+		}
+
+		double faceEnd = Ceng_HighPrecisionTimer();
+
+		out_duration = faceEnd - faceStart;
+	}
+};
+
+
 class IrradianceMapTask_v0e_e
 {
 public:
@@ -988,6 +1131,8 @@ EngineResult::value IrradianceConvolution_v0e_e_m_Base(IrradianceThreadCommon& c
 }
 
 auto IrradianceConvolution_v0e_e_m = IrradianceConvolution_v0e_e_m_Base< IrradianceMapTask_v0e_e>;
+
+auto IrradianceConvolution_v0e_e_m_b = IrradianceConvolution_v0e_e_m_Base< IrradianceMapTask_v0e_e_b>;
 
 // Like v0e_c, but uses quadrant version of solid angle lookup
 EngineResult::value IrradianceConvolution_v0e_e(IrradianceThreadCommon& common, Ceng::Cubemap* irradianceMap)
@@ -2231,6 +2376,7 @@ const EngineResult::value CEngine::CreateIrradianceMap(Ceng::Cubemap *envMap, Ce
 	//eresult = IrradianceConvolution_v0e_d(common, irradianceMap);
 	//eresult = IrradianceConvolution_v0e_e(common, irradianceMap);
 	eresult = IrradianceConvolution_v0e_e_m(common, irradianceMap);
+	eresult = IrradianceConvolution_v0e_e_m_b(common, irradianceMap);
 
 	//eresult = IrradianceConvolution_v1(common, irradianceMap);
 	//eresult = IrradianceConvolution_v2(common, irradianceMap);
