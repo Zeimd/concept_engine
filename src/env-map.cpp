@@ -127,6 +127,28 @@ void CEngine::PrecalculateNormals(IrradianceThreadCommon& common, Vec4** out_nor
 	}
 }
 
+void CEngine::PrecalculateNormalsPosFace(IrradianceThreadCommon& common, Vec4** out_normals)
+{
+	Ceng::UINT32 normalCount = 3 * common.destMap->width * common.destMap->width;
+
+	*out_normals = (Vec4*)malloc(normalCount * sizeof(Vec4));
+
+	for (int destFace = 0; destFace < 3; destFace++)
+	{
+		for (Ceng::UINT32 destV = 0; destV < common.destMap->width; ++destV)
+		{
+			for (Ceng::UINT32 destU = 0; destU < common.destMap->width; ++destU)
+			{
+				Ceng::UINT32 faceIndex = 2 * destFace;
+
+				// Destination vector (surface normal)
+				Vec4* normal = &(*out_normals)[common.destMap->faceSize * faceIndex + destV * common.destMap->width + destU];
+
+				CEngine::RayDir(destU, destV, faceArray[destFace], common.invDestWidth, normal);
+			}
+		}
+	}
+}
 
 
 // Like v3b, but uses hand-optimized vector intrinsics
@@ -766,6 +788,219 @@ EngineResult::value IrradianceConvolution_v1(IrradianceThreadCommon &common, Cen
 
 	return EngineResult::ok;
 }
+
+// Use reflection to get normal for negative destination cube faces
+class IrradianceMapTask_v0e_f
+{
+public:
+
+	const IrradianceThreadCommon& common;
+	Ceng::UINT32 sourceFace;
+	Vec4* normals;
+
+	CubemapData& out_data;
+
+	double& out_duration;
+
+	IrradianceMapTask_v0e_f(const IrradianceThreadCommon& _common, const Ceng::UINT32 _sourceFace, Vec4* _normals,
+		CubemapData& _out_data, double& _out_duration)
+		: common(_common), sourceFace(_sourceFace), normals(_normals), out_data(_out_data), out_duration(_out_duration)
+	{
+
+	}
+
+	void operator() ()
+	{
+		double faceStart = Ceng_HighPrecisionTimer();
+
+		for (Ceng::UINT32 sourceV = 0; sourceV < common.sourceMap->width; ++sourceV)
+		{
+			for (Ceng::UINT32 sourceU = 0; sourceU < common.sourceMap->width; ++sourceU)
+			{
+				Ceng::UINT32 fetchU = sourceU;
+				if (fetchU > common.quadrantWidth)
+				{
+					fetchU = 2 * common.quadrantWidth - fetchU;
+				}
+
+				Ceng::UINT32 fetchV = sourceV;
+
+				if (fetchV > common.quadrantWidth)
+				{
+					fetchV = 2 * common.quadrantWidth - fetchV;
+				}
+
+				Ceng::FLOAT32 solidAngle = common.solidAngleOnly[fetchV * common.quadrantWidth + fetchU];
+
+				Vec4 dir;
+
+				Ceng::INT32 uDelta = sourceU - (common.sourceMap->width >> 1);
+				Ceng::INT32 vDelta = sourceV - (common.sourceMap->width >> 1);
+
+				dir.x = cubemapBasis[sourceFace].forward.x * (common.sourceMap->width >> 1);
+				dir.y = cubemapBasis[sourceFace].forward.y * (common.sourceMap->width >> 1);
+				dir.z = cubemapBasis[sourceFace].forward.z * (common.sourceMap->width >> 1);
+
+				dir.x += cubemapBasis[sourceFace].right.x * uDelta;
+				dir.y += cubemapBasis[sourceFace].right.y * uDelta;
+				dir.z += cubemapBasis[sourceFace].right.z * uDelta;
+
+				dir.x += cubemapBasis[sourceFace].up.x * vDelta;
+				dir.y += cubemapBasis[sourceFace].up.y * vDelta;
+				dir.z += cubemapBasis[sourceFace].up.z * vDelta;
+
+				Ceng::FLOAT32 normDiv = 1.0f / sqrtf(dir.x * dir.x + dir.y * dir.y + dir.z * dir.z);
+
+				dir.x *= normDiv;
+				dir.y *= normDiv;
+				dir.z *= normDiv;
+
+				for (Ceng::UINT32 destFace = 0; destFace < 6; destFace++)
+				{
+					for (Ceng::UINT32 destV = 0; destV < common.destMap->width; ++destV)
+					{
+						for (Ceng::UINT32 destU = 0; destU < common.destMap->width; ++destU)
+						{
+							// Destination vector (surface normal)
+
+							Ceng::UINT32 faceFetch = destFace >> 1;
+
+							Vec4* normal = &normals[common.destMap->faceSize * faceFetch + destV * common.destMap->width + destU];
+
+							Ceng::FLOAT32 reflect = 1.0f;
+
+							if (faceFetch & 1)
+							{
+								reflect = -1.0f;
+							}
+
+							Vec4* dest = &out_data.faceData[destFace][destV * common.destMap->width + destU];
+
+							// Dot product between surface normal and light direction
+							Ceng::FLOAT32 dot = (reflect * normal->x * dir.x) 
+								+ (reflect * normal->y * dir.y)
+								+ (reflect * normal->z * dir.z);
+
+							if (dot > 0.0f)
+							{
+								dot *= solidAngle;
+
+								Vec4* source = &common.sourceMap->faceData[sourceFace][sourceV * common.sourceMap->width + sourceU];
+
+								dest->x += dot * source->x;
+								dest->y += dot * source->y;
+								dest->z += dot * source->z;
+							}
+						}
+					}
+				}
+
+			}
+		}
+
+		double faceEnd = Ceng_HighPrecisionTimer();
+
+		out_duration = faceEnd - faceStart;
+	}
+};
+
+// v0e_e with multithreading
+template<class IRRADIANCE_TASK>
+EngineResult::value IrradianceConvolution_v0e_f_m_Base(IrradianceThreadCommon& common, Ceng::Cubemap* irradianceMap)
+{
+	Ceng::Log::Print(__func__);
+
+	Ceng::StringUtf8 text;
+
+	double start, end;
+
+	Vec4* normals = nullptr;
+
+	// Precalculate normals and clear ooutput
+
+	start = Ceng_HighPrecisionTimer();
+
+	PrecalculateNormalsPosFace(common, &normals);
+
+	end = Ceng_HighPrecisionTimer();
+
+	text = "precalculate destination normals. Took ";
+	text += end - start;
+	Ceng::Log::Print(text);
+
+	// Convolve irradiance map from env map
+
+	start = Ceng_HighPrecisionTimer();
+
+	CubemapData tempCubes[5] =
+	{
+		CubemapData(common.destMap->width),
+		CubemapData(common.destMap->width),
+		CubemapData(common.destMap->width),
+		CubemapData(common.destMap->width),
+		CubemapData(common.destMap->width),
+	};
+
+	common.destMap->Fill();
+
+	for (int i = 0; i < 5; i++)
+	{
+		tempCubes[i].Fill();
+	}
+
+
+	double duration[6];
+
+	std::thread t0(IRRADIANCE_TASK(common, 0, normals, *common.destMap, duration[0]));
+	std::thread t1(IRRADIANCE_TASK(common, 1, normals, tempCubes[0], duration[1]));
+	std::thread t2(IRRADIANCE_TASK(common, 2, normals, tempCubes[1], duration[2]));
+	std::thread t3(IRRADIANCE_TASK(common, 3, normals, tempCubes[2], duration[3]));
+	std::thread t4(IRRADIANCE_TASK(common, 4, normals, tempCubes[3], duration[4]));
+	std::thread t5(IRRADIANCE_TASK(common, 5, normals, tempCubes[4], duration[5]));
+
+	t0.join();
+	t1.join();
+	t2.join();
+	t3.join();
+	t4.join();
+	t5.join();
+
+	for (int i = 0; i < 5; i++)
+	{
+		for (int face = 0; face < 6; face++)
+		{
+			for (int k = 0; k < common.destMap->faceSize; k++)
+			{
+				common.destMap->faceData[face][k].x += tempCubes[i].faceData[face][k].x;
+				common.destMap->faceData[face][k].y += tempCubes[i].faceData[face][k].y;
+				common.destMap->faceData[face][k].z += tempCubes[i].faceData[face][k].z;
+			}
+		}
+	}
+
+	end = Ceng_HighPrecisionTimer();
+
+	for (int i = 0; i < 6; i++)
+	{
+		text = "dest face ";
+		text += i;
+		text += ": Took ";
+		text += duration[i];
+		Ceng::Log::Print(text);
+	}
+
+	text = "total convolution time: ";
+	text += end - start;
+	Ceng::Log::Print(text);
+
+	free(normals);
+
+	return EngineResult::ok;
+}
+
+auto IrradianceConvolution_v0e_f_m = IrradianceConvolution_v0e_f_m_Base< IrradianceMapTask_v0e_f>;
+
+
 
 // Calculates dest normals directly instead of lookup table
 class IrradianceMapTask_v0e_e_c
@@ -2477,10 +2712,10 @@ const EngineResult::value CEngine::CreateIrradianceMap(Ceng::Cubemap *envMap, Ce
 	//eresult = IrradianceConvolution_v0e_d(common, irradianceMap);
 	//eresult = IrradianceConvolution_v0e_e(common, irradianceMap);
 	
-	eresult = IrradianceConvolution_v0e_e_m(common, irradianceMap);
-	eresult = IrradianceConvolution_v0e_e_m_b(common, irradianceMap);
-	eresult = IrradianceConvolution_v0e_e_m_c(common, irradianceMap);
-	eresult = IrradianceConvolution_v0e_e_m_d(common, irradianceMap);
+	//eresult = IrradianceConvolution_v0e_e_m(common, irradianceMap);
+	//eresult = IrradianceConvolution_v0e_e_m_b(common, irradianceMap);
+	//eresult = IrradianceConvolution_v0e_e_m_c(common, irradianceMap);
+	eresult = IrradianceConvolution_v0e_f_m(common, irradianceMap);
 
 	//eresult = IrradianceConvolution_v1(common, irradianceMap);
 	//eresult = IrradianceConvolution_v2(common, irradianceMap);

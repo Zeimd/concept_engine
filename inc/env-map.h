@@ -42,7 +42,7 @@ namespace CEngine
 
 		CubemapData(Ceng::UINT32 width) : width(width)
 		{
-			faceSize = 4 * width * width;
+			faceSize = width * width;
 
 			for (int i = 0; i < 6; i++)
 			{
@@ -109,6 +109,8 @@ namespace CEngine
 	};
 
 	void PrecalculateNormals(IrradianceThreadCommon& common, Vec4** out_normals);
+
+	void PrecalculateNormalsPosFace(IrradianceThreadCommon& common, Vec4** out_normals);
 }
 
 #endif
