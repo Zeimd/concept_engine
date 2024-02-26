@@ -108,7 +108,7 @@ __declspec(align(16)) const BasisVec4 cubemapBasis[6] =
 
 void CEngine::PrecalculateNormals(IrradianceThreadCommon& common, Vec4** out_normals)
 {
-	Ceng::UINT32 normalCount = 6 * common.destMap->width * common.destMap->width;
+	Ceng::UINT32 normalCount = 6 * common.destMap->faceSize;
 
 	*out_normals = (Vec4*)malloc(normalCount * sizeof(Vec4));
 
@@ -119,7 +119,7 @@ void CEngine::PrecalculateNormals(IrradianceThreadCommon& common, Vec4** out_nor
 			for (Ceng::UINT32 destU = 0; destU < common.destMap->width; ++destU)
 			{
 				// Destination vector (surface normal)
-				Vec4* normal = &(*out_normals)[6 * destFace + destV * common.destMap->width + destU];
+				Vec4* normal = &(*out_normals)[common.destMap->faceSize * destFace + destV * common.destMap->width + destU];
 
 				CEngine::RayDir(destU, destV, faceArray[destFace], common.invDestWidth, normal);
 			}
@@ -417,7 +417,7 @@ EngineResult::value IrradianceConvolution_v3_Base(IrradianceThreadCommon& common
 			for (Ceng::UINT32 destU = 0; destU < common.destMap->width; ++destU)
 			{
 				// Destination vector (surface normal)
-				Vec4* normal = &normals[6*destFace + destV * common.destMap->width + destU];
+				Vec4* normal = &normals[common.destMap->faceSize*destFace + destV * common.destMap->width + destU];
 
 				CEngine::RayDir(destU, destV, faceArray[destFace], common.invDestWidth, normal);
 
@@ -1074,9 +1074,6 @@ public:
 					{
 						for (Ceng::UINT32 destU = 0; destU < common.destMap->width; ++destU)
 						{
-							// Destination vector (surface normal)
-							//Vec4* normal = &normals[6 * destFace + destV * common.destMap->width + destU];
-
 							Vec4 normal;
 
 							Ceng::INT32 uDelta = destU - (common.destMap->width >> 1);
@@ -1215,7 +1212,7 @@ public:
 						for (Ceng::UINT32 destU = 0; destU < common.destMap->width; ++destU)
 						{
 							// Destination vector (surface normal)
-							Vec4* normal = &normals[6 * destFace + destV * common.destMap->width + destU];
+							Vec4* normal = &normals[common.destMap->faceSize * destFace + destV * common.destMap->width + destU];
 
 							Vec4* dest = &out_data.faceData[destFace][destV * common.destMap->width + destU];
 
@@ -1327,7 +1324,7 @@ public:
 						for (Ceng::UINT32 destU = 0; destU < common.destMap->width; ++destU)
 						{
 							// Destination vector (surface normal)
-							Vec4* normal = &normals[6 * destFace + destV * common.destMap->width + destU];
+							Vec4* normal = &normals[common.destMap->faceSize * destFace + destV * common.destMap->width + destU];
 
 							Vec4* dest = &out_data.faceData[destFace][destV * common.destMap->width + destU];
 
@@ -1546,7 +1543,7 @@ EngineResult::value IrradianceConvolution_v0e_e(IrradianceThreadCommon& common, 
 						for (Ceng::UINT32 destU = 0; destU < common.destMap->width; ++destU)
 						{
 							// Destination vector (surface normal)
-							Vec4* normal = &normals[6 * destFace + destV * common.destMap->width + destU];
+							Vec4* normal = &normals[common.destMap->faceSize * destFace + destV * common.destMap->width + destU];
 
 							Vec4* dest = &common.destMap->faceData[destFace][destV * common.destMap->width + destU];
 
@@ -1668,7 +1665,7 @@ EngineResult::value IrradianceConvolution_v0e_d(IrradianceThreadCommon& common, 
 						for (Ceng::UINT32 destU = 0; destU < common.destMap->width; ++destU)
 						{
 							// Destination vector (surface normal)
-							Vec4* normal = &normals[6 * destFace + destV * common.destMap->width + destU];
+							Vec4* normal = &normals[common.destMap->faceSize * destFace + destV * common.destMap->width + destU];
 
 							Vec4* dest = &common.destMap->faceData[destFace][destV * common.destMap->width + destU];
 
@@ -1790,7 +1787,7 @@ EngineResult::value IrradianceConvolution_v0e_c(IrradianceThreadCommon& common, 
 						for (Ceng::UINT32 destU = 0; destU < common.destMap->width; ++destU)
 						{
 							// Destination vector (surface normal)
-							Vec4* normal = &normals[6 * destFace + destV * common.destMap->width + destU];
+							Vec4* normal = &normals[common.destMap->faceSize * destFace + destV * common.destMap->width + destU];
 
 							Vec4* dest = &common.destMap->faceData[destFace][destV * common.destMap->width + destU];
 
@@ -1912,7 +1909,7 @@ EngineResult::value IrradianceConvolution_v0e_b(IrradianceThreadCommon& common, 
 						for (Ceng::UINT32 destU = 0; destU < common.destMap->width; ++destU)
 						{
 							// Destination vector (surface normal)
-							Vec4* normal = &normals[6 * destFace + destV * common.destMap->width + destU];
+							Vec4* normal = &normals[common.destMap->faceSize * destFace + destV * common.destMap->width + destU];
 
 							Vec4* dest = &common.destMap->faceData[destFace][destV * common.destMap->width + destU];
 
@@ -2023,7 +2020,7 @@ EngineResult::value IrradianceConvolution_v0e(IrradianceThreadCommon& common, Ce
 						for (Ceng::UINT32 destU = 0; destU < common.destMap->width; ++destU)
 						{
 							// Destination vector (surface normal)
-							Vec4* normal = &normals[6*destFace + destV*common.destMap->width + destU];
+							Vec4* normal = &normals[common.destMap->faceSize*destFace + destV*common.destMap->width + destU];
 
 							Vec4* dest = &common.destMap->faceData[destFace][destV * common.destMap->width + destU];
 
