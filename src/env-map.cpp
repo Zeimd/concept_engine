@@ -973,12 +973,7 @@ public:
 
 				Ceng::FLOAT32 solidAngle = common.solidAngleOnly[fetchV * common.quadrantWidth + fetchU];
 
-				//Ceng::INT32 uDelta = sourceU - (common.sourceMap->width >> 1);
-				//Ceng::INT32 vDelta = sourceV - (common.sourceMap->width >> 1);
-
 				Ceng::FLOAT32 dot = (dir.x * dir.x) + (dir.y * dir.y) + (dir.z * dir.z) + (dir.w * dir.w);
-
-				assert(fabsf(dot) != 0.0f);
 
 				Ceng::FLOAT32 normDiv = 1.0f / sqrtf(dot);
 
@@ -988,17 +983,6 @@ public:
 				normalizedDir.y = dir.y * normDiv;
 				normalizedDir.z = dir.z * normDiv;
 				normalizedDir.w = dir.w * normDiv;
-
-				assert(dir.w == 0.0f);
-
-				assert(dir.x != std::numeric_limits<float>::quiet_NaN());
-				assert(dir.x != std::numeric_limits<float>::signaling_NaN());
-
-				assert(dir.y != std::numeric_limits<float>::quiet_NaN());
-				assert(dir.y != std::numeric_limits<float>::signaling_NaN());
-
-				assert(dir.z != std::numeric_limits<float>::quiet_NaN());
-				assert(dir.z != std::numeric_limits<float>::signaling_NaN());
 
 				for (Ceng::UINT32 destFace = 0; destFace < 6; destFace++)
 				{
