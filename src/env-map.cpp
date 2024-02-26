@@ -253,6 +253,11 @@ public:
 
 		out_duration = end - start;
 	}
+
+	static const char* Name()
+	{
+		return "IrradianceConvolution_v3c";
+	}
 };
 
 // Like v3, but uses matrix is row major form
@@ -319,6 +324,11 @@ public:
 
 		out_duration = end - start;
 	}
+
+	static const char* Name()
+	{
+		return "IrradianceConvolution_v3b";
+	}
 };
 
 class IrradianceTask_v3
@@ -384,13 +394,18 @@ public:
 
 		out_duration = end - start;
 	}
+
+	static const char* Name()
+	{
+		return "IrradianceConvolution_v3";
+	}
 };
 
 // Compared to v2, eliminates the need to re-create threads between source face loops
 template<class IRRADIANCE_TASK>
 EngineResult::value IrradianceConvolution_v3_Base(IrradianceThreadCommon& common, Ceng::Cubemap* irradianceMap)
 {
-	Ceng::Log::Print(__func__);
+	Ceng::Log::Print(IRRADIANCE_TASK::Name());
 
 	// Convolve irradiance map from env map
 
@@ -902,13 +917,18 @@ public:
 
 		out_duration = faceEnd - faceStart;
 	}
+
+	static const char* Name()
+	{
+		return "IrradianceConvolution_v0e_f_m";
+	}
 };
 
-// v0e_e with multithreading
+// Derived from v0e_e. Uses smaller look-up table for destination normal vector
 template<class IRRADIANCE_TASK>
 EngineResult::value IrradianceConvolution_v0e_f_m_Base(IrradianceThreadCommon& common, Ceng::Cubemap* irradianceMap)
 {
-	Ceng::Log::Print(__func__);
+	Ceng::Log::Print(IRRADIANCE_TASK::Name());
 
 	Ceng::StringUtf8 text;
 
@@ -1123,6 +1143,11 @@ public:
 
 		out_duration = faceEnd - faceStart;
 	}
+
+	static const char* Name()
+	{
+		return "IrradianceConvolution_v0e_e_m_c";
+	}
 };
 
 
@@ -1249,6 +1274,11 @@ public:
 
 		out_duration = faceEnd - faceStart;
 	}
+
+	static const char* Name()
+	{
+		return "IrradianceConvolution_v0e_e_m_b";
+	}
 };
 
 
@@ -1352,6 +1382,11 @@ public:
 
 		out_duration = faceEnd - faceStart;
 	}
+
+	static const char* Name()
+	{
+		return "IrradianceConvolution_v0e_e_m";
+	}
 };
 
 
@@ -1359,7 +1394,7 @@ public:
 template<class IRRADIANCE_TASK>
 EngineResult::value IrradianceConvolution_v0e_e_m_Base(IrradianceThreadCommon& common, Ceng::Cubemap* irradianceMap)
 {
-	Ceng::Log::Print(__func__);
+	Ceng::Log::Print(IRRADIANCE_TASK::Name());
 
 	Ceng::StringUtf8 text;
 
