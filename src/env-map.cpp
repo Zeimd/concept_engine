@@ -918,6 +918,26 @@ EngineResult::value IrradianceConvolution_v0e_e_m_Base(IrradianceThreadCommon& c
 		CubemapData(common.destMap->width),
 	};
 
+	for (int i = 0; i < 5; i++)
+	{
+		for (int destFace = 0; destFace < 6; destFace++)
+		{
+			for (Ceng::UINT32 destV = 0; destV < common.destMap->width; ++destV)
+			{
+				for (Ceng::UINT32 destU = 0; destU < common.destMap->width; ++destU)
+				{
+					Vec4* dest = &tempCubes[i].faceData[destFace][destV * common.destMap->width + destU];
+
+					dest->x = 0.0f;
+					dest->y = 0.0f;
+					dest->z = 0.0f;
+					dest->w = 1.0f;
+				}
+			}
+		}
+	}
+
+
 	double duration[6];
 
 	std::thread t0(IRRADIANCE_TASK(common,0, normals, *common.destMap, duration[0]));
