@@ -778,6 +778,134 @@ EngineResult::value IrradianceConvolution_v1(IrradianceThreadCommon &common, Cen
 	return EngineResult::ok;
 }
 
+// Calculates dest normals directly instead of lookup table
+class IrradianceMapTask_v0e_e_c
+{
+public:
+
+	const IrradianceThreadCommon& common;
+	Ceng::UINT32 sourceFace;
+	Vec4* normals;
+
+	CubemapData& out_data;
+
+	double& out_duration;
+
+	IrradianceMapTask_v0e_e_c(const IrradianceThreadCommon& _common, const Ceng::UINT32 _sourceFace, Vec4* _normals,
+		CubemapData& _out_data, double& _out_duration)
+		: common(_common), sourceFace(_sourceFace), normals(_normals), out_data(_out_data), out_duration(_out_duration)
+	{
+
+	}
+
+	void operator() ()
+	{
+		double faceStart = Ceng_HighPrecisionTimer();
+
+		for (Ceng::UINT32 sourceV = 0; sourceV < common.sourceMap->width; ++sourceV)
+		{
+			for (Ceng::UINT32 sourceU = 0; sourceU < common.sourceMap->width; ++sourceU)
+			{
+				Ceng::UINT32 fetchU = sourceU;
+				if (fetchU > common.quadrantWidth)
+				{
+					fetchU = 2 * common.quadrantWidth - fetchU;
+				}
+
+				Ceng::UINT32 fetchV = sourceV;
+
+				if (fetchV > common.quadrantWidth)
+				{
+					fetchV = 2 * common.quadrantWidth - fetchV;
+				}
+
+				Ceng::FLOAT32 solidAngle = common.solidAngleOnly[fetchV * common.quadrantWidth + fetchU];
+
+				Vec4 dir;
+
+				Ceng::INT32 uDelta = sourceU - (common.sourceMap->width >> 1);
+				Ceng::INT32 vDelta = sourceV - (common.sourceMap->width >> 1);
+
+				dir.x = cubemapBasis[sourceFace].forward.x * (common.sourceMap->width >> 1);
+				dir.y = cubemapBasis[sourceFace].forward.y * (common.sourceMap->width >> 1);
+				dir.z = cubemapBasis[sourceFace].forward.z * (common.sourceMap->width >> 1);
+
+				dir.x += cubemapBasis[sourceFace].right.x * uDelta;
+				dir.y += cubemapBasis[sourceFace].right.y * uDelta;
+				dir.z += cubemapBasis[sourceFace].right.z * uDelta;
+
+				dir.x += cubemapBasis[sourceFace].up.x * vDelta;
+				dir.y += cubemapBasis[sourceFace].up.y * vDelta;
+				dir.z += cubemapBasis[sourceFace].up.z * vDelta;
+
+				Ceng::FLOAT32 normDiv = 1.0f / sqrtf(dir.x * dir.x + dir.y * dir.y + dir.z * dir.z);
+
+				dir.x *= normDiv;
+				dir.y *= normDiv;
+				dir.z *= normDiv;
+
+				for (Ceng::UINT32 destFace = 0; destFace < 6; destFace++)
+				{
+					for (Ceng::UINT32 destV = 0; destV < common.destMap->width; ++destV)
+					{
+						for (Ceng::UINT32 destU = 0; destU < common.destMap->width; ++destU)
+						{
+							// Destination vector (surface normal)
+							//Vec4* normal = &normals[6 * destFace + destV * common.destMap->width + destU];
+
+							Vec4 normal;
+
+							Ceng::INT32 uDelta = destU - (common.destMap->width >> 1);
+							Ceng::INT32 vDelta = destV - (common.destMap->width >> 1);
+
+							normal.x = cubemapBasis[destFace].forward.x * (common.destMap->width >> 1);
+							normal.y = cubemapBasis[destFace].forward.y * (common.destMap->width >> 1);
+							normal.z = cubemapBasis[destFace].forward.z * (common.destMap->width >> 1);
+
+							normal.x += cubemapBasis[destFace].right.x * uDelta;
+							normal.y += cubemapBasis[destFace].right.y * uDelta;
+							normal.z += cubemapBasis[destFace].right.z * uDelta;
+
+							normal.x += cubemapBasis[destFace].up.x * vDelta;
+							normal.y += cubemapBasis[destFace].up.y * vDelta;
+							normal.z += cubemapBasis[destFace].up.z * vDelta;
+
+							Ceng::FLOAT32 normDiv = 1.0f / sqrtf(normal.x * normal.x + normal.y * normal.y + normal.z * normal.z);
+
+							normal.x *= normDiv;
+							normal.y *= normDiv;
+							normal.z *= normDiv;
+
+							Vec4* dest = &out_data.faceData[destFace][destV * common.destMap->width + destU];
+
+							// Dot product between surface normal and light direction
+							Ceng::FLOAT32 dot = normal.x * dir.x + normal.y * dir.y + normal.z * dir.z;
+
+							dot *= solidAngle;
+
+							if (dot > 0.0f)
+							{
+								Vec4* source = &common.sourceMap->faceData[sourceFace][sourceV * common.sourceMap->width + sourceU];
+
+								dest->x += dot * source->x;
+								dest->y += dot * source->y;
+								dest->z += dot * source->z;
+							}
+						}
+					}
+				}
+
+			}
+		}
+
+		double faceEnd = Ceng_HighPrecisionTimer();
+
+		out_duration = faceEnd - faceStart;
+	}
+};
+
+
+// Like v0e_e, but calculates light direction by stepping instead of from scratch every iteration
 class IrradianceMapTask_v0e_e_b
 {
 public:
@@ -1133,6 +1261,8 @@ EngineResult::value IrradianceConvolution_v0e_e_m_Base(IrradianceThreadCommon& c
 auto IrradianceConvolution_v0e_e_m = IrradianceConvolution_v0e_e_m_Base< IrradianceMapTask_v0e_e>;
 
 auto IrradianceConvolution_v0e_e_m_b = IrradianceConvolution_v0e_e_m_Base< IrradianceMapTask_v0e_e_b>;
+
+auto IrradianceConvolution_v0e_e_m_c = IrradianceConvolution_v0e_e_m_Base< IrradianceMapTask_v0e_e_c>;
 
 // Like v0e_c, but uses quadrant version of solid angle lookup
 EngineResult::value IrradianceConvolution_v0e_e(IrradianceThreadCommon& common, Ceng::Cubemap* irradianceMap)
@@ -2377,6 +2507,7 @@ const EngineResult::value CEngine::CreateIrradianceMap(Ceng::Cubemap *envMap, Ce
 	//eresult = IrradianceConvolution_v0e_e(common, irradianceMap);
 	eresult = IrradianceConvolution_v0e_e_m(common, irradianceMap);
 	eresult = IrradianceConvolution_v0e_e_m_b(common, irradianceMap);
+	eresult = IrradianceConvolution_v0e_e_m_c(common, irradianceMap);
 
 	//eresult = IrradianceConvolution_v1(common, irradianceMap);
 	//eresult = IrradianceConvolution_v2(common, irradianceMap);
