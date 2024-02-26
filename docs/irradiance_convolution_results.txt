@@ -1,419 +1,485 @@
+envmap format = fp16_abgr
+source width = 256
+irradiance map format = fp16_abgr
+dest width = 64
+solid angle precalc, t = 0.036755
+source copy. t = 0.015091
 IrradianceConvolution_v0
-
-uses rotation and lookup table to find light direction from source cube map
-
-cost: 
-
-    Matrix * vector, lookup
-
-compiler switch: SSE2
-
-dest face 0: Took 0.999229
-dest face 1: Took 1.020609
-dest face 2: Took 1.013694
-dest face 3: Took 1.009095
-dest face 4: Took 0.988126
-dest face 5: Took 0.986860
-total convolution time: 6.017616
-exterior duration = 6.017774
-
-compiler switch: AVX
-
-dest face 0: Took 0.943512
-dest face 1: Took 0.932289
-dest face 2: Took 0.939328
-dest face 3: Took 0.945289
-dest face 4: Took 1.037473
-dest face 5: Took 0.940896
-total convolution time: 5.738789
-
------------------------------------------------------------------------------------------------------
-
+dest face 0: Took 16.853284
+dest face 1: Took 16.635694
+dest face 2: Took 16.445614
+dest face 3: Took 16.202022
+dest face 4: Took 16.280413
+dest face 5: Took 16.331891
+total convolution time: 98.748920
 IrradianceConvolution_v0b
-
-uses basis vectors per cubemap face to find light direction from source cube map
-
-cost: 
-
-    base transformation (comparable to Matrix * vector)
-
-    vector normalization
-
-compiler switch: SSE2
-
-dest face 0: Took 2.674409
-dest face 1: Took 2.648177
-dest face 2: Took 2.628003
-dest face 3: Took 2.635615
-dest face 4: Took 2.766635
-dest face 5: Took 2.686415
-total convolution time: 16.039257
-exterior duration = 16.039409
-
-compiler switch: AVX
-
-dest face 0: Took 2.484615
-dest face 1: Took 2.488004
-dest face 2: Took 2.568273
-dest face 3: Took 2.561780
-dest face 4: Took 2.508327
-dest face 5: Took 2.572303
-total convolution time: 15.183304
-
------------------------------------------------------------------------------------------------------
-
+dest face 0: Took 33.231284
+dest face 1: Took 33.280813
+dest face 2: Took 33.074648
+dest face 3: Took 33.336948
+dest face 4: Took 33.248677
+dest face 5: Took 33.396572
+total convolution time: 199.568943
 IrradianceConvolution_v0c
-
-uses RayDir() to find light direction from source cube map
-
-cost: 
-
-    vector normalization
-
-    switch statement
-
-compiler switch: SSE2
-
-dest face 0: Took 3.001385
-dest face 1: Took 3.036090
-dest face 2: Took 3.095273
-dest face 3: Took 3.007577
-dest face 4: Took 3.061742
-dest face 5: Took 3.020160
-total convolution time: 18.222229
-exterior duration = 18.222387
-
-compiler switch: AVX
-
-dest face 0: Took 2.959971
-dest face 1: Took 2.959024
-dest face 2: Took 2.858923
-dest face 3: Took 2.841131
-dest face 4: Took 3.070839
-dest face 5: Took 2.933902
-total convolution time: 17.623792
-
------------------------------------------------------------------------------------------------------
-
+dest face 0: Took 40.732103
+dest face 1: Took 40.430775
+dest face 2: Took 40.345618
+dest face 3: Took 40.190831
+dest face 4: Took 40.447364
+dest face 5: Took 40.512694
+total convolution time: 242.659388
 IrradianceConvolution_v0d
-
-Uses rotation and lookup table to find light direction from source cube map
-
-Lookup table is only [0,width/2] (ie. 1/4 size)
-
-cost: 
-
-    Matrix * vector, lookup with input folding
-
-compiler switch: SSE2
-
-dest face 0: Took 1.104717
-dest face 1: Took 1.099562
-dest face 2: Took 1.093364
-dest face 3: Took 1.107436
-dest face 4: Took 1.116183
-dest face 5: Took 1.146812
-total convolution time: 6.668075
-exterior duration = 6.668236
-
-compiler switch: AVX
-
-dest face 0: Took 1.128783
-dest face 1: Took 1.102296
-dest face 2: Took 1.101491
-dest face 3: Took 1.077043
-dest face 4: Took 1.074282
-dest face 5: Took 1.065503
-total convolution time: 6.549400
-
------------------------------------------------------------------------------------------------------
-
+dest face 0: Took 17.851382
+dest face 1: Took 17.998174
+dest face 2: Took 18.055171
+dest face 3: Took 17.885562
+dest face 4: Took 17.837700
+dest face 5: Took 17.970299
+total convolution time: 107.598289
 IrradianceConvolution_v0e
-
-Swap loop order so that source loop is outer and dest loop is inner. This significantly reduces
-the number of matrix * vector operations.
-
-compiler switch: SSE2
-
-Preecalculate destination normals. Took 0.000049
-dest face 0: Took 0.738544
-dest face 1: Took 0.718944
-dest face 2: Took 0.706498
-dest face 3: Took 0.665701
-dest face 4: Took 0.477428
-dest face 5: Took 0.782654
-total convolution time: 4.089770
-exterior duration = 4.089985
-
-compiler switch: AVX
-
-precalculate destination normals. Took 0.000043
-dest face 0: Took 0.717835
-dest face 1: Took 0.713791
-dest face 2: Took 0.683492
-dest face 3: Took 0.647577
-dest face 4: Took 0.462625
-dest face 5: Took 0.776745
-total convolution time: 4.002067
-
---------------------------------------------------------------------------------------------------
-
+precalculate destination normals. Took 0.000523
+dest face 0: Took 9.866579
+dest face 1: Took 9.829910
+dest face 2: Took 9.722953
+dest face 3: Took 9.887288
+dest face 4: Took 10.015353
+dest face 5: Took 9.704263
+total convolution time: 59.026348
 IrradianceConvolution_v0e_b
-
-Derived from v0e. Use basis vectors to construct light direction instead of lookup-table + rotation.
-
-compiler switch: SSE2
-
-precalculate destination normals. Took 0.000046
-dest face 0: Took 0.727758
-dest face 1: Took 0.619404
-dest face 2: Took 0.718213
-dest face 3: Took 0.662486
-dest face 4: Took 0.455439
-dest face 5: Took 0.766143
-total convolution time: 3.949445
-exterior duration = 3.949659
-
-compiler switch: AVX
-
-precalculate destination normals. Took 0.000034
-dest face 0: Took 0.758007
-dest face 1: Took 0.638960
-dest face 2: Took 0.739641
-dest face 3: Took 0.692328
-dest face 4: Took 0.463551
-dest face 5: Took 0.819803
-total convolution time: 4.112292
-
------------------------------------------------------------------------------------------------------
-
+precalculate destination normals. Took 0.000340
+dest face 0: Took 9.804342
+dest face 1: Took 9.783891
+dest face 2: Took 9.724306
+dest face 3: Took 9.666487
+dest face 4: Took 9.863803
+dest face 5: Took 9.733288
+total convolution time: 58.576119
 IrradianceConvolution_v0e_c
-
-Derived from v0e_b. Uses a lightweight lookup table that has solid angle only.
-
-compiler switch: SSE2
-
-precalculate destination normals. Took 0.000046
-dest face 0: Took 0.716732
-dest face 1: Took 0.607728
-dest face 2: Took 0.725629
-dest face 3: Took 0.653393
-dest face 4: Took 0.443919
-dest face 5: Took 0.762986
-total convolution time: 3.910389
-exterior duration = 3.910610
-
-compiler switch: AVX
-
-precalculate destination normals. Took 0.000036
-dest face 0: Took 0.720460
-dest face 1: Took 0.596008
-dest face 2: Took 0.673890
-dest face 3: Took 0.652537
-dest face 4: Took 0.448482
-dest face 5: Took 0.747396
-total convolution time: 3.838798
-
------------------------------------------------------------------------------------------------------
-
+precalculate destination normals. Took 0.000328
+dest face 0: Took 9.200201
+dest face 1: Took 9.243478
+dest face 2: Took 9.098571
+dest face 3: Took 9.176916
+dest face 4: Took 9.171227
+dest face 5: Took 9.098979
+total convolution time: 54.989374
 IrradianceConvolution_v0e_d
-
-Derived from v0e_b. Calculates solid angle directly instead of using lookup table.
-
-compiler switch: SSE2
-
-precalculate destination normals. Took 0.000048
-dest face 0: Took 0.789785
-dest face 1: Took 0.673671
-dest face 2: Took 0.772168
-dest face 3: Took 0.718881
-dest face 4: Took 0.512546
-dest face 5: Took 0.826095
-total convolution time: 4.293146
-exterior duration = 4.293363
-
-compiler switch: AVX
-
-precalculate destination normals. Took 0.000034
-dest face 0: Took 0.869290
-dest face 1: Took 0.671008
-dest face 2: Took 0.762053
-dest face 3: Took 0.731671
-dest face 4: Took 0.541270
-dest face 5: Took 0.836132
-total convolution time: 4.411427
-
------------------------------------------------------------------------------------------------------
-
+precalculate destination normals. Took 0.000327
+dest face 0: Took 9.826140
+dest face 1: Took 10.034842
+dest face 2: Took 9.886163
+dest face 3: Took 9.915530
+dest face 4: Took 9.959887
+dest face 5: Took 9.806994
+total convolution time: 59.429557
 IrradianceConvolution_v0e_e
-
-Derived from v0e_c. Uses the smaller quadrant version of solid angle lookup table.
-
-compiler switch: SSE2
-
-precalculate destination normals. Took 0.000048
-dest face 0: Took 0.708357
-dest face 1: Took 0.600914
-dest face 2: Took 0.692873
-dest face 3: Took 0.645875
-dest face 4: Took 0.447435
-dest face 5: Took 0.744401
-total convolution time: 3.839856
-exterior duration = 3.840073
-
-compiler switch: AVX
-
-precalculate destination normals. Took 0.000034
-dest face 0: Took 0.714764
-dest face 1: Took 0.606571
-dest face 2: Took 0.681859
-dest face 3: Took 0.652821
-dest face 4: Took 0.462139
-dest face 5: Took 0.761566
-total convolution time: 3.879721
-
------------------------------------------------------------------------------------------------------
-
+precalculate destination normals. Took 0.000326
+dest face 0: Took 8.995240
+dest face 1: Took 9.270900
+dest face 2: Took 9.465067
+dest face 3: Took 9.349907
+dest face 4: Took 9.459958
+dest face 5: Took 9.420178
+total convolution time: 55.961252
+IrradianceConvolution_v0e_e_m_Base
+precalculate destination normals. Took 0.000288
+dest face 0: Took 12.608569
+dest face 1: Took 13.001238
+dest face 2: Took 12.512260
+dest face 3: Took 12.661433
+dest face 4: Took 12.481515
+dest face 5: Took 12.384335
+total convolution time: 13.003732
+IrradianceConvolution_v0e_e_m_Base
+precalculate destination normals. Took 0.000421
+dest face 0: Took 12.827241
+dest face 1: Took 12.951330
+dest face 2: Took 12.823261
+dest face 3: Took 12.430582
+dest face 4: Took 12.411224
+dest face 5: Took 12.565821
+total convolution time: 12.953837
+IrradianceConvolution_v0e_e_m_Base
+precalculate destination normals. Took 0.000428
+dest face 0: Took 39.079646
+dest face 1: Took 39.067364
+dest face 2: Took 39.060685
+dest face 3: Took 39.093842
+dest face 4: Took 39.169198
+dest face 5: Took 39.136373
+total convolution time: 39.172086
+IrradianceConvolution_v0e_f_m_Base
+precalculate destination normals. Took 0.000207
+dest face 0: Took 12.951380
+dest face 1: Took 13.311504
+dest face 2: Took 12.827197
+dest face 3: Took 13.114091
+dest face 4: Took 12.887629
+dest face 5: Took 12.888717
+total convolution time: 13.314074
 IrradianceConvolution_v1
-
-Derivation of v0. Uses thread per dest face.
-
-compiler switch: SSE2
-
-dest face 0: Took 1.174393
-dest face 1: Took 1.175885
-dest face 2: Took 1.173264
-dest face 3: Took 1.183861
-dest face 4: Took 1.162576
-dest face 5: Took 1.158917
-total convolution time: 1.184927
-exterior duration = 1.185083
-
-compiler switch: AVX
-
-dest face 0: Took 1.150163
-dest face 1: Took 1.147397
-dest face 2: Took 1.127826
-dest face 3: Took 1.127503
-dest face 4: Took 1.133993
-dest face 5: Took 1.118597
-total convolution time: 1.167209
-
------------------------------------------------------------------------------------------------------
-
+dest face 0: Took 19.009755
+dest face 1: Took 18.934071
+dest face 2: Took 18.667872
+dest face 3: Took 18.846715
+dest face 4: Took 18.810313
+dest face 5: Took 18.885918
+total convolution time: 19.010175
 IrradianceConvolution_v2
-
-Derivation of v0. Uses thread per source face.
-
-cost:
-
-    Has to create dest_width^2 threads
-
-compiler switch: SSE2
-
-dest face 0: Took 1.311897
-dest face 1: Took 1.302464
-dest face 2: Took 1.162126
-dest face 3: Took 1.136271
-dest face 4: Took 1.127353
-dest face 5: Took 1.213746
-total convolution time: 7.254172
-exterior duration = 7.254204
-
-compiler switch: AVX
-
-dest face 0: Took 1.060365
-dest face 1: Took 1.529202
-dest face 2: Took 1.124677
-dest face 3: Took 1.279810
-dest face 4: Took 1.635191
-dest face 5: Took 0.904679
-total convolution time: 7.534260
-
------------------------------------------------------------------------------------------------------
-
-IrradianceConvolution_v3
-
-Derivation of v2. Constructs tasks per source face, which are then divided between six threads that
-run continously.
-
-compiler switch: SSE2
-
-thread 0: Took 1.258288
-thread 1: Took 1.232248
-thread 2: Took 1.254356
-thread 3: Took 1.241774
-thread 4: Took 1.243972
-thread 5: Took 1.264128
-total convolution time: 1.265891
-exterior duration = 1.266055
-
-compiler switch:AVX
-
-thread 0: Took 1.209924
-thread 1: Took 1.206061
-thread 2: Took 1.221126
-thread 3: Took 1.194779
-thread 4: Took 1.193912
-thread 5: Took 1.201282
-total convolution time: 1.221989
-
------------------------------------------------------------------------------------------------------
-
-IrradianceConvolution_v3b
-
-Matrix in row major instead of the usual column major. 
-
-cost:
-
-    Slightly different algorithm for Matrix * vector that is unoptimal for scalar code
-
-compiler switch: SSE2
-
-thread 0: Took 1.241548
-thread 1: Took 1.238770
-thread 2: Took 1.226924
-thread 3: Took 1.205949
-thread 4: Took 1.231864
-thread 5: Took 1.249115
-total convolution time: 1.252471
-exterior duration = 1.252628
-
-compiler switch: AVX
-
-thread 0: Took 1.160426
-thread 1: Took 1.165783
-thread 2: Took 1.156243
-thread 3: Took 1.148420
-thread 4: Took 1.146807
-thread 5: Took 1.151013
-total convolution time: 1.166368
-
------------------------------------------------------------------------------------------------------
-
-IrradianceConvolution_v4
-
-Derivation of v3b. Uses hand optimized vector intrinsics.
-
-compiler switch: SSE2
-
-thread 0: Took 0.975651
-thread 1: Took 1.041653
-thread 2: Took 1.021213
-thread 3: Took 1.012318
-thread 4: Took 1.033247
-thread 5: Took 0.997085
-total convolution time: 1.042307
-
-compiler switch: AVX
-
-thread 0: Took 1.056316
-thread 1: Took 1.079120
-thread 2: Took 1.086496
-thread 3: Took 1.085055
-thread 4: Took 1.047801
-thread 5: Took 1.064990
-total convolution time: 1.087296
+dest face 0: Took 17.354382
+dest face 1: Took 18.373699
+dest face 2: Took 16.201278
+dest face 3: Took 19.568711
+dest face 4: Took 17.919304
+dest face 5: Took 18.137287
+total convolution time: 107.554663
+IrradianceConvolution_v3_Base
+thread 0: Took 20.220478
+thread 1: Took 20.316134
+thread 2: Took 20.327599
+thread 3: Took 20.370580
+thread 4: Took 20.275104
+thread 5: Took 20.370020
+total convolution time: 20.374226
+IrradianceConvolution_v3_Base
+thread 0: Took 19.989576
+thread 1: Took 20.211305
+thread 2: Took 20.075076
+thread 3: Took 20.173034
+thread 4: Took 20.089920
+thread 5: Took 20.059711
+total convolution time: 20.214698
+IrradianceConvolution_v3_Base
+thread 0: Took 17.423545
+thread 1: Took 18.203028
+thread 2: Took 18.849545
+thread 3: Took 17.316746
+thread 4: Took 17.286056
+thread 5: Took 17.393064
+total convolution time: 18.853129
 
 
+-------------------------------------------------
+Irradiance map generator
+envmap format = fp16_abgr
+source width = 256
+irradiance map format = fp16_abgr
+dest width = 32
+solid angle precalc, t = 0.035795
+source copy. t = 0.015114
+IrradianceConvolution_v0
+dest face 0: Took 4.159438
+dest face 1: Took 4.118471
+dest face 2: Took 4.039543
+dest face 3: Took 4.066813
+dest face 4: Took 4.149093
+dest face 5: Took 4.142141
+total convolution time: 24.675502
+IrradianceConvolution_v0b
+dest face 0: Took 8.331699
+dest face 1: Took 8.483770
+dest face 2: Took 8.481462
+dest face 3: Took 8.350586
+dest face 4: Took 8.399126
+dest face 5: Took 8.447879
+total convolution time: 50.494524
+IrradianceConvolution_v0c
+dest face 0: Took 10.137622
+dest face 1: Took 10.113664
+dest face 2: Took 10.113824
+dest face 3: Took 10.242783
+dest face 4: Took 10.153644
+dest face 5: Took 10.138531
+total convolution time: 60.900070
+IrradianceConvolution_v0d
+dest face 0: Took 4.546879
+dest face 1: Took 4.454024
+dest face 2: Took 4.443896
+dest face 3: Took 4.464438
+dest face 4: Took 4.459919
+dest face 5: Took 4.437479
+total convolution time: 26.806635
+IrradianceConvolution_v0e
+precalculate destination normals. Took 0.000165
+dest face 0: Took 2.615910
+dest face 1: Took 2.594150
+dest face 2: Took 2.558931
+dest face 3: Took 2.526461
+dest face 4: Took 2.564419
+dest face 5: Took 2.555521
+total convolution time: 15.415394
+IrradianceConvolution_v0e_b
+precalculate destination normals. Took 0.000084
+dest face 0: Took 2.645152
+dest face 1: Took 2.719358
+dest face 2: Took 2.785188
+dest face 3: Took 2.727015
+dest face 4: Took 2.720358
+dest face 5: Took 2.658165
+total convolution time: 16.255237
+IrradianceConvolution_v0e_c
+precalculate destination normals. Took 0.000084
+dest face 0: Took 2.464474
+dest face 1: Took 2.445258
+dest face 2: Took 2.422941
+dest face 3: Took 2.402838
+dest face 4: Took 2.445897
+dest face 5: Took 2.418972
+total convolution time: 14.600382
+IrradianceConvolution_v0e_d
+precalculate destination normals. Took 0.000084
+dest face 0: Took 2.653620
+dest face 1: Took 2.648680
+dest face 2: Took 2.632376
+dest face 3: Took 2.611534
+dest face 4: Took 2.652872
+dest face 5: Took 2.643454
+total convolution time: 15.842536
+IrradianceConvolution_v0e_e
+precalculate destination normals. Took 0.000084
+dest face 0: Took 2.509277
+dest face 1: Took 2.465621
+dest face 2: Took 2.430390
+dest face 3: Took 2.430529
+dest face 4: Took 2.322925
+dest face 5: Took 2.320639
+total convolution time: 14.479382
+IrradianceConvolution_v0e_e_m_Base
+precalculate destination normals. Took 0.000076
+dest face 0: Took 3.238645
+dest face 1: Took 3.261003
+dest face 2: Took 3.202489
+dest face 3: Took 3.173971
+dest face 4: Took 3.214305
+dest face 5: Took 3.230596
+total convolution time: 3.262103
+IrradianceConvolution_v0e_e_m_Base
+precalculate destination normals. Took 0.000079
+dest face 0: Took 3.307203
+dest face 1: Took 3.285331
+dest face 2: Took 3.221337
+dest face 3: Took 3.207234
+dest face 4: Took 3.266592
+dest face 5: Took 3.304579
+total convolution time: 3.307833
+IrradianceConvolution_v0e_e_m_Base
+precalculate destination normals. Took 0.000087
+dest face 0: Took 10.257469
+dest face 1: Took 10.204483
+dest face 2: Took 13.107535
+dest face 3: Took 10.129984
+dest face 4: Took 10.288250
+dest face 5: Took 10.320398
+total convolution time: 13.108646
+IrradianceConvolution_v0e_f_m_Base
+precalculate destination normals. Took 0.000039
+dest face 0: Took 3.371542
+dest face 1: Took 3.404560
+dest face 2: Took 3.301136
+dest face 3: Took 3.293928
+dest face 4: Took 3.377350
+dest face 5: Took 3.409130
+total convolution time: 3.501938
+IrradianceConvolution_v1
+dest face 0: Took 4.659551
+dest face 1: Took 4.670921
+dest face 2: Took 4.666187
+dest face 3: Took 4.646785
+dest face 4: Took 4.635754
+dest face 5: Took 4.664889
+total convolution time: 4.673719
+IrradianceConvolution_v2
+dest face 0: Took 3.983863
+dest face 1: Took 4.195697
+dest face 2: Took 3.939380
+dest face 3: Took 3.770490
+dest face 4: Took 4.769886
+dest face 5: Took 4.668367
+total convolution time: 25.327686
+IrradianceConvolution_v3_Base
+thread 0: Took 4.862339
+thread 1: Took 4.952039
+thread 2: Took 4.989400
+thread 3: Took 4.882848
+thread 4: Took 4.956486
+thread 5: Took 4.935937
+total convolution time: 4.990743
+IrradianceConvolution_v3_Base
+thread 0: Took 4.908777
+thread 1: Took 4.940105
+thread 2: Took 4.955836
+thread 3: Took 4.909846
+thread 4: Took 4.953855
+thread 5: Took 4.933952
+total convolution time: 4.957293
+IrradianceConvolution_v3_Base
+thread 0: Took 4.388006
+thread 1: Took 4.380311
+thread 2: Took 4.416022
+thread 3: Took 4.449172
+thread 4: Took 4.433955
+thread 5: Took 4.402721
+total convolution time: 4.450750
 
+
+-----------------------------------------------------------------------
+
+envmap format = fp16_abgr
+source width = 256
+irradiance map format = fp16_abgr
+dest width = 16
+solid angle precalc, t = 0.035660
+source copy. t = 0.014766
+IrradianceConvolution_v0
+dest face 0: Took 1.017884
+dest face 1: Took 1.009519
+dest face 2: Took 1.004170
+dest face 3: Took 0.996113
+dest face 4: Took 1.006545
+dest face 5: Took 1.028088
+total convolution time: 6.062321
+IrradianceConvolution_v0b
+dest face 0: Took 2.162590
+dest face 1: Took 2.110316
+dest face 2: Took 2.096954
+dest face 3: Took 2.095595
+dest face 4: Took 2.074275
+dest face 5: Took 2.060678
+total convolution time: 12.600412
+IrradianceConvolution_v0c
+dest face 0: Took 2.513289
+dest face 1: Took 2.508743
+dest face 2: Took 2.512198
+dest face 3: Took 2.526486
+dest face 4: Took 2.519817
+dest face 5: Took 2.529647
+total convolution time: 15.110183
+IrradianceConvolution_v0d
+dest face 0: Took 1.149148
+dest face 1: Took 1.136840
+dest face 2: Took 1.123092
+dest face 3: Took 1.117314
+dest face 4: Took 1.101376
+dest face 5: Took 1.100680
+total convolution time: 6.728452
+IrradianceConvolution_v0e
+precalculate destination normals. Took 0.000061
+dest face 0: Took 0.718905
+dest face 1: Took 0.727570
+dest face 2: Took 0.706214
+dest face 3: Took 0.692820
+dest face 4: Took 0.724853
+dest face 5: Took 0.706578
+total convolution time: 4.276942
+IrradianceConvolution_v0e_b
+precalculate destination normals. Took 0.000024
+dest face 0: Took 0.741515
+dest face 1: Took 0.717851
+dest face 2: Took 0.744913
+dest face 3: Took 0.724884
+dest face 4: Took 0.741986
+dest face 5: Took 0.756959
+total convolution time: 4.428109
+IrradianceConvolution_v0e_c
+precalculate destination normals. Took 0.000024
+dest face 0: Took 0.701760
+dest face 1: Took 0.672299
+dest face 2: Took 0.681731
+dest face 3: Took 0.669450
+dest face 4: Took 0.697123
+dest face 5: Took 0.709542
+total convolution time: 4.131906
+IrradianceConvolution_v0e_d
+precalculate destination normals. Took 0.000024
+dest face 0: Took 0.776855
+dest face 1: Took 0.763170
+dest face 2: Took 0.778416
+dest face 3: Took 0.758895
+dest face 4: Took 0.774769
+dest face 5: Took 0.773998
+total convolution time: 4.626106
+IrradianceConvolution_v0e_e
+precalculate destination normals. Took 0.000025
+dest face 0: Took 0.710738
+dest face 1: Took 0.689298
+dest face 2: Took 0.710339
+dest face 3: Took 0.690580
+dest face 4: Took 0.675843
+dest face 5: Took 0.683818
+total convolution time: 4.160618
+IrradianceConvolution_v0e_e_m_Base
+precalculate destination normals. Took 0.000023
+dest face 0: Took 0.949333
+dest face 1: Took 0.953524
+dest face 2: Took 0.966353
+dest face 3: Took 0.898306
+dest face 4: Took 0.929147
+dest face 5: Took 0.947394
+total convolution time: 0.967479
+IrradianceConvolution_v0e_e_m_Base
+precalculate destination normals. Took 0.000024
+dest face 0: Took 0.938688
+dest face 1: Took 0.957735
+dest face 2: Took 0.952105
+dest face 3: Took 0.935738
+dest face 4: Took 0.941357
+dest face 5: Took 0.935874
+total convolution time: 0.958309
+IrradianceConvolution_v0e_e_m_Base
+precalculate destination normals. Took 0.000023
+dest face 0: Took 2.702479
+dest face 1: Took 2.713615
+dest face 2: Took 2.686208
+dest face 3: Took 2.716054
+dest face 4: Took 2.701733
+dest face 5: Took 2.721597
+total convolution time: 2.722684
+IrradianceConvolution_v0e_f_m_Base
+precalculate destination normals. Took 0.000013
+dest face 0: Took 0.947084
+dest face 1: Took 0.952631
+dest face 2: Took 0.926472
+dest face 3: Took 0.927591
+dest face 4: Took 0.946089
+dest face 5: Took 0.945945
+total convolution time: 0.953242
+IrradianceConvolution_v1
+dest face 0: Took 1.188681
+dest face 1: Took 1.183693
+dest face 2: Took 1.187043
+dest face 3: Took 1.177765
+dest face 4: Took 1.221070
+dest face 5: Took 1.189699
+total convolution time: 1.222101
+IrradianceConvolution_v2
+dest face 0: Took 0.983166
+dest face 1: Took 1.078976
+dest face 2: Took 0.945221
+dest face 3: Took 1.004661
+dest face 4: Took 1.154476
+dest face 5: Took 1.159792
+total convolution time: 6.326296
+IrradianceConvolution_v3_Base
+thread 0: Took 1.241704
+thread 1: Took 1.253747
+thread 2: Took 1.233757
+thread 3: Took 1.236446
+thread 4: Took 1.241128
+thread 5: Took 1.232669
+total convolution time: 1.254395
+IrradianceConvolution_v3_Base
+thread 0: Took 1.251184
+thread 1: Took 1.215188
+thread 2: Took 1.237433
+thread 3: Took 1.219489
+thread 4: Took 1.229152
+thread 5: Took 1.255746
+total convolution time: 1.257100
+IrradianceConvolution_v3_Base
+thread 0: Took 1.044680
+thread 1: Took 1.038809
+thread 2: Took 1.042610
+thread 3: Took 1.024793
+thread 4: Took 1.052927
+thread 5: Took 1.047111
+total convolution time: 1.053982
