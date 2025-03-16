@@ -201,7 +201,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	Ceng::String out = "display adapters = ";
 	out += adapterCount;
-
 	Ceng::Log::Print(out);
 
 	for (uint32_t k = 0; k < adapterCount; k++)
@@ -238,6 +237,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	Ceng::Log::Print("Using adapter:");
 	Ceng::Log::Print(adapterDesc.description);
 	Ceng::Log::Print("\n");
+
+
+
 
 	//**************************************************************************
 	// Enumerate display modes for C32_ARGB
@@ -771,6 +773,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	CEngine::Vec3 boxSideHalf = { 4.0f, 2.5f, 4.0f };
 
 	eresult = envMapManager->AddEnvMapParallaxAABB("EnvProbe_1.exr", boundaryPos, boxSideHalf);
+	//eresult = envMapManager->AddEnvMap("EnvProbe_1.exr");
 
 	if (eresult != CEngine::EngineResult::ok)
 	{
@@ -799,7 +802,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	skyboxOptions.generateIrradianceMap = true;
 	skyboxOptions.irradianceSize = 16;
 
-	eresult = textureManager.LoadCubemap("envmap.bmp", skyboxOptions, skybox, skyboxIrradiance);
+	//eresult = textureManager.LoadCubemap("envmap.bmp", skyboxOptions, skybox, skyboxIrradiance);
+	eresult = textureManager.LoadCubemap("EnvProbe_1.exr", skyboxOptions, skybox, skyboxIrradiance);
 
 	if (eresult != CEngine::EngineResult::ok)
 	{
@@ -976,7 +980,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	}
 	std::shared_ptr<CEngine::Entity> cubeEntity;
 
-	initJSON["position"] = { 0.0f, 1.0f, 0.0f };
+	initJSON["position"] = { 0.0f, 2.0f, 0.0f };
 
 	rotJSON["rotMode"] = "EULER_XYZ";
 	rotJSON["angles"] = { 0.0f, 45.0f, 0.0f };
