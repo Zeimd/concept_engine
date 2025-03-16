@@ -195,7 +195,7 @@ public:
 
 					// We know that our matrix is a 3x3 rotation matrix, and we only need xyz of output
 					// vector, so we can skip the fourth dimension
-
+	
 					__m128i allX = _mm_shuffle_epi32(*(__m128i*) & inputDir, 0b0);
 					__m128i allY = _mm_shuffle_epi32(*(__m128i*) & inputDir, 0b01010101);
 					__m128i allZ = _mm_shuffle_epi32(*(__m128i*) & inputDir, 0b10101010);
@@ -2734,26 +2734,33 @@ const EngineResult::value CEngine::CreateIrradianceMap(Ceng::Cubemap *envMap, Ce
 
 	start = Ceng_HighPrecisionTimer();
 
-	//eresult = IrradianceConvolution_v0(common, irradianceMap);
-	//eresult = IrradianceConvolution_v0b(common, irradianceMap);
-	//eresult = IrradianceConvolution_v0c(common, irradianceMap);
-	//eresult = IrradianceConvolution_v0d(common, irradianceMap);
-	//eresult = IrradianceConvolution_v0e(common, irradianceMap);
-	//eresult = IrradianceConvolution_v0e_b(common, irradianceMap);
-	//eresult = IrradianceConvolution_v0e_c(common, irradianceMap);
-	//eresult = IrradianceConvolution_v0e_d(common, irradianceMap);
-	//eresult = IrradianceConvolution_v0e_e(common, irradianceMap);
+	/*
+	eresult = IrradianceConvolution_v0(common, irradianceMap);
+	eresult = IrradianceConvolution_v0b(common, irradianceMap);
+	eresult = IrradianceConvolution_v0c(common, irradianceMap);
+	eresult = IrradianceConvolution_v0d(common, irradianceMap);
 	
-	//eresult = IrradianceConvolution_v0e_e_m(common, irradianceMap);
-	//eresult = IrradianceConvolution_v0e_e_m_b(common, irradianceMap);
-	//eresult = IrradianceConvolution_v0e_e_m_c(common, irradianceMap);
+	eresult = IrradianceConvolution_v0e(common, irradianceMap);
+	eresult = IrradianceConvolution_v0e_b(common, irradianceMap);
+	eresult = IrradianceConvolution_v0e_c(common, irradianceMap);
+	eresult = IrradianceConvolution_v0e_d(common, irradianceMap);
+	eresult = IrradianceConvolution_v0e_e(common, irradianceMap);
+	*/
+	eresult = IrradianceConvolution_v0e_e_m(common, irradianceMap);
+	eresult = IrradianceConvolution_v0e_e_m_b(common, irradianceMap);
+	eresult = IrradianceConvolution_v0e_e_m_c(common, irradianceMap);
+	
+	
 	eresult = IrradianceConvolution_v0e_f_m(common, irradianceMap);
 
-	//eresult = IrradianceConvolution_v1(common, irradianceMap);
-	//eresult = IrradianceConvolution_v2(common, irradianceMap);
-	//eresult = IrradianceConvolution_v3(common, irradianceMap);
-	//eresult = IrradianceConvolution_v3b(common, irradianceMap);
-	//eresult = IrradianceConvolution_v3c(common, irradianceMap);
+	/*
+	eresult = IrradianceConvolution_v1(common, irradianceMap);
+	eresult = IrradianceConvolution_v2(common, irradianceMap);
+	eresult = IrradianceConvolution_v3(common, irradianceMap);
+	eresult = IrradianceConvolution_v3b(common, irradianceMap);
+	eresult = IrradianceConvolution_v3c(common, irradianceMap);
+	*/
+	
 
 	end = Ceng_HighPrecisionTimer();
 
