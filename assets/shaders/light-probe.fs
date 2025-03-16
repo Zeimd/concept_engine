@@ -62,6 +62,7 @@ void main()
 
     vec3 rayDir_eye = normalize(f_eyePos);
 
+    // GLSL spec: rayDir_eye must be towards the fragment
     vec3 reflectDir_eye = reflect(rayDir_eye,normal);
 
     // Transform reflected direction to world space (where the cube map is defined)
