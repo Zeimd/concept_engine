@@ -204,7 +204,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	Ceng::Log::Print(out);
 
-	for (int k = 0; k < adapterCount; k++)
+	for (uint32_t k = 0; k < adapterCount; k++)
 	{
 		renderCore->EnumAdapter(k, &adapter);
 
