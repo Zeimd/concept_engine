@@ -14,7 +14,7 @@
     <ProjectGuid>{82EAE91F-5EA1-4140-B785-F3AB1BC7BA94}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>opengltest</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
