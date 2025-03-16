@@ -1,43 +1,6 @@
 {
 	"textures" : 
 	{
-		"wood-ceiling-normal" : 
-		{
-			"sRGB" : false,
-			"wrapmode" : "repeat",
-			"normalmap" : true,
-			"file" : [ "wood-ceiling-normal.dds" , "wood-ceiling-normal.png" ]
-		}
-		,
-		"door" : 
-		{
-			"sRGB" : true,
-			"wrapmode" : "repeat",
-			"file" : [ "door.dds" , "door.png" ]
-		}
-		,
-		"wood-ceiling" : 
-		{
-			"sRGB" : true,
-			"wrapmode" : "repeat",
-			"file" : [ "wood-ceiling.dds" , "wood-ceiling.png" ]
-		}
-		,
-		"brickwall" : 
-		{
-			"sRGB" : true,
-			"wrapmode" : "repeat",
-			"file" : [ "brickwall.dds" , "brickwall.png" ]
-		}
-		,
-		"brickwall-normal" : 
-		{
-			"sRGB" : false,
-			"wrapmode" : "repeat",
-			"normalmap" : true,
-			"file" : [ "brickwall-normal.dds" , "brickwall-normal.png" ]
-		}
-		,
 		"bake-half-zip" : 
 		{
 			"sRGB" : false,
@@ -45,26 +8,11 @@
 			"file" : [ "bake-half-zip.exr" ]
 		}
 		,
-		"rock" : 
+		"door" : 
 		{
 			"sRGB" : true,
 			"wrapmode" : "repeat",
-			"file" : [ "rock.dds" , "rock.png" ]
-		}
-		,
-		"rock-normal" : 
-		{
-			"sRGB" : false,
-			"wrapmode" : "repeat",
-			"normalmap" : true,
-			"file" : [ "rock-normal.dds" , "rock-normal.png" ]
-		}
-		,
-		"Door-material" : 
-		{
-			"sRGB" : false,
-			"wrapmode" : "repeat",
-			"file" : [ "Door-material.dds" , "Door-material.dds" ]
+			"file" : [ "door.png" , "door.png" ]
 		}
 		,
 		"door-normal" : 
@@ -74,56 +22,17 @@
 			"normalmap" : true,
 			"file" : [ "door-normal.dds" , "door-normal.png" ]
 		}
+		,
+		"Door-material" : 
+		{
+			"sRGB" : false,
+			"wrapmode" : "repeat",
+			"file" : [ "Door-material.dds" , "Door-material.dds" ]
+		}
 	}
 	,
 	"materials" : 
 	{
-		"Light_tube" : 
-		{
-			"vs" : "gbuffer.vs",
-			"fs" : "gbuffer.fs",
-			"fs_flags" : [ "UNIFORM_COLOR" , "NO_NORMAL_MAP" , "LIGHTMAP_SCALAR" , "MATERIAL_UNIFORM" ],
-			"diffuseColor" : [ 1.0 , 1.0 , 1.0 ],
-			"lightMap" : [ "tex2d" , "bake-half-zip" ],
-			"materialRoughness" : 0.0,
-			"materialMetallic" : 0.0
-		}
-		,
-		"Wood_ceiling" : 
-		{
-			"vs" : "gbuffer.vs",
-			"fs" : "gbuffer.fs",
-			"fs_flags" : [ "LIGHTMAP_SCALAR" , "MATERIAL_UNIFORM" ],
-			"diffuseTex" : [ "tex2d" , "wood-ceiling" ],
-			"lightMap" : [ "tex2d" , "bake-half-zip" ],
-			"normalMap" : [ "tex2d" , "wood-ceiling-normal" ],
-			"materialRoughness" : 0.4000000059604645,
-			"materialMetallic" : 0.03999999910593033
-		}
-		,
-		"Rock" : 
-		{
-			"vs" : "gbuffer.vs",
-			"fs" : "gbuffer.fs",
-			"fs_flags" : [ "LIGHTMAP_SCALAR" , "MATERIAL_UNIFORM" ],
-			"diffuseTex" : [ "tex2d" , "rock" ],
-			"lightMap" : [ "tex2d" , "bake-half-zip" ],
-			"normalMap" : [ "tex2d" , "rock-normal" ],
-			"materialRoughness" : 0.800000011920929,
-			"materialMetallic" : 0.30000001192092896
-		}
-		,
-		"Door" : 
-		{
-			"vs" : "gbuffer.vs",
-			"fs" : "gbuffer.fs",
-			"fs_flags" : [ "LIGHTMAP_SCALAR" , "MATERIAL_TEXTURE" ],
-			"diffuseTex" : [ "tex2d" , "door" ],
-			"lightMap" : [ "tex2d" , "bake-half-zip" ],
-			"normalMap" : [ "tex2d" , "door-normal" ],
-			"materialTex" : [ "tex2d" , "Door-material" ]
-		}
-		,
 		"Ceiling_light" : 
 		{
 			"vs" : "gbuffer.vs",
@@ -135,16 +44,26 @@
 			"materialMetallic" : 1.0
 		}
 		,
-		"Brickwall" : 
+		"Light_tube" : 
 		{
 			"vs" : "gbuffer.vs",
 			"fs" : "gbuffer.fs",
-			"fs_flags" : [ "LIGHTMAP_SCALAR" , "MATERIAL_UNIFORM" ],
-			"diffuseTex" : [ "tex2d" , "brickwall" ],
+			"fs_flags" : [ "UNIFORM_COLOR" , "NO_NORMAL_MAP" , "LIGHTMAP_SCALAR" , "MATERIAL_UNIFORM" ],
+			"diffuseColor" : [ 1.0 , 1.0 , 1.0 ],
 			"lightMap" : [ "tex2d" , "bake-half-zip" ],
-			"normalMap" : [ "tex2d" , "brickwall-normal" ],
-			"materialRoughness" : 0.800000011920929,
-			"materialMetallic" : 0.03999999910593033
+			"materialRoughness" : 0.0,
+			"materialMetallic" : 0.0
+		}
+		,
+		"Door" : 
+		{
+			"vs" : "gbuffer.vs",
+			"fs" : "gbuffer.fs",
+			"fs_flags" : [ "LIGHTMAP_SCALAR" , "MATERIAL_TEXTURE" ],
+			"diffuseTex" : [ "tex2d" , "door" ],
+			"lightMap" : [ "tex2d" , "bake-half-zip" ],
+			"normalMap" : [ "tex2d" , "door-normal" ],
+			"materialTex" : [ "tex2d" , "Door-material" ]
 		}
 	}
 }
