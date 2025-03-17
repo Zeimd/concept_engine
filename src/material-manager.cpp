@@ -121,7 +121,7 @@ const EngineResult::value MaterialManager::LoadMaterialFile(const Ceng::StringUt
 
 	try
 	{
-		materialFile = json(fileReader);
+		materialFile = json::parse(fileReader);
 	}
 	catch (std::exception &e)
 	{

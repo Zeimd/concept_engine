@@ -61,7 +61,7 @@ EngineResult::value SceneManager::LoadScene(const Ceng::StringUtf8& file, Ceng::
 
 	try
 	{
-		sceneFile = json(fileReader);
+		sceneFile = json::parse(fileReader);
 	}
 	catch (std::exception& e)
 	{
