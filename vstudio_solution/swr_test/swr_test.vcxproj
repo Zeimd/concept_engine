@@ -87,7 +87,8 @@
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);;$(SolutionDir)\..\..\ceng-core\inc;$(SolutionDir)\..\..\ceng-core\deps\inc\;$(SolutionDir)\..\deps\inc\;$(SolutionDir)\..\deps\upng\;$(SolutionDir)\..\inc\</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(SolutionDir)\..\lib\win64\$(Configuration)\</LibraryPath>
-    <TargetName>$(ProjectName)-x64</TargetName>
+    <TargetName>$(ProjectName)-x64-debug</TargetName>
+    <OutDir>$(SolutionDir)\..\bin\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -152,6 +153,11 @@ copy "$(SolutionDir)\..\..\ceng-core\lib\win32\Release\*.pdb" "$(SolutionDir)\..
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);ceng-debug.lib</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>copy "$(SolutionDir)\..\deps\lib\win64\Debug\*.dll" "$(SolutionDir)\..\bin\"
+copy "$(SolutionDir)\..\..\ceng-core\lib\win64\Debug\*.dll" "$(SolutionDir)\..\bin\"
+copy "$(SolutionDir)\..\..\ceng-core\lib\win64\Debug\*.pdb" "$(SolutionDir)\..\bin\"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -169,6 +175,10 @@ copy "$(SolutionDir)\..\..\ceng-core\lib\win32\Release\*.pdb" "$(SolutionDir)\..
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);ceng.lib</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>copy "$(SolutionDir)\..\deps\lib\win64\Release\*.dll" "$(SolutionDir)\..\bin\"
+copy "$(SolutionDir)\..\..\ceng-core\lib\win64\Release\*.dll" "$(SolutionDir)\..\bin\"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\swr_test\swr_test.cpp" />
