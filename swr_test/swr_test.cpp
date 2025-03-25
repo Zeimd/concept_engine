@@ -710,6 +710,28 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	samplerDesc.addressV = Ceng::TextureAddressMode::clamp;
 	samplerDesc.addressW = Ceng::TextureAddressMode::clamp;
 
+	samplerDesc.minFilter = Ceng::TextureMinFilter::nearest_mip_nearest;
+	samplerDesc.magFilter = Ceng::TextureMagFilter::nearest;
+
+	samplerDesc.minLod = 0.0f;
+	samplerDesc.maxLod = 0.0f;
+	samplerDesc.mipLodBias = 0.0f;
+	samplerDesc.maxAnisotrophy = 0;
+
+	Ceng::SamplerState* nearestMipNearestSampler;
+
+	cresult = renderDevice->CreateSamplerState(samplerDesc, &nearestMipNearestSampler);
+	if (cresult != Ceng::CE_OK)
+	{
+		Ceng::Log::Print("Failed to create nearest sampler");
+		return 0;
+	}
+
+
+	samplerDesc.addressU = Ceng::TextureAddressMode::clamp;
+	samplerDesc.addressV = Ceng::TextureAddressMode::clamp;
+	samplerDesc.addressW = Ceng::TextureAddressMode::clamp;
+
 	samplerDesc.minFilter = Ceng::TextureMinFilter::linear;
 	samplerDesc.magFilter = Ceng::TextureMagFilter::linear;
 
@@ -721,6 +743,27 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	Ceng::SamplerState* linearSampler;
 
 	cresult = renderDevice->CreateSamplerState(samplerDesc, &linearSampler);
+	if (cresult != Ceng::CE_OK)
+	{
+		Ceng::Log::Print("Failed to create nearest sampler");
+		return 0;
+	}
+
+	samplerDesc.addressU = Ceng::TextureAddressMode::clamp;
+	samplerDesc.addressV = Ceng::TextureAddressMode::clamp;
+	samplerDesc.addressW = Ceng::TextureAddressMode::clamp;
+
+	samplerDesc.minFilter = Ceng::TextureMinFilter::linear_mip_linear;
+	samplerDesc.magFilter = Ceng::TextureMagFilter::linear;
+
+	samplerDesc.minLod = 0.0f;
+	samplerDesc.maxLod = 0.0f;
+	samplerDesc.mipLodBias = 0.0f;
+	samplerDesc.maxAnisotrophy = 0;
+
+	Ceng::SamplerState* linearMipLinearSampler;
+
+	cresult = renderDevice->CreateSamplerState(samplerDesc, &linearMipLinearSampler);
 	if (cresult != Ceng::CE_OK)
 	{
 		Ceng::Log::Print("Failed to create nearest sampler");
@@ -1340,6 +1383,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					{
 						activeSampler = linearSampler;
 					}
+
+					if (keyboard->IsPressed(Ceng::KEYBOARD_KEY::F3))
+					{
+						activeSampler = nearestMipNearestSampler;
+					}
+									
+					if (keyboard->IsPressed(Ceng::KEYBOARD_KEY::F4))
+					{
+						activeSampler = linearMipLinearSampler;
+					}
+					
 					
 				}
 
@@ -1479,6 +1533,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	nearestSampler->Release();
 	linearSampler->Release();
+
+	nearestMipNearestSampler->Release();
+	linearMipLinearSampler->Release();
 	
 	postDepthState->Release();
 
