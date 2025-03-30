@@ -177,7 +177,8 @@ copy "$(SolutionDir)\..\..\ceng-core\lib\win64\Debug\*.pdb" "$(SolutionDir)\..\b
     </Link>
     <PostBuildEvent>
       <Command>copy "$(SolutionDir)\..\deps\lib\win64\Release\*.dll" "$(SolutionDir)\..\bin\"
-copy "$(SolutionDir)\..\..\ceng-core\lib\win64\Release\*.dll" "$(SolutionDir)\..\bin\"</Command>
+copy "$(SolutionDir)\..\..\ceng-core\lib\win64\Release\*.dll" "$(SolutionDir)\..\bin\"
+copy "$(SolutionDir)\..\..\ceng-core\lib\win64\Release\*.pdb" "$(SolutionDir)\..\bin\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
