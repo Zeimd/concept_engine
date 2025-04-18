@@ -819,7 +819,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	Ceng::VertexBuffer* wallVertexBuffer;
 
-	cresult = renderDevice->CreateVertexBuffer(sizeof(Vertex), 4, Ceng::BufferUsage::gpu_read_only, &wallVertexBuffer);
+	cresult = renderDevice->CreateVertexBuffer(sizeof(Vertex), 6, Ceng::BufferUsage::gpu_read_only, &wallVertexBuffer);
 	if (cresult != Ceng::CE_OK)
 	{
 		Ceng::Log::Print("Failed to create vertex buffer");
@@ -869,6 +869,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	wallData.push_back(buildVertex);
 
+	// Second triangle
+
 	buildVertex.position.x = halfWidth;
 	buildVertex.position.y = 0.0f;
 	buildVertex.position.z = -10.0f;
@@ -876,6 +878,24 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	buildVertex.textureUV.y = 0.0f;
 
 	wallData.push_back(buildVertex);
+
+	buildVertex.position.x = -halfWidth;
+	buildVertex.position.y = 0.0f;
+	buildVertex.position.z = -10.0f;
+	buildVertex.textureUV.x = 0.0f;
+	buildVertex.textureUV.y = 0.0f;
+
+	wallData.push_back(buildVertex);
+
+	buildVertex.position.x = halfWidth;
+	buildVertex.position.y = height;
+	buildVertex.position.z = -10.0f;
+	buildVertex.textureUV.x = 1.0f;
+	buildVertex.textureUV.y = 1.0f;
+
+	wallData.push_back(buildVertex);
+
+
 
 	cresult = wallVertexBuffer->LoadData(&wallData[0]);
 	if (cresult != Ceng::CE_OK)
@@ -1493,7 +1513,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				//renderContext->SetPixelShaderResource(0, texView);
 				renderContext->SetPixelShaderResource(0, brickWallView);
 
-				renderContext->DrawPrimitive(Ceng::PRIMITIVE_TYPE::TRIANGLE_FAN, 0, 2);
+				int numQuads = 1;
+
+				for (int i = 0; i < numQuads; i++)
+				{
+					renderContext->DrawPrimitive(Ceng::PRIMITIVE_TYPE::TRIANGLE_LIST, 0, 2);
+					//renderContext->DrawPrimitive(Ceng::PRIMITIVE_TYPE::TRIANGLE_FAN, 0, 1);
+					//renderContext->DrawPrimitive(Ceng::PRIMITIVE_TYPE::TRIANGLE_FAN, 0, 2);
+				}
+				
 
 				renderContext->EndScene();
 
@@ -1510,9 +1538,21 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			}
 		}
 
-
+		// For debug purposes
+		//break;
 
 	} while (exitLoop == false);
+
+	
+	// for debug purposes
+	/*
+	while (1)
+	{
+
+	}
+	*/
+	
+	
 
 	//skyboxIrradianceView->Release();
 
