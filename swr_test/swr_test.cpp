@@ -1486,50 +1486,58 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				//////////////////////////////////////////////////////////////
 				// Forward rendering 
 
-				renderContext->SetDepthStencilState(gbufferDepthState);
-
-				renderContext->SetRasterizerState(&rasterizerState);
-				renderContext->SetViewport(0, 0, deferredParams.windowWidth, deferredParams.windowHeight);
-
 				cameraFullTransform = camera.GetFullTransformation();
 				normalTransform = camera.GetRotationMatrix();
 				fullVertexTransform = projectionMatrix * cameraFullTransform;
 
-				renderContext->SetBlendState(nullptr, nullptr);
+				renderContext->SetViewport(0, 0, deferredParams.windowWidth, deferredParams.windowHeight);
 
 				renderContext->SetRenderTarget(0, frontBufferTarget);
 
 				renderContext->ClearTarget(frontBufferTarget, Ceng::CE_Color(0.2f, 0.2f, 0.2f, 0.0f));
 				renderContext->ClearDepth(1.0);
 
-				renderContext->SetVertexStream(0, wallVertexBuffer, vertexStride, 0);
+				Ceng::INT32 fullRepeats = 1;
 
-				renderContext->SetVertexFormat(vertexFormat);
-
-				renderContext->SetShaderProgram(shaderProg);
-
-				vs_fullVertexTransform->SetMatrix_4x4(&fullVertexTransform.data[0][0], false);
-
-				ps_diffuseTextureUnit->SetInt(0);
-
-				renderContext->SetPixelShaderSamplerState(0, activeSampler);
-
-				//renderContext->SetPixelShaderResource(0, texView);
-				renderContext->SetPixelShaderResource(0, brickWallView);
-
-				int numQuads = 1;
-
-				for (int i = 0; i < numQuads; i++)
+				for (int k = 0; k < fullRepeats; ++k)
 				{
-					renderContext->DrawPrimitive(Ceng::PRIMITIVE_TYPE::TRIANGLE_LIST, 0, 2 * quadRepeat);
-					//renderContext->DrawPrimitive(Ceng::PRIMITIVE_TYPE::TRIANGLE_LIST, 0, 2);
+					renderContext->SetDepthStencilState(gbufferDepthState);
 
+					renderContext->SetRasterizerState(&rasterizerState);
 
+					renderContext->SetBlendState(nullptr, nullptr);
 
-					//renderContext->DrawPrimitive(Ceng::PRIMITIVE_TYPE::TRIANGLE_FAN, 0, 1);
-					//renderContext->DrawPrimitive(Ceng::PRIMITIVE_TYPE::TRIANGLE_FAN, 0, 2);
+					renderContext->SetRenderTarget(0, frontBufferTarget);
+
+					//renderContext->ClearTarget(frontBufferTarget, Ceng::CE_Color(0.2f, 0.2f, 0.2f, 0.0f));
+					//renderContext->ClearDepth(1.0);
+
+					renderContext->SetVertexStream(0, wallVertexBuffer, vertexStride, 0);
+
+					renderContext->SetVertexFormat(vertexFormat);
+
+					renderContext->SetShaderProgram(shaderProg);
+
+					vs_fullVertexTransform->SetMatrix_4x4(&fullVertexTransform.data[0][0], false);
+
+					ps_diffuseTextureUnit->SetInt(0);
+
+					renderContext->SetPixelShaderSamplerState(0, activeSampler);
+
+					//renderContext->SetPixelShaderResource(0, texView);
+					renderContext->SetPixelShaderResource(0, brickWallView);
+
+					int numQuads = 1;
+
+					for (int i = 0; i < numQuads; i++)
+					{
+						renderContext->DrawPrimitive(Ceng::PRIMITIVE_TYPE::TRIANGLE_LIST, 0, 1);
+						//renderContext->DrawPrimitive(Ceng::PRIMITIVE_TYPE::TRIANGLE_LIST, 0, 2 * quadRepeat);
+
+						//renderContext->DrawPrimitive(Ceng::PRIMITIVE_TYPE::TRIANGLE_FAN, 0, 1);
+						//renderContext->DrawPrimitive(Ceng::PRIMITIVE_TYPE::TRIANGLE_FAN, 0, 2);
+					}
 				}
-				
 
 				renderContext->EndScene();
 
