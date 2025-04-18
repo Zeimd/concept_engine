@@ -819,7 +819,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	Ceng::VertexBuffer* wallVertexBuffer;
 
-	cresult = renderDevice->CreateVertexBuffer(sizeof(Vertex), 6, Ceng::BufferUsage::gpu_read_only, &wallVertexBuffer);
+	Ceng::INT32 quadRepeat = 1;
+
+	cresult = renderDevice->CreateVertexBuffer(sizeof(Vertex), 6 * quadRepeat, Ceng::BufferUsage::gpu_read_only, &wallVertexBuffer);
 	if (cresult != Ceng::CE_OK)
 	{
 		Ceng::Log::Print("Failed to create vertex buffer");
@@ -834,10 +836,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	Ceng::FLOAT32 halfWidth = 4.0f;
 	Ceng::FLOAT32 height = 4.0f;
 
-	buildVertex.position.x = -halfWidth;
-	buildVertex.position.y = 0.0f;
-	buildVertex.position.z = -10.0f;
-	buildVertex.position.w =  0.0f;
 	buildVertex.normal.x = 0.0f;
 	buildVertex.normal.y = 0.0f;
 	buildVertex.normal.z = 1.0f;
@@ -846,56 +844,62 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	buildVertex.tangent.y = 0.0f;
 	buildVertex.tangent.z = 0.0f;
 	buildVertex.tangent.w = 0.0f;
-	buildVertex.textureUV.x = 0.0f;
-	buildVertex.textureUV.y = 0.0f;
 	buildVertex.lightmapUV.x = 0.0f;
 	buildVertex.lightmapUV.y = 0.0f;
 
-	wallData.push_back(buildVertex);
+	for (int k = 0; k < quadRepeat; ++k)
+	{
+		buildVertex.position.x = -halfWidth;
+		buildVertex.position.y = 0.0f;
+		buildVertex.position.z = -10.0f;
+		buildVertex.position.w = 0.0f;
+		buildVertex.textureUV.x = 0.0f;
+		buildVertex.textureUV.y = 0.0f;
 
-	buildVertex.position.x = -halfWidth;
-	buildVertex.position.y = height;
-	buildVertex.position.z = -10.0f;
-	buildVertex.textureUV.x = 0.0f;
-	buildVertex.textureUV.y = 1.0f;
+		wallData.push_back(buildVertex);
 
-	wallData.push_back(buildVertex);
+		buildVertex.position.x = -halfWidth;
+		buildVertex.position.y = height;
+		buildVertex.position.z = -10.0f;
+		buildVertex.textureUV.x = 0.0f;
+		buildVertex.textureUV.y = 1.0f;
 
-	buildVertex.position.x = halfWidth;
-	buildVertex.position.y = height;
-	buildVertex.position.z = -10.0f;
-	buildVertex.textureUV.x = 1.0f;
-	buildVertex.textureUV.y = 1.0f;
+		wallData.push_back(buildVertex);
 
-	wallData.push_back(buildVertex);
+		buildVertex.position.x = halfWidth;
+		buildVertex.position.y = height;
+		buildVertex.position.z = -10.0f;
+		buildVertex.textureUV.x = 1.0f;
+		buildVertex.textureUV.y = 1.0f;
 
-	// Second triangle
+		wallData.push_back(buildVertex);
 
-	buildVertex.position.x = halfWidth;
-	buildVertex.position.y = 0.0f;
-	buildVertex.position.z = -10.0f;
-	buildVertex.textureUV.x = 1.0f;
-	buildVertex.textureUV.y = 0.0f;
+		// Second triangle
 
-	wallData.push_back(buildVertex);
+		buildVertex.position.x = halfWidth;
+		buildVertex.position.y = 0.0f;
+		buildVertex.position.z = -10.0f;
+		buildVertex.textureUV.x = 1.0f;
+		buildVertex.textureUV.y = 0.0f;
 
-	buildVertex.position.x = -halfWidth;
-	buildVertex.position.y = 0.0f;
-	buildVertex.position.z = -10.0f;
-	buildVertex.textureUV.x = 0.0f;
-	buildVertex.textureUV.y = 0.0f;
+		wallData.push_back(buildVertex);
 
-	wallData.push_back(buildVertex);
+		buildVertex.position.x = -halfWidth;
+		buildVertex.position.y = 0.0f;
+		buildVertex.position.z = -10.0f;
+		buildVertex.textureUV.x = 0.0f;
+		buildVertex.textureUV.y = 0.0f;
 
-	buildVertex.position.x = halfWidth;
-	buildVertex.position.y = height;
-	buildVertex.position.z = -10.0f;
-	buildVertex.textureUV.x = 1.0f;
-	buildVertex.textureUV.y = 1.0f;
+		wallData.push_back(buildVertex);
 
-	wallData.push_back(buildVertex);
+		buildVertex.position.x = halfWidth;
+		buildVertex.position.y = height;
+		buildVertex.position.z = -10.0f;
+		buildVertex.textureUV.x = 1.0f;
+		buildVertex.textureUV.y = 1.0f;
 
-
+		wallData.push_back(buildVertex);
+	}
 
 	cresult = wallVertexBuffer->LoadData(&wallData[0]);
 	if (cresult != Ceng::CE_OK)
@@ -1517,7 +1521,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 				for (int i = 0; i < numQuads; i++)
 				{
-					renderContext->DrawPrimitive(Ceng::PRIMITIVE_TYPE::TRIANGLE_LIST, 0, 2);
+					renderContext->DrawPrimitive(Ceng::PRIMITIVE_TYPE::TRIANGLE_LIST, 0, 2 * quadRepeat);
+					//renderContext->DrawPrimitive(Ceng::PRIMITIVE_TYPE::TRIANGLE_LIST, 0, 2);
+
+
+
 					//renderContext->DrawPrimitive(Ceng::PRIMITIVE_TYPE::TRIANGLE_FAN, 0, 1);
 					//renderContext->DrawPrimitive(Ceng::PRIMITIVE_TYPE::TRIANGLE_FAN, 0, 2);
 				}
