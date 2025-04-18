@@ -48,6 +48,8 @@ namespace CEngine
 		
 		virtual ~TextureManager();
 
+		void UnloadAll();
+
 		/*
 		// Get handle to a texture resource. It is loaded if not present in memory.
 		const std::size_t Find(const Ceng::StringUtf8 &filename,

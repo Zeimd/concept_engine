@@ -1623,6 +1623,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	wallVertexBuffer->Release();
 	vertexFormat->Release();
 
+	textureManager.UnloadAll();
+
 	swapChain->Release();
 	renderContext->Release();
 	renderDevice->Release();

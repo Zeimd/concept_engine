@@ -45,6 +45,10 @@ namespace CEngine
 		{
 		}
 
+		virtual void Release()
+		{
+		}
+
 		virtual Ceng::Texture2D* AsTexture2D()
 		{
 			return nullptr;
@@ -63,10 +67,11 @@ namespace CEngine
 
 	public:
 		Texture2D()
+			: texture(nullptr)
 		{
 		}
 
-		virtual ~Texture2D()
+		~Texture2D() override
 		{
 			if (texture != nullptr)
 			{
@@ -74,7 +79,16 @@ namespace CEngine
 			}
 		}
 
-		virtual Ceng::Texture2D* AsTexture2D() override
+		void Release() override
+		{
+			if (texture != nullptr)
+			{
+				texture->Release();
+				texture = nullptr;
+			}
+		}
+
+		Ceng::Texture2D* AsTexture2D() override
 		{
 			return texture;
 		}
@@ -96,7 +110,7 @@ namespace CEngine
 		{
 		}
 
-		virtual ~TextureCube()
+		~TextureCube() override
 		{
 			if (texture != nullptr)
 			{
@@ -104,7 +118,16 @@ namespace CEngine
 			}
 		}
 
-		virtual Ceng::Cubemap* AsCubemap() override
+		void Release() override
+		{
+			if (texture != nullptr)
+			{
+				texture->Release();
+				texture = nullptr;
+			}
+		}
+
+		Ceng::Cubemap* AsCubemap() override
 		{
 			return texture;
 		}

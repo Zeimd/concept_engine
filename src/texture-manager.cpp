@@ -190,6 +190,21 @@ TextureManager::~TextureManager()
 {
 }
 
+void TextureManager::UnloadAll()
+{
+	missingMaterialData2D->Release();
+
+	missingDiffuse2D->Release();
+	missingNormal2D->Release();
+
+	for (auto& x : textureList)
+	{
+		x->Release();
+	}
+
+	textureList.clear();
+}
+
 const EngineResult::value TextureManager::PeekAndValidateFile(const json &filename, const TextureType::value type,
 	const Ceng::BOOL sRGB, Ceng::IMAGE_FORMAT::value &out_format)
 {
