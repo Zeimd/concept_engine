@@ -159,8 +159,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	Ceng::Log::Print(temp);
 
-	Ceng::UINT32 resX = 800;
-	Ceng::UINT32 resY = 600;
+	Ceng::UINT32 resX = 1024;
+	Ceng::UINT32 resY = 768;
 
 	Ceng::BOOL fullScreenMode = false;
 
