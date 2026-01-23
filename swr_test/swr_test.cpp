@@ -1,3 +1,20 @@
+// Debug information
+#ifdef _MSC_VER
+
+#ifdef _DEBUG
+
+#define _CRTDBG_MAP_ALLOC
+#define _CRT_SECURE_NO_WARNINGS
+#include <crtdbg.h>
+
+#endif _DEBUG
+
+#ifdef _WIN32
+
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
+#include <sstream>
+
 #include <ceng.h>
 
 #include <ceng/lib/liblog.h>
@@ -30,7 +47,7 @@ const Ceng::CRESULT EnumBackbufferFormats(Ceng::GraphicsSystem* renderCore, Ceng
 
 	Ceng::DisplayMode displayMode;
 
-	for (int k = 0; k < modeCount; ++k)
+	for (Ceng::UINT32 k = 0; k < modeCount; ++k)
 	{
 		renderCore->EnumDisplayMode(adapter, k, format, displayMode);
 
@@ -63,32 +80,16 @@ const Ceng::CRESULT EnumBackbufferFormats(Ceng::GraphicsSystem* renderCore, Ceng
 	return Ceng::CE_OK;
 }
 
-
-// Debug information
-#ifdef _MSC_VER
-
-#ifdef _DEBUG
-
-#define _CRTDBG_MAP_ALLOC
-#define _CRT_SECURE_NO_WARNINGS
-#include <crtdbg.h>
-
-#endif
-
-#ifdef _WIN32
-
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
-#include <sstream>
-
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	LPSTR lpCmdLine, int nCmdShow)
 {
 
 #ifdef _DEBUG
+
 	// Detect memory leaks after main-function ends
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-#endif
+
+#endif // _DEBUG
 
 	double loadStart, loadEnd;
 
@@ -1645,6 +1646,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	shaderProg->Release();
 	pShader->Release();
+
+	basicShaderDesc->Release();
+
 	vShader->Release();
 
 	wallVertexBuffer->Release();
@@ -1672,6 +1676,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	return 0;
 }
 
-#endif
+#endif // _WIN32
 
-#endif
+#endif //_MSC_VER
