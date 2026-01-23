@@ -147,6 +147,7 @@ copy "$(SolutionDir)\..\..\ceng-core\lib\win32\Release\*.pdb" "$(SolutionDir)\..
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -167,6 +168,7 @@ copy "$(SolutionDir)\..\..\ceng-core\lib\win64\Debug\*.pdb" "$(SolutionDir)\..\b
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -182,7 +184,18 @@ copy "$(SolutionDir)\..\..\ceng-core\lib\win64\Release\*.pdb" "$(SolutionDir)\..
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\swr_test\BasicPixelShader.cpp" />
+    <ClCompile Include="..\..\swr_test\BasicPixelShaderDesc.cpp" />
     <ClCompile Include="..\..\swr_test\swr_test.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\swr_test\BasicPixelShader.h" />
+    <ClInclude Include="..\..\swr_test\BasicPixelShaderDesc.h" />
+    <ClInclude Include="..\..\swr_test\pshader-base.h" />
+    <ClInclude Include="..\..\swr_test\pshader-decl.h" />
+    <ClInclude Include="..\..\swr_test\pshader-input.h" />
+    <ClInclude Include="..\..\swr_test\pshader-output.h" />
+    <ClInclude Include="..\..\swr_test\pshader-types.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

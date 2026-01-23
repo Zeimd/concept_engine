@@ -8,6 +8,9 @@
 
 #include <upng.h>
 
+#include "BasicPixelShader.h"
+#include "BasicPixelShaderDesc.h"
+
 const Ceng::CRESULT EnumBackbufferFormats(Ceng::GraphicsSystem* renderCore, Ceng::GraphicsAdapter* adapter, Ceng::IMAGE_FORMAT::value format)
 {
 	Ceng::StringUtf8 out;
@@ -919,16 +922,32 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		return 0;
 	}
 
+	CEngine::BasicPixelShaderDesc* basicShaderDesc;
+
+	basicShaderDesc = new CEngine::BasicPixelShaderDesc();
+
 	Ceng::PixelShader* pShader;
 
-	cresult = renderDevice->CreatePixelShader("", &pShader);
+	/*
+	// Create shader from source code
+	cresult = renderDevice->CreatePixelShader(basicShaderDesc, &pShader);
 	if (cresult != Ceng::CE_OK)
 	{
-		Ceng::Log::Print("Failed to create pixel shader");
+		Ceng::Log::Print("Failed to create pixel shader from code");
 		Ceng::Log::Print(cresult);
 		return 0;
 	}
+	*/
 
+	// Create built-in pixel shader
+	cresult = renderDevice->CreatePixelShader("", &pShader);
+	if (cresult != Ceng::CE_OK)
+	{
+		Ceng::Log::Print("Failed to create built-in pixel shader");
+		Ceng::Log::Print(cresult);
+		return 0;
+	}
+	
 	Ceng::ShaderProgram* shaderProg;
 	cresult = renderDevice->CreateShaderProgram(vShader, pShader, &shaderProg);
 	if (cresult != Ceng::CE_OK)
