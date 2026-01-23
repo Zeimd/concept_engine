@@ -9,9 +9,9 @@
 
 #include "pshader-input.h"
 
-#include "texture-unit.h"
+//#include "texture-unit.h"
 
-#include "cr-shader-view.h"
+//#include "cr-shader-view.h"
 
 namespace Ceng::Pshader
 {
@@ -471,7 +471,7 @@ namespace Ceng::Pshader
 
 		Float& operator= (const SwizzledFloat& other);
 
-		inline Float& operator = (const CR_PixelShaderInput& source)
+		inline Float& operator = (const SWRender::CR_PixelShaderInput& source)
 		{
 			source.MoveToFloat(&x);
 			return *this;
@@ -606,7 +606,7 @@ namespace Ceng::Pshader
 
 		Float2& operator= (const ConstSwizzledFloat2& other);
 
-		inline Float2& operator = (const CR_PixelShaderInput& source)
+		inline Float2& operator = (const SWRender::CR_PixelShaderInput& source)
 		{
 			source.MoveToFloat2(&_x);
 			return *this;
@@ -758,7 +758,7 @@ namespace Ceng::Pshader
 
 		Float3& operator= (const Float4& other);
 
-		inline Float3& operator = (const CR_PixelShaderInput& source)
+		inline Float3& operator = (const SWRender::CR_PixelShaderInput& source)
 		{
 			source.MoveToFloat3(&_x);
 			return *this;
@@ -975,7 +975,7 @@ namespace Ceng::Pshader
 		}
 
 
-		inline Float4& operator = (const CR_PixelShaderInput& source)
+		inline Float4& operator = (const SWRender::CR_PixelShaderInput& source)
 		{
 			source.MoveToFloat4(&_x);
 			return *this;
@@ -1547,6 +1547,7 @@ namespace Ceng::Pshader
 		return LogicalOr(LogicalOr(LogicalOr(a._x != b._x, a._y != b._y), a._z != b._z), a._w != b._w);
 	}
 
+	/*
 	class SampleTexture2D
 	{
 	public:
@@ -1569,6 +1570,7 @@ namespace Ceng::Pshader
 
 		void SampleToFloat4(void* destBuffer) const;
 	};
+	*/
 
 	class SwizzledFloat
 	{
@@ -2964,11 +2966,13 @@ namespace Ceng::Pshader
 	//**********************************************************
 	// Shader::Float4 methods		
 
+	/*
 	inline Float4& Float4::operator = (const SampleTexture2D& source)
 	{
 		(*call_mov_float4)((void*)&_x, (void*)source.dataAddress);
 		return *this;
 	}
+	*/
 
 	inline Float4& Float4::operator = (const SwizzledFloat4& source)
 	{
@@ -4735,6 +4739,7 @@ namespace Ceng::Pshader
 	//**********************************************************
 	// SampleTexture2D methods
 
+	/*
 	inline SampleTexture2D& SampleTexture2D::operator()(TextureUnit& texture, Float2& uv)
 	{
 		unit = &texture;
@@ -4744,11 +4749,14 @@ namespace Ceng::Pshader
 
 		return *this;
 	}
+	*/
 
+	/*
 	inline void SampleTexture2D::SampleToFloat4(void* destBuffer) const
 	{
 		unit->view->Sample2D(*uv, unit->sampler, (Ceng::FLOAT32*)destBuffer);
 	}
+	*/
 
 }; // namespace Ceng::Shader
 

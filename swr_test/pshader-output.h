@@ -201,6 +201,7 @@ namespace Ceng::SWRender
 
 		};
 
+		/*
 		inline void Write(const Pshader::SampleTexture2D& source, const Ceng::INT32 coverageIndex)
 		{
 			_declspec(align(16)) Ceng::FLOAT32 writeBuffer[16];
@@ -240,6 +241,7 @@ namespace Ceng::SWRender
 			_mm_store_si128((__m128i*)dest, writeVec);
 
 			/*
+			// UNUSED?
 
 			// Source is float4
 
@@ -283,18 +285,21 @@ namespace Ceng::SWRender
 			_mm_store_si128((__m128i*)dest, writeVec);
 			*/
 
+		/*
 			// Step quad chain's target address to next quad on the right
 			*localWrite += 16;
 		}
+		*/
 
+		/*
 		inline CR_psOutputRegister& operator = (const Pshader::SampleTexture2D& source)
 		{
 			POINTER* localWrite = (POINTER*)(inputAddress);
 
-			/*
-			(*call_from_Float4[bufferFormat]) ((void*)(*localWrite), (void*)source.dataAddress,
-				(void*)(*coverageAddress));
-				*/
+			
+			//(*call_from_Float4[bufferFormat]) ((void*)(*localWrite), (void*)source.dataAddress,
+				//(void*)(*coverageAddress));
+				
 
 			float* dest = (float*)(*localWrite);
 
@@ -345,12 +350,14 @@ namespace Ceng::SWRender
 			*localWrite += 16;
 			return *this;
 		}
+		*/
 
 	public:
 
 		static void (*call_from_Float[128])(void* dest, void* source, void* coverageMask);
 		static void (*call_from_Float4[128])(void* dest, void* source, void* coverageMask);
 	};
+	
 
 	void PSOUT_NULL(void* dest, void* source, void* coverageMask);
 

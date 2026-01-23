@@ -88,9 +88,9 @@ namespace CEngine
 		SWRender::CR_psOutputRegister* OUT_DEPTH;
 		SWRender::CR_psOutputRegister* OUT_STENCIL;
 
-		Pshader::SampleTexture2D sample2d;
+		//Pshader::SampleTexture2D sample2d;
 
-		TextureUnit diffuseTexUnit;
+		//TextureUnit diffuseTexUnit;
 
 	public:
 
