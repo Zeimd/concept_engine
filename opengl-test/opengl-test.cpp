@@ -1531,7 +1531,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 				// Disable blending
 
-				renderContext->SetBlendState(nullptr, nullptr);
+				renderContext->SetBlendState(nullptr, nullptr, -1);
 
 				// Render targets
 
@@ -1731,7 +1731,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 				renderContext->SetRenderTarget(0, frontBufferTarget);
 	
-				renderContext->SetBlendState(nullptr,nullptr);
+				renderContext->SetBlendState(nullptr,nullptr, -1);
 				
 				renderContext->DrawIndexed(Ceng::PRIMITIVE_TYPE::TRIANGLE_LIST, 0, 6);
 				

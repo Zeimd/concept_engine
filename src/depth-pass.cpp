@@ -70,7 +70,7 @@ void DepthPass::Render(Ceng::RenderContext *renderContext,
 	renderContext->SetRenderTarget(2, nullptr);
 
 	renderContext->SetShaderProgram(program->GetProgram());
-	renderContext->SetBlendState(nullptr, nullptr);
+	renderContext->SetBlendState(nullptr, nullptr, -1);
 	renderContext->SetRasterizerState(&rasterizerState);
 	renderContext->SetDepthStencilState(depthState);
 

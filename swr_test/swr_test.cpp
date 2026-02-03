@@ -1525,7 +1525,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 					renderContext->SetRasterizerState(&rasterizerState);
 
-					renderContext->SetBlendState(nullptr, nullptr);
+					renderContext->SetBlendState(nullptr, nullptr, -1);
 
 					renderContext->SetRenderTarget(0, frontBufferTarget);
 

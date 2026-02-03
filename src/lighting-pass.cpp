@@ -131,7 +131,7 @@ void LightingPass::Render(Ceng::RenderContext* renderContext, Gbuffer* gbuffer, 
 
 	// Additive blend mode
 
-	renderContext->SetBlendState(lightBlendState, nullptr);
+	renderContext->SetBlendState(lightBlendState, nullptr, -1);
 
 	// Environment probes
 
