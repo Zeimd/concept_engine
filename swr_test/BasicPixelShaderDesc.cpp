@@ -1,6 +1,7 @@
 #include <array>
 
 #include "BasicPixelShaderDesc.h"
+#include "BasicPixelShader.h"
 
 #include <ceng/enums/shader-datatype.h>
 #include <ceng/enums/shader-semantic.h>
@@ -106,7 +107,7 @@ const Ceng::PixelShaderOutputDesc* BasicPixelShaderDesc::OutputArray()
 	return &outputs[0];
 }
 
-Ceng::PixelShaderInstance* BasicPixelShaderDesc::GetInstance()
+Ceng::PixelShaderInstance* BasicPixelShaderDesc::GetInstance(Ceng::UINT32 cacheLine, Pshader::CR_PixelShaderInput* nullInput)
 {
-	return nullptr;
+	return new BasicPixelShader(cacheLine, nullInput);
 }

@@ -32,7 +32,7 @@ namespace CEngine
 
 		const Ceng::PixelShaderOutputDesc* OutputArray() override;
 
-		Ceng::PixelShaderInstance* GetInstance() override;
+		Ceng::PixelShaderInstance* GetInstance(Ceng::UINT32 cacheLine, Ceng::Pshader::CR_PixelShaderInput* nullInput) override;
 
 	};
 }
