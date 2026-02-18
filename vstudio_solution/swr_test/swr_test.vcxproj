@@ -191,11 +191,6 @@ copy "$(SolutionDir)\..\..\ceng-core\lib\win64\Release\*.pdb" "$(SolutionDir)\..
   <ItemGroup>
     <ClInclude Include="..\..\swr_test\BasicPixelShader.h" />
     <ClInclude Include="..\..\swr_test\BasicPixelShaderDesc.h" />
-    <ClInclude Include="..\..\swr_test\pshader-base.h" />
-    <ClInclude Include="..\..\swr_test\pshader-decl.h" />
-    <ClInclude Include="..\..\swr_test\pshader-input.h" />
-    <ClInclude Include="..\..\swr_test\pshader-output.h" />
-    <ClInclude Include="..\..\swr_test\pshader-types.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
