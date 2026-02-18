@@ -89,12 +89,12 @@ Ceng::UINT8* BasicPixelShader::QuadBuffer()
 
 Ceng::POINTER* BasicPixelShader::StepBufferPtr()
 {
-	&stepBufferPtr;
+	return &stepBufferPtr;
 }
 
 void* BasicPixelShader::PerpectiveTemp()
 {
-	(void*)&perspectiveTemp;
+	return (void*)&perspectiveTemp;
 }
 
 Ceng::UINT32* BasicPixelShader::CoverageAddress()
@@ -120,7 +120,7 @@ Pshader::PixelShaderOutputRegister* BasicPixelShader::GetOutputs()
 
 Ceng::UINT32 BasicPixelShader::OutputSize()
 {
-	outputRegisters.size();
+	return outputRegisters.size();
 }
 
 Pshader::PixelShaderUniform* BasicPixelShader::GetUniforms()
