@@ -24,6 +24,7 @@ namespace CEngine
 		~BasicPixelShader() override;
 
 	public:		
+		Pshader::RenderTargetService* renderTargetService;
 
 		Ceng::UINT32 instanceIndex;
 
@@ -114,6 +115,8 @@ namespace CEngine
 		void* PerpectiveTemp() override;
 
 		Ceng::UINT32* CoverageAddress() override;
+
+		void SetRenderTargetService(Pshader::RenderTargetService* service) override;
 
 		void ProcessConfig(
 			UINT32 quadFloatOffset,

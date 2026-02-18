@@ -242,6 +242,11 @@ void BasicPixelShader::ProcessConfig(
 	this->doubleBlockSize = doubleBlockSize;
 }
 
+void BasicPixelShader::SetRenderTargetService(Pshader::RenderTargetService* service)
+{
+	this->renderTargetService = service;
+}
+
 _declspec(align(64)) static const Ceng::INT8 newVertTable[16][4] =
 {
 	{0,0,0,0} ,
@@ -360,11 +365,7 @@ CRESULT BasicPixelShader::ProcessQuads(SWRender::PixelShaderQuadBatch* batch, Ce
 
 		POINTER* target = (POINTER*)&quadBuffer[quadTargetOffset];
 
-		for (Ceng::UINT32 i = 2; i < common->activeRenderTargets; i++)
-		{
-			target[i] = common->targetHandles[i]->GetQuadAddress(0, quad->screenX,
-				quad->screenY);
-		}
+		renderTargetService->GenerateAddresses(quad->screenX, quad->screenY, target);
 
 		__m128 allOnesVec = _mm_load_ps((float*)allOnes);
 
