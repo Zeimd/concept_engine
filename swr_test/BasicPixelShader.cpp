@@ -76,7 +76,7 @@ CRESULT BasicPixelShader::BasicConfig(Ceng::UINT32 quadSize, Ceng::UINT32 cacheL
 		quadBuffer = AlignedBuffer<UINT8>(quadSize, cacheLine);
 	}
 
-	quadTargetStart = quadTargetStart;
+	this->quadTargetStart = quadTargetStart;
 
 	return CE_OK;
 }
