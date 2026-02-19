@@ -37,15 +37,6 @@ namespace CEngine
 		UINT32 floatBlockSize;
 		UINT32 doubleBlockSize;
 
-		SWRender::CR_FloatFragment* floatParam;
-		SWRender::CR_DoubleFragment* doubleParam;
-
-		Ceng::VectorF4 trianglePackedW;
-		Ceng::VectorF4 trianglePackedW_dx;
-		Ceng::VectorF4 trianglePackedW_dy;
-
-		UINT8* variableStep;
-
 		/**
 		 * Temporary buffer for current quad.
 		 */
@@ -60,8 +51,6 @@ namespace CEngine
 		 * Accessed through pointers.
 		 */
 		Ceng::UINT32 coverageAddress;
-
-		POINTER inputBaseAddress;
 
 		POINTER stepBufferPtr;
 
