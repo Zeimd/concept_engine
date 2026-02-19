@@ -86,7 +86,9 @@ namespace CEngine
 
 		void Release() override;
 
-		CRESULT BasicConfig(Ceng::UINT32 quadSize, Ceng::UINT32 cacheLine, Ceng::POINTER quadTargetStart) override;
+		CRESULT BasicConfig(Ceng::UINT32 quadSize, Ceng::UINT32 cacheLine, UINT32 quadFloatOffset,
+			UINT32 quadDoubleOffset, UINT32 quadTargetOffset, UINT32 floatBlockSize, UINT32 doubleBlockSize,
+			Pshader::RenderTargetService* service) override;
 
 		Pshader::PixelShaderInputRegister* GetInputs() override;
 		Ceng::UINT32 InputSize() override;
@@ -104,15 +106,6 @@ namespace CEngine
 		void* PerpectiveTemp() override;
 
 		Ceng::UINT32* CoverageAddress() override;
-
-		void SetRenderTargetService(Pshader::RenderTargetService* service) override;
-
-		void ProcessConfig(
-			UINT32 quadFloatOffset,
-			UINT32 quadDoubleOffset,
-			UINT32 quadTargetOffset,
-			UINT32 floatBlockSize,
-			UINT32 doubleBlockSize) override;
 
 		CRESULT ProcessQuads(SWRender::PixelShaderQuadBatch* batch, Ceng::UINT32 batchSize, 
 			SWRender::PixelShaderTriangleData* triangleData, Ceng::UINT32 threadId) override;

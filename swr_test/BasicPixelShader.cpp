@@ -67,7 +67,9 @@ void BasicPixelShader::Release()
 	delete this;
 }
 
-CRESULT BasicPixelShader::BasicConfig(Ceng::UINT32 quadSize, Ceng::UINT32 cacheLine, Ceng::POINTER quadTargetStart)
+CRESULT BasicPixelShader::BasicConfig(Ceng::UINT32 quadSize, Ceng::UINT32 cacheLine, UINT32 quadFloatOffset,
+	UINT32 quadDoubleOffset, UINT32 quadTargetOffset, UINT32 floatBlockSize, UINT32 doubleBlockSize,
+	Pshader::RenderTargetService* service)
 {
 	// Allocate space for a quad's varying data
 
@@ -76,7 +78,14 @@ CRESULT BasicPixelShader::BasicConfig(Ceng::UINT32 quadSize, Ceng::UINT32 cacheL
 		quadBuffer = AlignedBuffer<UINT8>(quadSize, cacheLine);
 	}
 
-	this->quadTargetStart = quadTargetStart;
+	this->quadFloatOffset = quadFloatOffset;
+	this->quadDoubleOffset = quadDoubleOffset;
+	this->quadTargetOffset = quadTargetOffset;
+
+	this->floatBlockSize = floatBlockSize;
+	this->doubleBlockSize = doubleBlockSize;
+
+	this->renderTargetService = service;
 
 	return CE_OK;
 }
@@ -217,33 +226,15 @@ void BasicPixelShader::ShaderFunction(const FLOAT32* perspective, const FLOAT32*
 	default:
 		break;
 	}
+
+	OUT_TARGET0 = color;
 	*/
 
 	//OUT_TARGET0 = sample2d(diffuseTex, uvDiffuse);
 
-	Pshader::Float4 diffuseColor = sample2d(diffuseTex, uvDiffuse);
+	//Pshader::Float4 diffuseColor = sample2d(diffuseTex, uvDiffuse);
 
-	OUT_TARGET0 = diffuseColor;
-}
-
-void BasicPixelShader::ProcessConfig(
-	UINT32 quadFloatOffset,
-	UINT32 quadDoubleOffset,
-	UINT32 quadTargetOffset,
-	UINT32 floatBlockSize,
-	UINT32 doubleBlockSize)
-{
-	this->quadFloatOffset = quadFloatOffset;
-	this->quadDoubleOffset = quadDoubleOffset;
-	this->quadTargetOffset = quadTargetOffset;
-
-	this->floatBlockSize = floatBlockSize;
-	this->doubleBlockSize = doubleBlockSize;
-}
-
-void BasicPixelShader::SetRenderTargetService(Pshader::RenderTargetService* service)
-{
-	this->renderTargetService = service;
+	//OUT_TARGET0 = diffuseColor;
 }
 
 _declspec(align(64)) static const Ceng::INT8 newVertTable[16][4] =
