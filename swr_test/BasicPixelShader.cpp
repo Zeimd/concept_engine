@@ -103,7 +103,7 @@ Ceng::POINTER* BasicPixelShader::StepBufferPtr()
 
 void* BasicPixelShader::PerpectiveTemp()
 {
-	return (void*)&perspectiveTemp;
+	return (void*)&perspectiveTemp[0];
 }
 
 Ceng::UINT32* BasicPixelShader::CoverageAddress()
@@ -298,7 +298,7 @@ CRESULT BasicPixelShader::ProcessQuads(SWRender::PixelShaderQuadBatch* batch, Ce
 		FLOAT32 screenX = FLOAT32(quad->screenX);
 		FLOAT32 screenY = FLOAT32(quad->screenY);
 
-		VectorF4 localPackedW = triangleData->packedW;
+		packedW = triangleData->packedW;
 
 		packedW += triangleData->packedW_dx * (screenX);
 		packedW += triangleData->packedW_dy * (screenY);
