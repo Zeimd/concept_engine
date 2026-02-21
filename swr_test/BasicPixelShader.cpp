@@ -15,6 +15,7 @@ BasicPixelShader::BasicPixelShader(Ceng::UINT32 cacheLine, Pshader::CR_PixelShad
 	inputRegisters[1].variable = &tangent;
 	inputRegisters[2].variable = &texCoord0;
 	inputRegisters[3].variable = &texCoord1;
+	inputRegisters[4].variable = &texCoord2;
 
 	for (int k = 0; k < inputRegisters.size(); ++k)
 	{

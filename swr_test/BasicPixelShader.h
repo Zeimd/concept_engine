@@ -55,12 +55,13 @@ namespace CEngine
 		POINTER stepBufferPtr;
 
 		// Add input variables in the same order they appear in PixelShaderDeclaration.
-		std::array<Ceng::Pshader::PixelShaderInputRegister, 4> inputRegisters;
+		std::array<Ceng::Pshader::PixelShaderInputRegister, 5> inputRegisters;
 
 		Pshader::InFloat4 normal;
 		Pshader::InFloat4 tangent;
 		Pshader::InFloat2 texCoord0;
 		Pshader::InFloat2 texCoord1;
+		Pshader::InFloat2 texCoord2;
 
 		std::array<Ceng::Pshader::PixelShaderUniform, 1> uniforms;
 

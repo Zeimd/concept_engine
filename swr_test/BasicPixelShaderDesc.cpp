@@ -8,7 +8,7 @@
 
 using namespace CEngine;
 
-static const std::array<Ceng::PixelShaderInputDesc, 4> inputs
+static const std::array<Ceng::PixelShaderInputDesc, 5> inputs
 { {
 	{
 		Ceng::SHADER_DATATYPE::FLOAT4,
@@ -29,6 +29,11 @@ static const std::array<Ceng::PixelShaderInputDesc, 4> inputs
 		Ceng::SHADER_DATATYPE::FLOAT2,
 		"texCoord1",
 		Ceng::SHADER_SEMANTIC::TEXCOORD_1
+	},
+	{
+		Ceng::SHADER_DATATYPE::FLOAT2,
+		"texCoord2",
+		Ceng::SHADER_SEMANTIC::TEXCOORD_2
 	},
 } };
 
