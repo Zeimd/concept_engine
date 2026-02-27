@@ -32,7 +32,8 @@ namespace CEngine
 
 		const Ceng::VertexShaderOutputDesc* OutputArray() override;
 
-		Ceng::VertexShaderInstance* GetInstance(Ceng::UINT32 cacheLine, Ceng::Vshader::CR_VertexShaderInput* nullInput) override;
+		Ceng::VertexShaderInstance* GetInstance(Ceng::UINT32 cacheLine, Ceng::Vshader::CR_VertexShaderInput* nullInput,
+			Ceng::Vshader::CR_VertexShaderOutput* nullOutput) override;
 	};
 }
 

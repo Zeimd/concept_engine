@@ -22,6 +22,12 @@ namespace CEngine
 		// access this value through a pointer.
 		Ceng::POINTER outputBaseAddress;
 
+		Ceng::UINT32 fragmentSizeBytes;
+
+		Ceng::POINTER* inputBaseAddress;
+		
+		Ceng::POINTER* inputSteps;
+
 		std::array<Ceng::Vshader::VertexShaderInputRegister, 5> inputRegisters;
 
 		Ceng::Vshader::InFloat4 inPosition;
@@ -52,7 +58,8 @@ namespace CEngine
 
 	public:
 
-		BasicVertexShader(Ceng::UINT32 cacheLine, Ceng::Vshader::CR_VertexShaderInput* nullInput);
+		BasicVertexShader(Ceng::UINT32 cacheLine, Ceng::Vshader::CR_VertexShaderInput* nullInput,
+			Ceng::Vshader::CR_VertexShaderOutput* nullOutput);
 
 		void Release() override;
 
@@ -65,14 +72,17 @@ namespace CEngine
 		Ceng::Vshader::VertexShaderUniform* GetUniforms() override;
 		Ceng::UINT32 UniformSize() override;
 
-		Ceng::CRESULT Configure(const Ceng::VertexShaderInputDesc* inputSemantics, 
-			Ceng::UINT32 inputCount, Ceng::UINT32 fragmentSizeBytes,
-			Ceng::POINTER inputBaseAddress, Ceng::POINTER inputSteps) override;
+		Ceng::POINTER* OutputBaseAddress() override;
+
+		Ceng::CRESULT BasicConfig(Ceng::UINT32 fragmentSizeBytes,
+			Ceng::POINTER* inputBaseAddress, Ceng::POINTER* inputSteps) override;
 
 		Ceng::CRESULT ProcessVertexBatch(Ceng::UINT32 vertexCount,
 			Ceng::FragmentCacheTag* vertexIndex,
 			Ceng::UINT8* output,
 			Ceng::UINT32 threadId) override;
+
+		void ShaderFunction();
 	};
 }
 

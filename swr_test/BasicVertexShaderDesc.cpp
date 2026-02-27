@@ -122,7 +122,8 @@ const Ceng::VertexShaderOutputDesc* BasicVertexShaderDesc::OutputArray()
 	return &outputs[0];
 }
 
-Ceng::VertexShaderInstance* BasicVertexShaderDesc::GetInstance(Ceng::UINT32 cacheLine, Ceng::Vshader::CR_VertexShaderInput* nullInput)
+Ceng::VertexShaderInstance* BasicVertexShaderDesc::GetInstance(Ceng::UINT32 cacheLine, Ceng::Vshader::CR_VertexShaderInput* nullInput,
+	Ceng::Vshader::CR_VertexShaderOutput* nullOutput)
 {
-	return new BasicVertexShader(cacheLine, nullInput);
+	return new BasicVertexShader(cacheLine, nullInput, nullOutput);
 }
