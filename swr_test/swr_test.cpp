@@ -28,6 +28,9 @@
 #include "BasicPixelShader.h"
 #include "BasicPixelShaderDesc.h"
 
+#include "BasicVertexShader.h"
+#include "BasicVertexShaderDesc.h"
+
 const Ceng::CRESULT EnumBackbufferFormats(Ceng::GraphicsSystem* renderCore, Ceng::GraphicsAdapter* adapter, Ceng::IMAGE_FORMAT::value format)
 {
 	Ceng::StringUtf8 out;
@@ -935,6 +938,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		return 0;
 	}
 
+	CEngine::BasicVertexShaderDesc* basicVshaderDesc;
+
+	basicVshaderDesc = new CEngine::BasicVertexShaderDesc();
+
 	Ceng::VertexShader* vShader;
 
 	cresult = renderDevice->CreateVertexShader("", &vShader);
@@ -944,24 +951,25 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		Ceng::Log::Print(cresult);
 		return 0;
 	}
+	*/
 
-	CEngine::BasicPixelShaderDesc* basicShaderDesc;
+	CEngine::BasicPixelShaderDesc* basicPshaderDesc;
 
-	basicShaderDesc = new CEngine::BasicPixelShaderDesc();
+	basicPshaderDesc = new CEngine::BasicPixelShaderDesc();
 
 	Ceng::PixelShader* pShader;
 
-	/*
+	
 	// Create shader from source code
-	cresult = renderDevice->CreatePixelShader(basicShaderDesc, &pShader);
+	cresult = renderDevice->CreatePixelShader(basicPshaderDesc, &pShader);
 	if (cresult != Ceng::CE_OK)
 	{
 		Ceng::Log::Print("Failed to create pixel shader from code");
 		Ceng::Log::Print(cresult);
 		return 0;
-	}
-	*/
+	}	
 
+	/*
 	// Create built-in pixel shader
 	cresult = renderDevice->CreatePixelShader("", &pShader);
 	if (cresult != Ceng::CE_OK)
@@ -970,6 +978,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		Ceng::Log::Print(cresult);
 		return 0;
 	}
+	*/
 	
 	Ceng::ShaderProgram* shaderProg;
 	cresult = renderDevice->CreateShaderProgram(vShader, pShader, &shaderProg);
@@ -1670,9 +1679,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	shaderProg->Release();
 	pShader->Release();
 
-	basicShaderDesc->Release();
+	basicPshaderDesc->Release();
 
 	vShader->Release();
+
+	basicVshaderDesc->Release();
 
 	wallVertexBuffer->Release();
 	vertexFormat->Release();
