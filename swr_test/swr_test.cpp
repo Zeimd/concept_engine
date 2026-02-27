@@ -944,6 +944,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	Ceng::VertexShader* vShader;
 
+	
+	cresult = renderDevice->CreateVertexShader(basicVshaderDesc, &vShader);
+	if (cresult != Ceng::CE_OK)
+	{
+		Ceng::Log::Print("Failed to create external vertex shader");
+		Ceng::Log::Print(cresult);
+		return 0;
+	}
+	
+
+	/*
 	cresult = renderDevice->CreateVertexShader("", &vShader);
 	if (cresult != Ceng::CE_OK)
 	{
@@ -1155,7 +1166,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		Ceng::Log::Print(cresult);
 		return 0;
 	}
-	
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Object data

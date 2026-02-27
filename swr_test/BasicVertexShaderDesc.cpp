@@ -17,6 +17,9 @@ static const std::array<Ceng::VertexShaderInputDesc, 5> inputs
 		Ceng::SHADER_SEMANTIC::POSITION
 	},
 	{
+		Ceng::SHADER_SEMANTIC::NORMAL
+	},
+	{
 		Ceng::SHADER_SEMANTIC::TANGENT
 	},
 	{
@@ -24,9 +27,6 @@ static const std::array<Ceng::VertexShaderInputDesc, 5> inputs
 	},
 	{
 		Ceng::SHADER_SEMANTIC::TEXCOORD_1
-	},
-	{
-		Ceng::SHADER_SEMANTIC::TEXCOORD_2
 	},
 } };
 
