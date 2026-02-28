@@ -47,13 +47,13 @@ EngineResult::value LightingPass::GetInstance(Ceng::RenderDevice* renderDevice, 
 
 	lightTargetBlend.blendEnable = true;
 
-	lightTargetBlend.sourceBlend = Ceng::BlendType::one;
-	lightTargetBlend.destBlend = Ceng::BlendType::one;
+	lightTargetBlend.sourceBlend = Ceng::ColorBlendFactor::one;
+	lightTargetBlend.destBlend = Ceng::ColorBlendFactor::one;
 
 	lightTargetBlend.blendOp = Ceng::BlendOp::add;
 
-	lightTargetBlend.sourceBlendAlpha = Ceng::BlendType::one;
-	lightTargetBlend.destBlendAlpha = Ceng::BlendType::zero;
+	lightTargetBlend.sourceBlendAlpha = Ceng::AlphaBlendFactor::one;
+	lightTargetBlend.destBlendAlpha = Ceng::AlphaBlendFactor::zero;
 	lightTargetBlend.blendAlphaOp = Ceng::BlendOp::add;
 
 	Ceng::BlendState* lightBlendState;
