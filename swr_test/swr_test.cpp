@@ -1633,7 +1633,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 					renderContext->SetRasterizerState(&rasterizerState);
 
-					renderContext->SetBlendState(nullptr, nullptr, -1);
+					Ceng::FLOAT32 blendFactors[4] = { 0.5f,0.5f,0.5f,1.0f };
+
+					renderContext->SetBlendState(activeBlendMode, blendFactors, 0);
 
 					renderContext->SetRenderTarget(0, frontBufferTarget);
 
