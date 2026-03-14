@@ -801,6 +801,65 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	Ceng::SamplerState* activeSampler = nearestSampler;
 
+	//*************************************************************************************************
+	// Blend state creation
+
+	Ceng::BlendStateDesc blendDesc;
+
+	blendDesc.alphaToCoverage = false;
+	blendDesc.independentBlend = false;
+
+	Ceng::RenderTargetBlendDesc targetDesc;
+
+	targetDesc.blendEnable = false;
+
+	targetDesc.sourceBlend = Ceng::ColorBlendFactor::one;
+	targetDesc.sourceBlendAlpha = Ceng::AlphaBlendFactor::one;
+
+	targetDesc.destBlend = Ceng::ColorBlendFactor::zero;
+	targetDesc.destBlendAlpha = Ceng::AlphaBlendFactor::zero;
+
+	targetDesc.blendOp = Ceng::BlendOp::add;
+	targetDesc.blendAlphaOp = Ceng::BlendOp::add;
+
+	targetDesc.writeMask = Ceng::ColorWriteMask::all;
+
+	blendDesc.targets = 1;
+	blendDesc.descList = &targetDesc;
+
+	Ceng::BlendState* noBlendState;
+
+	cresult = renderDevice->CreateBlendState(&blendDesc, &noBlendState);
+	if (cresult != Ceng::CE_OK)
+	{
+		Ceng::Log::Print("Failed to create no blend state");
+		return 0;
+	}
+
+	Ceng::BlendState* activeBlendMode = noBlendState;
+
+	targetDesc.blendEnable = true;
+
+	targetDesc.sourceBlend = Ceng::ColorBlendFactor::blend_factor;
+	targetDesc.sourceBlendAlpha = Ceng::AlphaBlendFactor::one;
+
+	targetDesc.destBlend = Ceng::ColorBlendFactor::invert_blend_factor;
+	targetDesc.destBlendAlpha = Ceng::AlphaBlendFactor::zero;
+
+	targetDesc.blendOp = Ceng::BlendOp::add;
+	targetDesc.blendAlphaOp = Ceng::BlendOp::add;
+
+	targetDesc.writeMask = Ceng::ColorWriteMask::all;
+
+	Ceng::BlendState* apiFactorBlendState;
+
+	cresult = renderDevice->CreateBlendState(&blendDesc, &apiFactorBlendState);
+	if (cresult != Ceng::CE_OK)
+	{
+		Ceng::Log::Print("Failed to create api factor blend state");
+		return 0;
+	}
+
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Create vertex format
 
@@ -1479,7 +1538,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 						activeSampler = linearMipNearestSampler;
 					}
 					
-					
+					if (keyboard->IsPressed(Ceng::KEYBOARD_KEY::U))
+					{
+						activeBlendMode = noBlendState;
+					}
+
+					if (keyboard->IsPressed(Ceng::KEYBOARD_KEY::I))
+					{
+						activeBlendMode = apiFactorBlendState;
+					}
 				}
 
 				if (window->IsResized())
@@ -1647,6 +1714,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	//ev_windowHeight->Release();
 
 	//quadProgTex->Release();
+
+	noBlendState->Release();
+	apiFactorBlendState->Release();
 
 	nearestSampler->Release();
 	linearSampler->Release();
